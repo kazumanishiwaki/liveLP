@@ -30,6 +30,11 @@ def lab(t):
     return f'<p class="t-lab">{t}</p>'
 
 # ------------------------------------------------------------------ 共通
+def subnav_html(items):
+    """スマホで出る、現在地つきのサブナビ。items = [(セクションのid, 短い名前)]"""
+    li = ''.join(f'<li><a href="#{i}">{t}</a></li>' for i, t in items)
+    return f'<nav class="subnav" aria-label="このページの目次"><ol>{li}</ol><span class="subnav-meter" aria-hidden="true"></span></nav>'
+
 NAV = [('#plan', 'プラン診断'), ('#price', '料金・体制・機材'), ('#works', '事例'), ('#demo', 'ツールデモ'), ('#public', '大学・公共機関の方へ'), ('#faq', 'よくある質問')]
 
 def head(title, desc, home=False, extra=''):
@@ -99,7 +104,7 @@ def footer(home, form=True):
 </html>
 '''
 
-def quote_form(p, prefill=False, full=False):
+def quote_form(p, prefill=False, full=False, fid=''):
     """見積フォーム。必須4項目。full=True で任意項目も"""
     def fld(name, label, ph, typ='text', req=True, err=''):
         r = ' required' if req else ''
@@ -124,7 +129,8 @@ def quote_form(p, prefill=False, full=False):
     pf = ' data-prefill' if prefill else ''
     note = '<p class="form-msg prefill" role="status" hidden></p>' if prefill else ''
     head_ = '<h3 class="t-ct">必須（4項目）</h3>' if full else '<h3 class="t-ct">見積書を受け取る</h3>'
-    return f'''<form class="boxw stack" data-form="quote" data-endpoint=""{pf} aria-label="見積の依頼">
+    idattr = f' id="{fid}"' if fid else ''
+    return f'''<form{idattr} class="boxw stack" data-form="quote" data-endpoint=""{pf} aria-label="見積の依頼">
 {note}{head_}
 <div class="f2">{req}</div>
 {opt}
@@ -211,8 +217,7 @@ FAQ = [
 def index():
     sub = [('plan', '診断'), ('switching', '画面'), ('scope', '対象'), ('price', '料金'), ('team', '体制'), ('day', '当日'), ('demo', 'ツール'),
            ('works', '事例'), ('option', '追加'), ('coaching', 'コーチング'), ('public', '発注'), ('faq', '質問'), ('contact', '見積')]
-    subnav = ('<nav class="subnav" aria-label="このページの目次"><ol>' + ''.join(f'<li><a href="#{i}">{t}</a></li>' for i, t in sub)
-              + '</ol><span class="subnav-meter" aria-hidden="true"></span></nav>')
+    subnav = subnav_html(sub)
     intro = '<div class="intro" aria-hidden="true"><p>' + ''.join(f'<span style="--i:{i}">{c}</span>' for i, c in enumerate(NAME_EN)) + '</p></div>'
 
     hero = f'''<section class="hero" aria-labelledby="hero-title"><div class="wrap">
@@ -386,14 +391,14 @@ def contact():
 <tr><th>予備の録画機・予備の回線</th><td class="r">含む</td></tr><tr><th>打ち合わせ・会場の下見・録画データの納品</th><td class="r">含む</td></tr>
 <tr><th>消費税（10%）</th><td class="r">25,000</td></tr><tr><th>合計</th><td class="r">275,000</td></tr></table></div>'''
     return (head(f'お問い合わせ・お見積｜ハイブリッド配信のご相談｜{NAME}', '日程と会場、登壇者の人数がわかれば見積書をお出しします。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。')
-            + header(False) + f'''<main id="main">
-<div class="wrap ph-head stack s-48"><nav aria-label="パンくず"><ol class="crumb"><li><a href="index.html">トップ</a></li><li aria-current="page">お問い合わせ・お見積</li></ol></nav>
+            + header(False) + subnav_html([('top', '見積の依頼'), ('flow', '送信後の流れ'), ('sample', '見積書の見本'), ('consult', '相談'), ('tel', '電話')]) + f'''<main id="main">
+<div class="wrap ph-head stack s-48" id="top"><nav aria-label="パンくず"><ol class="crumb"><li><a href="index.html">トップ</a></li><li aria-current="page">お問い合わせ・お見積</li></ol></nav>
 {lab('Contact')}<h1 class="t-h1">見積書をお送りします</h1><p class="t-lead">必須の4項目だけで送信できます。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。</p></div>
 <div class="wrap g75">
 {quote_form('c', prefill=True, full=True)}
 <aside class="stack s-48" aria-label="補足">
-<section class="stack"><h2 class="sub">送信したあとの流れ</h2><ol class="steps">{fl}</ol></section>
-<section class="stack"><h2 class="sub">届く見積書の見本</h2>{doc}</section>
+<section class="stack" id="flow"><h2 class="sub">送信したあとの流れ</h2><ol class="steps">{fl}</ol></section>
+<section class="stack" id="sample"><h2 class="sub">届く見積書の見本</h2>{doc}</section>
 <section id="consult" class="boxd stack"><h2 class="t-h2s">まだ何も決まっていない方へ</h2><p class="t-note">15分のオンライン相談で、iPhoneで足りるかどうかから一緒にお話しします。</p>{btn('相談の日時を選ぶ', '#consult', 'light')}</section>
 <section id="tel" class="stack s-16"><h2 class="sub">お電話でも受け付けています</h2><p class="t-ct">［電話番号］</p><p class="t-note t-sub">［受付時間］</p></section>
 <blockquote class="boxw stack"><p class="t-body">［担当者の声を1件。頼む前の不安に触れているもの］</p><footer class="t-note t-sub">［所属・役職］</footer></blockquote>
@@ -441,19 +446,19 @@ def rules():
                  ('本文', '14 → 16', 'マイク音声を直接取り込みます。'), ('補足', '12 → 14', '相見積にそのまま使えます')]
     ty = ''.join(f'<tr><th scope="row">{a}</th><td data-l="大きさ（px）">{b}</td><td data-l="見本">{c}</td></tr>' for a, b, c in type_rows)
     return (head(f'デザインルール｜{NAME}', 'カルラライブのサイトのデザインルールと、使っている Web 標準の一覧です。')
-            + header(False) + f'''<main id="main"><div class="wrap ph-head stack s-48">{lab('Design rules')}<h1 class="t-h1">静かなグレーに、<br>必要なことだけを置く。</h1>
+            + header(False) + subnav_html([('rules-top', 'はじめに'), ('layout', 'レイアウト'), ('type', '文字'), ('color', '色'), ('motion', '動き'), ('platform', 'Web標準')]) + f'''<main id="main"><div class="wrap ph-head stack s-48" id="rules-top">{lab('Design rules')}<h1 class="t-h1">静かなグレーに、<br>必要なことだけを置く。</h1>
 <p class="t-lead">C案を元に、スマホを基本に組み直したサイトのルールです。文字と余白は、幅390pxのスマホから1200pxのPCまで、段差なく大きくなります。</p></div>
-<section class="sec-3"><div class="wrap g57"><div class="stk">{lab('Layout')}</div><div class="stack s-48"><h2 class="t-h2">スマホは1段、PCは左5：右7</h2>
-<ul class="rows"><li>スマホを基本に書き、幅1024px以上で2段に広げます</li><li>スマホではヘッダーの下に、現在地つきのサブナビと、下部の追従ボタン（プラン診断／見積を依頼する）を置きます</li><li>PCのヘッダーは、背景の色を反転させて重ねる固定ヘッダーのまま</li><li>プラン診断はトップの最初の画面に置き、PCでは見出しの右、スマホでは見出しのすぐ下です</li></ul></div></div></section>
-<section class="sec-3"><div class="wrap g57"><div class="stk">{lab('Type')}</div><div class="stack s-48"><h2 class="t-h2">1書体、1つの太さ</h2>
+<section class="sec-3" id="layout"><div class="wrap g57"><div class="stk">{lab('Layout')}</div><div class="stack s-48"><h2 class="t-h2">スマホは1段、PCは左5：右7</h2>
+<ul class="rows"><li>スマホを基本に書き、幅1024px以上で2段に広げます</li><li>スマホではヘッダーの下に、現在地つきのサブナビ（トップ、お問い合わせ、デザインルール）と、下部の追従ボタン（プラン診断／見積を依頼する）を置きます</li><li>PCのヘッダーは、背景の色を反転させて重ねる固定ヘッダーのまま</li><li>プラン診断はトップの最初の画面に置き、PCでは見出しの右、スマホでは見出しのすぐ下です</li></ul></div></div></section>
+<section class="sec-3" id="type"><div class="wrap g57"><div class="stk">{lab('Type')}</div><div class="stack s-48"><h2 class="t-h2">1書体、1つの太さ</h2>
 <table class="tbl"><thead><tr><th scope="col">役割</th><th scope="col">大きさ（px、スマホ → PC）</th><th scope="col">見本</th></tr></thead><tbody>{ty}</tbody></table>
 <p class="t-note t-sub">和文：Zen Kaku Gothic New の Medium（使う文字だけに絞って同梱）／英字・数字：Helvetica Neue。入力欄の文字はスマホでも16px。</p></div></div></section>
-<section class="sec-3"><div class="wrap g57"><div class="stk">{lab('Color')}</div><div class="stack s-48"><h2 class="t-h2">灰色と砂色、赤1点</h2>
+<section class="sec-3" id="color"><div class="wrap g57"><div class="stk">{lab('Color')}</div><div class="stack s-48"><h2 class="t-h2">灰色と砂色、赤1点</h2>
 <ul class="logos" style="grid-template-columns:repeat(auto-fill,minmax(9rem,1fr))">{sw}</ul>
 <p class="t-note t-sub">キーボードで操作しているときの枠だけは、見落とさないよう黄色（#F0B400）にしています。</p></div></div></section>
-<section class="sec-3"><div class="wrap g57"><div class="stk">{lab('Motion')}</div><div class="stack s-48"><h2 class="t-h2">動きは、減らせる</h2>
+<section class="sec-3" id="motion"><div class="wrap g57"><div class="stk">{lab('Motion')}</div><div class="stack s-48"><h2 class="t-h2">動きは、減らせる</h2>
 <ul class="rows"><li>曲線はすべて cubic-bezier(0.19, 1, 0.22, 1)</li><li>読み込みの幕は、その回の最初の1回だけ。2回目からは出ません</li><li>カメラの自動切り替えには「切り替えを止める」ボタンをつけています</li><li>端末で「視差効果を減らす」を選んでいる人には、幕・自動切り替え・流れる英字・出現の動きをすべて止めます</li></ul></div></div></section>
-<section class="sec-3"><div class="wrap g57"><div class="stk">{lab('Platform')}</div><div class="stack s-48"><h2 class="t-h2">使っている Web 標準と、使えないときの形</h2>
+<section class="sec-3" id="platform"><div class="wrap g57"><div class="stk">{lab('Platform')}</div><div class="stack s-48"><h2 class="t-h2">使っている Web 標準と、使えないときの形</h2>
 <p class="t-lead">基準は Baseline Widely available（主要ブラウザで30か月以上使えるもの）。それより新しい機能は、無くても見た目と操作が壊れない場所にだけ使っています。</p>
 <table class="tbl"><thead><tr><th scope="col">機能</th><th scope="col">Baseline（2026年11月）</th><th scope="col">使っている場所</th><th scope="col">使えないとき</th></tr></thead><tbody>{tr}</tbody></table>
 <p class="t-note t-sub">「Widely」は主要ブラウザで30か月以上、「Newly」は主要ブラウザの最新版で使えるもの、「Limited」は一部のブラウザだけ。</p></div></div></section>
