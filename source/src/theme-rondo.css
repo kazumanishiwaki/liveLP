@@ -1,0 +1,244 @@
+
+/* ============================================================
+   テイスト違い：前のデザイン（rondomark.jp 寄り）の見た目
+   グレーと墨、太さは500だけ、余白は広く、5:7 の2カラム、角丸6px
+   ============================================================ */
+html[data-theme=rondo]{
+  --paper:#f0f0f0; --sheet:#fbfbfb; --mist:#d7d5d0; --line:#d7d5d0;
+  --ink:#2c2c2e; --sub:#6d6c69;
+  --board:#2c2c2e; --board-2:#222224; --board-line:#4c4c4f; --chalk:#fbfbfb; --chalk-sub:#b9b7b2;
+  --shu:#2c2c2e; --shu-d:#000;
+  --jp:"Helvetica Neue",Helvetica,Arial,"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --num:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --pad:clamp(2.5rem,-1.944rem + 6.94vw,5rem);
+  --sec:100px; --head:88px;
+  --ease:cubic-bezier(.19,1,.22,1);
+}
+[data-theme=rondo] *{font-weight:500!important}
+[data-theme=rondo] .n,[data-theme=rondo] .lab,[data-theme=rondo] .logo,[data-theme=rondo] .copy,[data-theme=rondo] .mq span{font-weight:400!important}
+[data-theme=rondo] body{line-height:2;letter-spacing:.08em;font-feature-settings:normal}
+[data-theme=rondo] .wrap{max-width:1920px}
+[data-theme=rondo] .n{letter-spacing:0}
+
+/* ヘッダー */
+[data-theme=rondo] .head{background:rgba(240,240,240,.9);border-bottom:0}
+[data-theme=rondo] .logo{font-family:var(--num);font-size:17px;letter-spacing:.2em;gap:14px}
+[data-theme=rondo] .logo small{font-family:var(--jp);font-size:11px;letter-spacing:.1em;font-weight:500!important}
+[data-theme=rondo] .nav{font-size:14px;gap:24px}
+[data-theme=rondo] .nav a{border-bottom-width:1px}
+[data-theme=rondo] .head-tel b{font-size:16px}
+
+/* ボタン */
+[data-theme=rondo] .btn{justify-content:space-between;gap:40px;min-height:60px;min-width:273px;padding:0 28px;border-radius:6px;border-width:1px;font-size:16px;letter-spacing:.08em;text-align:left;transition:background .3s,color .3s}
+[data-theme=rondo] .btn::after{content:"";flex:none;width:7px;height:7px;border-top:1.5px solid;border-right:1.5px solid;transform:rotate(45deg);transition:transform .65s var(--ease)}
+[data-theme=rondo] .btn:hover::after{transform:translateX(4px) rotate(45deg)}
+[data-theme=rondo] .btn--s{min-height:44px;min-width:0;gap:16px;padding:0 18px;font-size:13px;border-radius:4px}
+[data-theme=rondo] .btn--ghost{background:transparent;color:var(--ink)}
+[data-theme=rondo] .btn--ghost:hover{background:var(--ink);color:var(--sheet)}
+[data-theme=rondo] .band--board .btn,[data-theme=rondo] .cta .btn,[data-theme=rondo] .marugoto .btn,[data-theme=rondo] .axis-us .btn{background:var(--sheet);color:var(--ink);border-color:var(--sheet)}
+[data-theme=rondo] .band--board .qform .btn{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+[data-theme=rondo] .band--board .btn--ghost{background:transparent;color:var(--sheet);border-color:var(--sheet)}
+[data-theme=rondo] .btn--wide{min-width:0}
+[data-theme=rondo] .tlink{text-decoration:none;display:inline-block;padding:14px 0 6px;font-size:14px;line-height:1.4;background:linear-gradient(currentColor,currentColor) left bottom/100% 1px no-repeat}
+[data-theme=rondo] .tlink:hover{animation:r-ul .7s var(--ease)}
+@keyframes r-ul{0%{background-size:100% 1px;background-position:right bottom}50%{background-size:0 1px;background-position:right bottom}51%{background-size:0 1px;background-position:left bottom}100%{background-size:100% 1px;background-position:left bottom}}
+
+/* 帯：グレージュと墨は、角丸で内側に入れる */
+[data-theme=rondo] .band--sheet{background:var(--paper)}
+[data-theme=rondo] .band--mist,[data-theme=rondo] .band--board,[data-theme=rondo] .cta{margin:60px 8px;border-radius:6px;padding-block:160px}
+[data-theme=rondo] .band--tight{padding-block:60px}
+[data-theme=rondo] .band--mist.band--tight{padding-block:100px}
+[data-theme=rondo] .cta{padding-block:120px;margin-bottom:0}
+
+/* 見出しと本文 */
+[data-theme=rondo] .h2{font-size:44px;line-height:1.6;letter-spacing:.08em;max-width:none;text-wrap:initial}
+[data-theme=rondo] .h3{font-size:26px;line-height:1.8;letter-spacing:.08em;margin-top:96px}
+[data-theme=rondo] .h3:first-child{margin-top:0}
+[data-theme=rondo] .h4{font-size:20px;line-height:1.8}
+[data-theme=rondo] .lead{font-size:18px;line-height:2.2;letter-spacing:.09em;margin-top:40px}
+[data-theme=rondo] .lab{display:flex;align-items:center;gap:8px;font-family:var(--num);font-size:18px;line-height:1;letter-spacing:.01em;margin-bottom:40px}
+[data-theme=rondo] .lab::before{content:"";width:8px;height:8px;background:currentColor;flex:none}
+@media (min-width:1000px){
+  [data-theme=rondo] .band>.wrap:has(>.sec-body){display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;align-items:start}
+  [data-theme=rondo] .sec-head{position:sticky;top:120px}
+  [data-theme=rondo] .sec-body{margin-top:0}
+  [data-theme=rondo] .sec-body .cols,[data-theme=rondo] .sec-body .axis,[data-theme=rondo] .sec-body .reasons,[data-theme=rondo] .sec-body .cases,[data-theme=rondo] .sec-body .marugoto{grid-template-columns:minmax(0,1fr)}
+  [data-theme=rondo] .sec-body .opts{grid-template-columns:1fr 1fr}
+  [data-theme=rondo] .sec-body .case{flex-direction:row}
+  [data-theme=rondo] .sec-body .case img{width:38%;aspect-ratio:auto;align-self:stretch}
+}
+
+/* リスト */
+[data-theme=rondo] .ticks li{padding:12px 0 12px 1.9em;margin-top:0;border-top:1px solid var(--line);line-height:2}
+[data-theme=rondo] .ticks li:last-child{border-bottom:1px solid var(--line)}
+[data-theme=rondo] .ticks li::before{top:1.75em;border-width:1.5px;width:.8em;height:.42em}
+[data-theme=rondo] .band--board .ticks li,[data-theme=rondo] .axis-us .ticks li,[data-theme=rondo] .hero .ticks li{border-color:var(--board-line)}
+[data-theme=rondo] .hero .ticks li{border-color:var(--line)}
+[data-theme=rondo] .hero .ticks li::before,[data-theme=rondo] .axis-us .ticks li::before{border-color:currentColor}
+
+/* ヒーロー */
+[data-theme=rondo] .hero{background:var(--paper);color:var(--ink);padding-top:72px}
+[data-theme=rondo] .hero-grid{gap:40px}
+@media (min-width:1000px){
+  [data-theme=rondo] .hero-grid{grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:start;row-gap:0}
+  [data-theme=rondo] .hero-grid>div:first-child{display:contents}
+  [data-theme=rondo] .hero-kind,[data-theme=rondo] .hero h1{grid-column:1/-1}
+  [data-theme=rondo] .hero h1{font-size:clamp(34px,3.47vw,50px);margin-bottom:72px}
+  [data-theme=rondo] .hero-price,[data-theme=rondo] .hero .ticks{grid-column:1}
+  [data-theme=rondo] .hero-price{margin-top:0}
+  [data-theme=rondo] .hero-grid>div:last-child{grid-column:2;grid-row:3/span 3}
+}
+[data-theme=rondo] .hero h1{line-height:1.6;letter-spacing:.04em;margin-top:28px}
+[data-theme=rondo] .hero-kind{color:var(--sub);font-size:14px;letter-spacing:.04em}
+[data-theme=rondo] .hero-price{border-top-color:var(--line);font-size:18px;line-height:2.1;letter-spacing:.04em}
+[data-theme=rondo] .hero-price .n{font-size:1.9em}
+[data-theme=rondo] .hero-price em .n{font-size:104px;color:inherit;letter-spacing:0}
+[data-theme=rondo] .strip{margin-bottom:-90px}
+[data-theme=rondo] .hero+.band{padding-top:200px}
+[data-theme=rondo] .sw{border:0;border-radius:6px;padding:20px}
+[data-theme=rondo] .sw-pgm,[data-theme=rondo] .sw-tile{border-radius:4px}
+[data-theme=rondo] .sw-top p{font-size:14px;letter-spacing:.04em}
+[data-theme=rondo] .seg{border-radius:30px}
+[data-theme=rondo] .seg button{padding:8px 16px;font-size:12px;letter-spacing:.1em}
+[data-theme=rondo] .sw-onair{background:var(--sheet);color:var(--ink);border-radius:40px;padding:4px 10px}
+[data-theme=rondo] .sw-onair::before{background:#e0483a}
+[data-theme=rondo] .sw-tile[aria-pressed=true]{border-color:#e0483a}
+[data-theme=rondo] .sw-tile[aria-pressed=true] span{background:#e0483a}
+
+/* フォーム */
+[data-theme=rondo] .qform{box-shadow:none;border-radius:6px;background:var(--sheet);padding:40px}
+[data-theme=rondo] .qform-h{font-size:26px;line-height:1.8}
+[data-theme=rondo] .field label,[data-theme=rondo] .field legend{font-size:14px;color:var(--sub);margin-bottom:10px}
+[data-theme=rondo] .field input[type=text],[data-theme=rondo] .field input[type=email],[data-theme=rondo] .field textarea{border:0;background:var(--paper);min-height:58px;border-radius:6px;padding:0 16px;letter-spacing:.04em}
+[data-theme=rondo] .field textarea{padding:16px}
+[data-theme=rondo] .field .req,[data-theme=rondo] .field .err{color:#c0392b}
+[data-theme=rondo] .checks input{accent-color:var(--ink)}
+[data-theme=rondo] .qform--strip .btn{min-width:220px}
+
+/* 部品 */
+[data-theme=rondo] .axis{gap:8px}
+[data-theme=rondo] .axis>div,[data-theme=rondo] .axis>.axis-us{border-top:0;border-radius:6px;padding:32px}
+[data-theme=rondo] .axis>div:not(.axis-us){background:var(--sheet)}
+[data-theme=rondo] .axis h3{font-size:20px}
+[data-theme=rondo] .logos li{border:0;background:var(--sheet);border-radius:6px}
+[data-theme=rondo] .figs dd{font-size:26px}
+[data-theme=rondo] .doc{box-shadow:none;border-radius:6px}
+[data-theme=rondo] .doc-stamp{border-color:#c0392b;color:#c0392b}
+[data-theme=rondo] .plan-name{border-radius:30px;font-size:12px;letter-spacing:.1em;padding:4px 14px;background:var(--ink);color:var(--sheet)}
+[data-theme=rondo] .marugoto .plan-name{background:var(--sheet);color:var(--ink)}
+[data-theme=rondo] .plan-price .n{font-size:104px}
+[data-theme=rondo] .plan-fig,[data-theme=rondo] .demo,[data-theme=rondo] .marugoto,[data-theme=rondo] .box,[data-theme=rondo] .quiz,[data-theme=rondo] .next,[data-theme=rondo] .prose figure svg{border-radius:6px}
+[data-theme=rondo] .staff img,[data-theme=rondo] .opts img,[data-theme=rondo] .case,[data-theme=rondo] .case img{border-radius:6px}
+[data-theme=rondo] .case{overflow:hidden;background:var(--sheet)}
+[data-theme=rondo] .case img{border-radius:0}
+[data-theme=rondo] .tbl thead th{border-bottom:1px solid var(--ink);color:var(--sub);font-size:14px}
+[data-theme=rondo] .tbl th,[data-theme=rondo] .tbl td{padding-block:20px;line-height:1.8}
+[data-theme=rondo] .reasons{gap:0}
+[data-theme=rondo] .reasons li{padding:32px 0;border-top:1px solid var(--board-line)}
+[data-theme=rondo] .reasons li:last-child{border-bottom:1px solid var(--board-line)}
+[data-theme=rondo] .reasons h3{font-size:20px;letter-spacing:.1em}
+[data-theme=rondo] .reasons svg,[data-theme=rondo] .reasons .accent{stroke:var(--chalk);stroke-width:1.5}
+[data-theme=rondo] .tool h3{font-size:26px}
+[data-theme=rondo] .qa-pane,[data-theme=rondo] .qa-in input,[data-theme=rondo] .qa-in button,[data-theme=rondo] .qa-list li,[data-theme=rondo] .qa-screen{border-radius:6px}
+[data-theme=rondo] .qa-list button,[data-theme=rondo] .que-ctl button{border-radius:30px;font-size:12px;letter-spacing:.1em}
+[data-theme=rondo] .qa-list li.is-on{outline-color:#e0483a}
+[data-theme=rondo] .qa-list li.is-on button{background:var(--sheet);border-color:var(--sheet);color:var(--ink)}
+[data-theme=rondo] .phone-in.is-cue{background:#e0483a}
+[data-theme=rondo] .voice{border-left-width:1px}
+[data-theme=rondo] .quiz{box-shadow:none;padding:40px}
+[data-theme=rondo] .quiz ol li{padding:20px 0}
+[data-theme=rondo] .yn{border-radius:30px}
+[data-theme=rondo] .yn span{padding:10px 20px;letter-spacing:.1em;font-size:14px}
+[data-theme=rondo] .quiz-res{border-width:1px;border-radius:6px}
+[data-theme=rondo] .quiz-res h3{font-size:26px}
+[data-theme=rondo] .opts h3{font-size:20px}
+[data-theme=rondo] .stairs{display:block;border-bottom:1px solid var(--line)}
+[data-theme=rondo] .stairs li{margin-top:0!important;background:none;border-top:1px solid var(--line);padding:28px 0;display:grid;grid-template-columns:28px minmax(0,220px) minmax(0,1fr);gap:8px 24px;align-items:baseline;height:auto}
+[data-theme=rondo] .band--mist .stairs,[data-theme=rondo] .band--mist .stairs li{border-color:#bdbbb5}
+[data-theme=rondo] .stairs li::before{font-size:16px;color:inherit;grid-row:1/span 3}
+[data-theme=rondo] .stairs h3{font-size:20px;letter-spacing:.1em;margin-top:0;grid-column:2}
+[data-theme=rondo] .stairs .fee{grid-column:2;font-size:14px;color:var(--sub)}
+[data-theme=rondo] .stairs li>p:not(.fee){grid-column:3;grid-row:1/span 2;margin-top:0;font-size:16px;line-height:2}
+[data-theme=rondo] .stairs .who{grid-column:3;grid-row:3;border-top:0;padding-top:0;margin-top:0}
+@media (min-width:860px){
+  [data-theme=rondo] .flow,[data-theme=rondo] .flow--3{grid-template-columns:1fr}
+  [data-theme=rondo] .flow li{border-top:0;border-left:1px solid var(--line);margin-left:19px;padding:0 20px 36px 56px}
+  [data-theme=rondo] .flow li::before{left:-20px;top:-4px}
+  [data-theme=rondo] .flow li:last-child{border-left-color:transparent;border-top-color:transparent}
+}
+[data-theme=rondo] .flow li::before{background:var(--ink);font-size:16px}
+[data-theme=rondo] .flow h3{font-size:20px;letter-spacing:.1em}
+[data-theme=rondo] .flow p{font-size:16px;line-height:2}
+[data-theme=rondo] .faq{border-top-color:var(--line)}
+[data-theme=rondo] .faq summary{font-size:20px;line-height:1.8;padding-block:32px}
+[data-theme=rondo] .faq summary::after{border-width:1.5px}
+[data-theme=rondo] .last{gap:40px}
+@media (min-width:960px){[data-theme=rondo] .last{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}}
+[data-theme=rondo] .last-tel b{font-size:44px;letter-spacing:0}
+[data-theme=rondo] .avail{border-radius:30px}
+
+/* 下層ページ */
+[data-theme=rondo] .ph{background:var(--paper);color:var(--ink);padding:100px 0 60px;border-bottom:0}
+[data-theme=rondo] .ph .crumb{color:var(--sub);font-size:13px;letter-spacing:.04em}
+[data-theme=rondo] .ph h1{font-size:clamp(26px,3.5vw,50px);line-height:1.6;letter-spacing:.04em;margin-top:40px;max-width:24em}
+[data-theme=rondo] .ph .lead{color:var(--ink);max-width:42em}
+[data-theme=rondo] .meta{color:var(--sub)}
+[data-theme=rondo] .prose h2{font-size:28px;line-height:1.6;letter-spacing:.09em;border-top-color:var(--line)}
+[data-theme=rondo] .prose h3{font-size:20px}
+[data-theme=rondo] .prose ul li::before{border-radius:0;width:6px;height:6px;top:.95em}
+[data-theme=rondo] .answer{border-left:0;border-radius:6px;padding:32px;font-size:18px;line-height:2.2}
+[data-theme=rondo] .alist{border-top-color:var(--line)}
+[data-theme=rondo] .alist h2{font-size:22px;line-height:1.8}
+[data-theme=rondo] .dl{border-top-color:var(--line)}
+[data-theme=rondo] .cta h2{font-size:clamp(26px,3vw,44px);line-height:1.6;letter-spacing:.08em}
+
+/* 流れる文字とフッター */
+.mq{display:none}
+[data-theme=rondo] .mq{display:block;overflow:hidden;white-space:nowrap;pointer-events:none;margin:120px 0 -14px}
+[data-theme=rondo] .mq div{display:inline-flex;animation:r-mq 50s linear infinite}
+[data-theme=rondo] .mq span{font-family:var(--num);font-size:87px;line-height:1;letter-spacing:.03em;color:var(--mist);padding-right:.5em}
+@keyframes r-mq{to{transform:translateX(-50%)}}
+[data-theme=rondo] .foot{margin:0 8px 8px;border-radius:6px;background:var(--ink);padding:74px 0 60px}
+[data-theme=rondo] .copy{border-top-color:var(--board-line)}
+[data-theme=rondo] .pv-note{letter-spacing:.04em}
+@media (max-width:860px){[data-theme=rondo] .mbar{background:rgba(240,240,240,.94)}[data-theme=rondo] .mbar .btn{min-width:0;min-height:48px;font-size:13px;gap:8px;padding:0 14px}}
+
+/* 出現の動き（JavaScript が動くときだけ） */
+[data-theme=rondo].js-anim [data-rv=w] .w{display:inline-block;opacity:0;transform:translateY(.9em)}
+[data-theme=rondo].js-anim [data-rv=w].is-in .w{animation:r-rw .92s var(--ease) forwards}
+[data-theme=rondo].js-anim [data-rv=fade]{opacity:0;transform:translateY(24px)}
+[data-theme=rondo].js-anim [data-rv=fade].is-in{animation:r-up .92s var(--ease) forwards}
+@keyframes r-rw{0%{opacity:0;transform:translateY(.9em)}100%{opacity:1;transform:none}}
+@keyframes r-up{0%{opacity:0;transform:translateY(24px)}100%{opacity:1;transform:none}}
+
+/* スマホ */
+@media (max-width:999px){
+  html[data-theme=rondo]{--sec:50px;--head:60px}
+  [data-theme=rondo] .lab{font-size:14px;margin-bottom:24px}
+  [data-theme=rondo] .band--mist,[data-theme=rondo] .band--board,[data-theme=rondo] .cta{margin-block:50px;padding-block:80px}
+  [data-theme=rondo] .cta{margin-bottom:0}
+  [data-theme=rondo] .hero+.band{padding-top:100px}
+}
+@media (max-width:860px){
+  html[data-theme=rondo]{--pad:16px}
+  [data-theme=rondo] .hero{padding-top:40px}
+  [data-theme=rondo] .hero h1,[data-theme=rondo] .h2,[data-theme=rondo] .ph h1,[data-theme=rondo] .cta h2{font-size:26px;line-height:1.6;letter-spacing:.04em}
+  [data-theme=rondo] .h3{font-size:20px;margin-top:64px}
+  [data-theme=rondo] .lead{font-size:14px;line-height:2.2;margin-top:24px}
+  [data-theme=rondo] .hero-price em .n,[data-theme=rondo] .plan-price .n{font-size:72px}
+  [data-theme=rondo] .btn{min-height:48px;min-width:0;font-size:13px;padding:0 20px;gap:20px}
+  [data-theme=rondo] .btns .btn{width:100%}
+  [data-theme=rondo] .qform,[data-theme=rondo] .quiz{padding:24px 20px}
+  [data-theme=rondo] .qform-h{font-size:20px}
+  [data-theme=rondo] .faq summary{font-size:16px;padding-block:24px}
+  [data-theme=rondo] .stairs li{grid-template-columns:28px minmax(0,1fr)}
+  [data-theme=rondo] .stairs h3,[data-theme=rondo] .stairs .fee,[data-theme=rondo] .stairs li>p:not(.fee),[data-theme=rondo] .stairs .who{grid-column:2;grid-row:auto}
+  [data-theme=rondo] .stairs li::before{grid-row:auto}
+  [data-theme=rondo] .mq{margin-top:80px}
+  [data-theme=rondo] .mq span{font-size:48px}
+  [data-theme=rondo] .last-tel b{font-size:32px}
+}
+@media (prefers-reduced-motion:reduce){[data-theme=rondo] .mq div{animation:none}}
+
+[data-theme=rondo] .plan-fig [fill="#34635a"]{fill:#4c4c4f}
+[data-theme=rondo] .marugoto .plan-price .n{font-size:72px}
