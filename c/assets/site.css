@@ -37,7 +37,7 @@
     --sub: #808080;      /* 補足の文字 = rgba(0,0,0,.5) を白に重ねた色 */
     --line-d: #666666;
     --red: #ff555f;      /* 配信中・必須の印も珊瑚 */
-    --focus: #faca00;
+    --focus: #333333;    /* キーボードの枠は濃い文字色。黄色は使わない */
 
     /* 差し色：参考サイトと同じ3色。ボタンは参考どおり白い文字を乗せる */
     --teal: #00b4c3;
@@ -47,12 +47,10 @@
     --coral-ink: #ff555f;
     --coral-tint: #fff0f1;
     --yellow: #faca00;
-    --yellow-tint: #fff8d9;
     --marker: #ffeb78;
 
-    /* 影は3段だけ。ずらさずに、ふわっと広げる（参考：recruit.handy.school）。ボタンには付けない */
+    /* 影は2段だけで、重ねない。ずらさずに、ふわっと広げる（参考：recruit.handy.school）。ボタンには付けない */
     --sh-1: 0 0 30px rgb(0 0 0 / .08);   /* 置いてあるもの：カード、白い箱 */
-    --sh-2: 0 0 30px rgb(0 0 0 / .1);    /* 色の面：レールの行動ボタン、開いた質問 */
     --sh-3: 0 5px 40px rgb(0 0 0 / .2);  /* 物として見せるもの：見積書の見本、暗い囲み */
     --radius-card: 10px;
     --ac: var(--teal);                    /* 主色はティール */
@@ -129,6 +127,7 @@
   a { color: inherit; text-underline-offset: .25em; text-decoration-thickness: 1px; }
   a:hover { color: var(--sub); }
   :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
+  :is(.foot, .boxd, .case, .sw) :focus-visible { outline-color: #fff; }
   ::placeholder { color: #b3b3b3; opacity: 1; }
   h1, h2, h3, h4 { font-weight: 500; text-wrap: balance; }
   p, li, dd { text-wrap: pretty; }
@@ -187,9 +186,10 @@
   .t-sub { color: var(--sub); }
   .boxd .t-sub { color: #cccccc; }
   .t-lab {
-    display: flex; align-items: center; gap: 8px;
-    font-family: var(--font-en); font-weight: 400; font-size: var(--fs-lab); line-height: 1; letter-spacing: .01em;
-    &::before { content: ""; inline-size: 8px; block-size: 8px; background: currentColor; flex: none; }
+    display: flex; align-items: center; gap: .5rem; inline-size: fit-content; max-inline-size: 100%;
+    padding: .4375rem .875rem .4375rem .75rem; border: 1px solid var(--teal); border-radius: 20px; background: var(--bg);
+    font-size: .8125rem; line-height: 1.4; letter-spacing: .02em; color: var(--ink);
+    &::before { content: ""; inline-size: 8px; block-size: 8px; border-radius: 50%; background: var(--teal); flex: none; }
   }
   .t-num { font-family: var(--font-en); font-weight: 400; font-size: .875rem; line-height: 1; letter-spacing: .03em; }
   .t-bar {
@@ -218,7 +218,7 @@
     &.line { background: transparent; color: var(--ink); border-color: var(--ink); &:hover { background: var(--ink); color: #fff; } }
     &.light { background: var(--paper); color: var(--ink); border-color: var(--paper); &:hover { background: var(--sand); } }
     &.full { display: flex; inline-size: 100%; }
-    &.xl { display: flex; inline-size: 100%; min-block-size: clamp(3.375rem, 2.75rem + 2.5vw, 5.75rem); font-size: clamp(.875rem, .7rem + .7vw, 1.25rem); background: var(--sand); color: var(--ink); border-color: var(--sand); &:hover { background: var(--paper); } }
+    &.xl { display: flex; inline-size: 100%; min-block-size: clamp(3.375rem, 2.75rem + 2.5vw, 5.75rem); font-size: clamp(.875rem, .7rem + .7vw, 1.25rem); }
     &.sm { min-block-size: 2.25rem; min-inline-size: 0; gap: .5rem; padding: 0 .75rem; border-radius: 4px; font-size: .75rem; }
     &.nav-cta { min-block-size: 2.25rem; min-inline-size: 0; padding: 0 .75rem; gap: .5rem; border-radius: 4px; font-size: .75rem; }
   }
@@ -320,7 +320,7 @@
     .railnav { display: block; }
   }
   /* PCの左レールの行動ボタン：黄色＝気軽に試す、珊瑚（濃）＝見積に進む */
-  .tile { position: relative; display: block; min-block-size: 5.5rem; padding: .875rem .75rem; border-radius: 8px; box-shadow: var(--sh-2);
+  .tile { position: relative; display: block; min-block-size: 5.5rem; padding: .875rem .75rem; border-radius: 8px;
     font-size: .875rem; line-height: 1.5; letter-spacing: .02em; text-decoration: none;
     & span { position: absolute; inset-inline-end: .625rem; inset-block-end: .5rem; font-family: var(--font-en); } }
   .tile--plan { background: var(--yellow); color: var(--ink); }
@@ -354,7 +354,7 @@
   @media (width < 64rem) {
     .js .dg-launch {
       position: relative; display: grid; gap: .25rem; inline-size: 100%; padding: 1.25rem 3.5rem 1.25rem 1.25rem; text-align: start;
-      border: 0; border-radius: 12px; background: var(--yellow); color: var(--ink); box-shadow: var(--sh-2); cursor: pointer;
+      border: 0; border-radius: 12px; background: var(--yellow); color: var(--ink); cursor: pointer;
       & .dg-launch-t { font-size: 1.125rem; line-height: 1.4; letter-spacing: .02em; }
       & .dg-launch-s { font-size: .8125rem; line-height: 1.6; }
       & .dg-launch-a { position: absolute; inset-inline-end: 1.25rem; inset-block-start: 50%; translate: 0 -50%; font-family: var(--font-en); font-size: 1.25rem; }
@@ -559,7 +559,7 @@
     & input { inline-size: 1.125rem; block-size: 1.125rem; margin: .2em 0 0; accent-color: var(--ink); flex: none; } }
   .f2 { display: grid; gap: 1.25rem; }
   @media (width >= 64rem) { .f2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  .form-msg { padding: .75rem 1rem; border-radius: 4px; background: #ffeb78; color: var(--ink); font-size: .8125rem; line-height: 1.7; }
+  .form-msg { padding: .75rem 1rem; border-radius: 4px; background: var(--cream); color: var(--ink); font-size: .8125rem; line-height: 1.7; }
 
   /* ---------- 流れる英字 ---------- */
   .mq { overflow: hidden; white-space: nowrap; pointer-events: none; margin-block-end: -.375rem; }
@@ -579,7 +579,7 @@
   /* ---------- スマホ下部の追従バー ---------- */
   .spbar { position: fixed; inset-inline: 0; inset-block-end: 0; z-index: 60; display: flex; gap: .5rem; padding: .5rem .5rem calc(.5rem + env(safe-area-inset-bottom)); background: color-mix(in srgb, var(--bg) 96%, transparent); border-block-start: 1px solid var(--sand);
     & a { display: flex; align-items: center; justify-content: center; min-block-size: 3.25rem; border-radius: var(--radius); font-size: .875rem; line-height: 1.3; letter-spacing: .08em; text-decoration: none; }
-    & a:first-child { flex: 0 0 7.5rem; border: 1px solid var(--ink); color: var(--ink); }
+    & a:first-child { flex: 0 0 7.5rem; }
     & a:last-child { flex: 1 1 0; background: var(--coral); color: #fff; }
   }
   @media (width >= 64rem) { .spbar { display: none; } }
@@ -618,7 +618,7 @@
       position: fixed; inset: 0; inline-size: fit-content; block-size: fit-content;
       margin: auto; max-inline-size: min(20rem, calc(100vw - 2rem)); padding: .875rem 1rem;
       border: 0; border-radius: var(--radius); background: var(--ink); color: var(--paper);
-      font-size: .8125rem; line-height: 1.8; letter-spacing: .04em; box-shadow: 0 12px 32px rgb(0 0 0 / .25);
+      font-size: .8125rem; line-height: 1.8; letter-spacing: .04em; box-shadow: none; outline: 1px solid var(--teal);
     }
   }
   /* anchor positioning（Newly 2026-01）：対応ブラウザでは「?」の真上に出す。未対応では画面中央 */
@@ -722,7 +722,6 @@
 @layer color {
 
   /* ラベルの四角と、一覧の見出しの下線に差し色 */
-  .t-lab::before { background: var(--ac, currentColor); inline-size: 10px; block-size: 10px; border-radius: 3px; }
   .sub { border-block-end: 3px solid var(--ac, currentColor); padding-block-end: 6px; }
 
   /* 要点のマーカー：文字の下40%だけ黄色 */
@@ -733,7 +732,7 @@
     .js mark.mk.is-in { background-size: 100% .55em; }
     /* 押せるものの反応は 0.3s にそろえる */
     :is(a, button, .btn, .dg-opt, .tile, summary) { transition-duration: .3s; transition-timing-function: var(--ease-ui); }
-    .tile { transition-property: translate, box-shadow; &:hover { translate: 0 -2px; } }
+    .tile { transition-property: opacity; &:hover { opacity: .85; } }
   }
 
   /* 色の角丸アイコン */
@@ -741,8 +740,6 @@
     & svg { inline-size: 58%; block-size: 58%; } }
   .chipi--s { inline-size: 1.5rem; block-size: 1.5rem; border-radius: 6px; box-shadow: none; & svg { inline-size: 72%; block-size: 72%; stroke-width: 2.6; } }
   .chipi--teal { background: var(--teal); }
-  .chipi--coral { background: var(--coral); }
-  .chipi--yellow { background: var(--yellow); }
 
   /* ヒーローの要点 */
   .ticklist { display: grid; gap: .75rem;
@@ -764,11 +761,11 @@
 
   /* 診断：上に差し色の帯、選んだ選択肢は青緑 */
   .dg { overflow: hidden; border-block-start: 4px solid var(--teal); }
-  .dg-prog { block-size: 4px; border-radius: 4px; & i { background: linear-gradient(90deg, var(--teal), var(--yellow)); border-radius: 4px; } }
-  .dg-opt { background: var(--paper); box-shadow: 0 0 0 1px var(--sand), 0 2px 10px rgb(0 0 0 / .04);
+  .dg-prog { block-size: 4px; border-radius: 4px; & i { background: var(--teal); border-radius: 4px; } }
+  .dg-opt { background: var(--bg); box-shadow: 0 0 0 1px var(--sand);
     &:hover { background: var(--teal-tint); box-shadow: 0 0 0 1px var(--teal); }
     & input { accent-color: var(--teal-ink); }
-    &:has(input:checked) { background: var(--teal); color: #fff; box-shadow: 0 0 0 2px var(--teal), var(--sh-1); } }
+    &:has(input:checked) { background: var(--teal); color: #fff; box-shadow: 0 0 0 2px var(--teal); } }
   .dg-n { color: var(--teal-ink); }
   .dg-res-plan { color: var(--ink); }
   .dg-res .ana { font-size: .9em; }
@@ -797,33 +794,36 @@
   .faq { border: 0; display: grid; gap: .75rem; }
   .faq details { border: 0; background: var(--paper); border-radius: var(--radius-card); box-shadow: var(--sh-1); padding-inline: 1.25rem 1rem; }
   .faq summary { display: flex; gap: .875rem; align-items: center; padding-inline-end: 2rem; }
-  .faq details[open] { box-shadow: var(--sh-2); }
   .faq .ans { display: flex; gap: .875rem; align-items: flex-start; }
   .qa-mk { display: inline-grid; place-items: center; flex: none; inline-size: 1.75rem; block-size: 1.75rem; border-radius: 8px; font-family: var(--font-en); font-weight: 600; font-size: .875rem; letter-spacing: 0; color: var(--ink); }
   .qa-mk--q { background: var(--coral); }
   .qa-mk--a { background: var(--teal); margin-block-start: .25rem; }
 
-  /* ボタン：見積に進むものだけ、濃い珊瑚色＋影（白い文字 4.7:1） */
-  .btn:is([href^="contact.html"], [type="submit"]):not(.line, .light, .dg-next),
-  .btn.xl, .spbar a:last-child {
-    background: var(--coral-ink); border-color: var(--coral-ink); color: #fff;
-    &:hover { opacity: .85; color: #fff; }
-  }
-  .dg-next { background: var(--teal); }
+  /* ボタンの色は意味で決める：黄＝プラン診断をはじめる／珊瑚＝見積を依頼する／ティール＝そのほかの行動／線＝資料・補助 */
+  .btn.plan, .tile--plan, .dg-launch, .spbar a:first-child { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
+  .btn.quote, .tile--quote, .spbar a:last-child { background: var(--coral); border-color: var(--coral); color: #fff; }
+  .btn:is(.plan, .quote):hover { opacity: .85; }
+  .btn.plan:hover { color: var(--ink); }
 
-  .spbar a:first-child { border-color: var(--teal-ink); color: var(--teal-ink); background: var(--paper); }
+  /* スマホ：章の切れ目。章の頭に端から端までの線を引き、その線の上に目次と同じ言葉のタグを乗せる */
+  @media (width < 64rem) {
+    main > section[id] { position: relative; border-block-start: 1px solid var(--teal); }
+    main > section[id]:not(.band, .bandg) { margin-block-start: 4.5rem; padding-block-start: 4rem; }
+    main > section[id] .t-lab { position: absolute; inset-block-start: 0; inset-inline-start: var(--pad); translate: 0 -50%; z-index: 1; }
+    main > section[id] .stk:has(> .t-lab:only-child) { display: contents; }
+  }
 
   /* サブナビの現在地 */
 
   /* 帯・囲み */
   .t-bar { background: var(--teal); color: #fff; }
   
-  #option .t-bar { background: var(--yellow); color: var(--ink); }
   .boxd { box-shadow: var(--sh-3); }
   .boxg { box-shadow: var(--sh-1); }
+  /* 影は重ねない：影の付いた面の中に置くものは、線で区切る */
+  .boxg .boxw { box-shadow: none; border: 1px solid var(--sand); }
   .chip { box-shadow: inset 0 0 0 1px rgb(255 255 255 / .12); }
   .pill { background: rgb(255 255 255 / .1); }
-  .case-tags .pill:first-child { background: var(--yellow); color: var(--ink); border-color: var(--yellow); }
   .tip-btn { color: var(--teal-ink); }
   .hero-kind::before { content: ""; display: inline-block; inline-size: 2rem; block-size: 4px; margin-inline-end: .75rem; vertical-align: .3em; border-radius: 4px; background: var(--teal); }
 }

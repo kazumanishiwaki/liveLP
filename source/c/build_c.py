@@ -46,6 +46,16 @@ def mk(t):
 def lab(t):
     return f'<p class="t-lab">{t}</p>'
 
+def tag_sections(body, items):
+    """各セクションの頭のタグを、目次（サブナビ）と同じ言葉にする"""
+    for i, t in items:
+        at = body.find(f'id="{i}"')
+        if at < 0: continue
+        nxt = body.find('<section', at + 1)
+        m = re.compile(r'<p class="t-lab">.*?</p>').search(body, at, nxt if nxt > 0 else len(body))
+        if m: body = body[:m.start()] + f'<p class="t-lab">{t}</p>' + body[m.end():]
+    return body
+
 # ------------------------------------------------------------------ 共通
 def subnav_html(items):
     """現在地つきの目次。スマホではヘッダー下の横並び、PCでは左レールの縦並び。items = [(セクションのid, 短い名前)]"""
@@ -99,7 +109,7 @@ def header(home, sub=None):
 </header>
 <dialog id="menu" class="menu" aria-label="メニュー">
 <div class="menu-head"><span class="logo">{NAME_EN}<small>{NAME}</small></span><form method="dialog"><button class="menu-close">閉じる</button></form></div>
-<nav aria-label="メニュー"><ul>{items}<li><a href="contact.html">お問い合わせ・お見積<span aria-hidden="true">›</span></a></li></ul>{btn('8問でプランを診断する', pre + '#plan', 'full')}</nav>
+<nav aria-label="メニュー"><ul>{items}<li><a href="contact.html">お問い合わせ・お見積<span aria-hidden="true">›</span></a></li></ul>{btn('8問でプランを診断する', pre + '#plan', 'full plan')}</nav>
 </dialog>
 '''
 
@@ -161,7 +171,7 @@ def quote_form(p, prefill=False, full=False, fid=''):
 {note}{head_}
 <div class="f2">{req}</div>
 {opt}
-<button class="btn full" type="submit">見積書を受け取る</button>
+<button class="btn full quote" type="submit">見積書を受け取る</button>
 <p class="t-note t-sub">送信いただいても、こちらから電話での営業はいたしません。相見積のためのご依頼も歓迎します。</p>
 <p class="form-msg" role="status" hidden></p>
 </form>'''
@@ -264,11 +274,11 @@ def index():
 <div class="hero-side stack">
 <ul class="ticklist hero-text">
 <li>{ico('check', 'teal', 's')}<span>{mk('登壇者2〜6人、会場50〜300人')}の会を専門にしています</span></li>
-<li>{ico('check', 'coral', 's')}<span>見積書に、{mk('スタッフ2名の役割と機材の内訳')}をすべて明記します</span></li>
-<li>{ico('check', 'yellow', 's')}<span>{mk('iPhoneで足りる会なら、そうお伝えします')}</span></li>
+<li>{ico('check', 'teal', 's')}<span>見積書に、{mk('スタッフ2名の役割と機材の内訳')}をすべて明記します</span></li>
+<li>{ico('check', 'teal', 's')}<span>{mk('iPhoneで足りる会なら、そうお伝えします')}</span></li>
 </ul>
 <p class="hero-price">カメラ3台・スタッフ2名・マイク5本。<br><span class="t-big2">25<small>万円（税別）</small></span></p>
-<div class="btns">{btn('見積を依頼する', 'contact.html', 'line')}<a class="tlink" href="#price">25万円に含まれるもの</a></div>
+<div class="btns">{btn('見積を依頼する', 'contact.html', 'quote')}<a class="tlink" href="#price">25万円に含まれるもの</a></div>
 </div>
 </div></div>
 <div class="sd" aria-hidden="true"><span>Scroll Down</span><i></i></div>
@@ -290,7 +300,7 @@ def index():
 </div></div></section>'''
 
     clients = f'''<section class="sec" aria-labelledby="clients-title"><div class="wrap stack s-48">
-<div class="stack s-16">{lab('Clients')}<h2 class="t-note" id="clients-title">これまでに配信・記録を担当した機関　［配信した会の件数、継続して依頼いただいている機関の数］</h2></div>
+<div class="stack s-16"><h2 class="t-note" id="clients-title">これまでに配信・記録を担当した機関　［配信した会の件数、継続して依頼いただいている機関の数］</h2></div>
 <ul class="logos">{''.join('<li><div class="ph">［ロゴ］</div></li>' for _ in range(6))}</ul>
 </div></section>'''
 
@@ -310,12 +320,12 @@ def index():
 <section id="price" class="bandg" aria-labelledby="price-title"><div class="wrap pad-band"><div class="g57">
 <div class="stk stack s-56"><div class="stack s-48">{lab('Price')}<h2 class="t-h2" id="price-title" data-rv>25万円に<br>含まれるもの<br>すべて</h2>
 <p class="t-lead">誰が来て、何を持ち込み、何をするか。<br>{mk('見積書にも同じ内容を記載します。')}</p></div>
-<div class="pc-only">{btn('この内容で見積書を受け取る', 'contact.html')}</div></div>
+<div class="pc-only">{btn('この内容で見積書を受け取る', 'contact.html', 'quote')}</div></div>
 <div class="stack s-48">
 <h3 class="t-bar">スタンダード</h3>
 <p class="t-big">25<small>万円（税別）</small></p>
 <div class="stack"><p class="sub">含まれるもの</p><ul class="tiles">{''.join(f'<li><span>{t}</span></li>' for t in tiles)}</ul></div>
-<div class="sp-only">{btn('この内容で見積書を受け取る', 'contact.html', 'full')}</div>
+<div class="sp-only">{btn('この内容で見積書を受け取る', 'contact.html', 'full quote')}</div>
 </div></div></div></section>'''
 
     team = f'''<section id="team" class="sec" aria-labelledby="team-title"><div class="wrap"><div class="g57"><div class="stk">{lab('Team &amp; Equipment')}</div>
@@ -327,11 +337,11 @@ def index():
 <figure data-rv="media"><div class="ph" style="aspect-ratio:16/9">［図：会場の見取り図に、カメラ3台・スタッフ2名・マイクの位置を置いた配置図］</div></figure>
 <div class="stack"><h3 class="t-h3">持ち込む機材の内訳</h3>{tbl_gear()}</div>
 <div class="stack"><h3 class="t-h3">追加料金がかかるのは、<br>この5つだけです</h3>{tbl_extra()}</div>
-<div class="btns">{btn('見積を依頼する', 'contact.html')}<a class="tlink" href="contact.html">料金表と見積書見本（PDF）を見る</a><span class="t-note t-sub">上司への説明や、相見積にそのまま使えます</span></div>
+<div class="btns">{btn('見積を依頼する', 'contact.html', 'quote')}<a class="tlink" href="contact.html">料金表と見積書見本（PDF）を見る</a><span class="t-note t-sub">上司への説明や、相見積にそのまま使えます</span></div>
 </div></div></div></section>
 <section class="sec-3" aria-label="見積の依頼"><div class="wrap"><div class="boxd cta-in"><div class="stack"><p class="t-h2s">この体制で、見積書を受け取る</p>
 <p class="t-note">日程と会場だけで、2名の役割と機材の内訳が入った見積書をお送りします。1営業日以内に、宛名入りのPDFでお届けします。</p></div>
-<div>{btn('見積書を受け取る', 'contact.html', 'xl')}</div></div></div></section>'''
+<div>{btn('見積書を受け取る', 'contact.html', 'xl quote')}</div></div></div></section>'''
 
     reasons = [('聞き取りやすい音', '会場のマイク音声を配信機材に直接取り込みます。会場にマイクがなければ5本まで持ち込みます。音が悪いと、研究まで低く見られます（<a href="https://researchportalplus.anu.edu.au/en/publications/good-sound-good-research-how-audio-quality-influences-perceptions/">Newman &amp; Schwarz 2018</a>）。'),
                ('表情がわかるアップの映像', '客席の後ろから、話している人の表情を撮ります。来場者の視界をふさぎません。'),
@@ -380,7 +390,7 @@ def index():
 <div class="stack s-48"><h2 class="t-h2" id="option-title" data-rv>カメラマンは、<br>すでに会場にいます</h2><p class="t-lead">記録写真も、記録映像も、同じ日にまとめてご依頼いただけます。<br>見積も請求も打ち合わせも1回で済みます。</p></div></div>
 <ul class="hs w40 mtl" aria-label="同じ日に頼めること">{ol}</ul>
 <div class="g57 mtl"><div class="stack s-48"><h3 class="t-bar">まるごと</h3><p class="t-big2">［40<small>万円］（税別）</small></p></div>
-<div class="stack s-56"><p class="t-lead">スタンダードに上の4つを加えて、スタッフ3名で伺います。<br>一回の現場で、報告書の素材まで揃います。</p>{btn('まるごとプランで見積書を受け取る', 'contact.html')}</div></div>
+<div class="stack s-56"><p class="t-lead">スタンダードに上の4つを加えて、スタッフ3名で伺います。<br>一回の現場で、報告書の素材まで揃います。</p>{btn('まるごとプランで見積書を受け取る', 'contact.html', 'quote')}</div></div>
 </div></section>'''
 
     steps = [('相談', '［3万円］', 'オンライン60分。機材と接続の図、当日のチェックリストを作成します'), ('同行', '［代行＋3万円］', '私たちの配信現場に入り、実際の動きを横で見て覚えます'),
@@ -389,7 +399,7 @@ def index():
     coaching = f'''<section id="coaching" class="sec" aria-labelledby="coaching-title"><div class="wrap"><div class="g57"><div class="stk">{lab('Coaching')}</div>
 <div class="stack s-48"><h2 class="t-h2" id="coaching-title" data-rv>来年度からは<br>自分たちで配信する</h2><p class="t-lead">小さい会はご自身で、大きい会だけ私たちにお任せください。<br>{mk('手順書とチェックリストが残る')}ので、担当者が替わっても引き継げます。</p>
 <ol class="steps">{st}</ol>
-<div class="btns">{btn('コーチングについて相談する', 'contact.html', 'line')}</div></div></div></div></section>
+<div class="btns">{btn('コーチングについて相談する', 'contact.html')}</div></div></div></div></section>
 <section class="sec-3" aria-label="オンライン相談"><div class="wrap"><div class="boxd cta-in"><div class="stack"><p class="t-h2s">まだ何も決まっていない方へ</p>
 <p class="t-note">15分のオンライン相談で、iPhoneで足りるかどうかから一緒にお話しします。決まっているのが日程だけでもかまいません。</p></div>
 <div>{btn('相談の日時を選ぶ', 'contact.html#consult', 'xl')}</div></div></div></section>'''
@@ -417,9 +427,10 @@ def index():
                  '大学や公共機関のシンポジウム、公開講座をハイブリッドで配信します。3カメラ・スタッフ2名・マイク5本までで25万円（税別）から。8問のプラン診断で、合うプランと費用がわかります。', home=True)
             + intro + header(True, sub) + '<main id="main">' + hero + switching + clients + scope + price + team + day + demo + works + option + coaching + public + faq + '</main>'
             + footer(True))
-    return body
+    return tag_sections(body, sub)
 
 def contact():
+    sub = contact.sub = [('top', '見積を依頼する'), ('flow', '送信後の流れ'), ('sample', '見積書の見本'), ('consult', '見積の前に相談する'), ('tel', '電話で問い合わせる')]
     flow = [('1営業日以内', '見積書PDFがメールで届きます'), ('必要に応じて', 'オンラインで30分ほど打ち合わせをします'), ('ご発注後', '事前に会場を下見します')]
     fl = ''.join(f'<li><span class="n">0{i}</span><span class="a">{a}</span><span class="b">{b}</span></li>' for i, (a, b) in enumerate(flow, 1))
     doc = '''<div class="doc-sample"><table><caption>御見積書（見本）</caption>
@@ -428,7 +439,7 @@ def contact():
 <tr><th>予備の録画機・予備の回線</th><td class="r">含む</td></tr><tr><th>打ち合わせ・会場の下見・録画データの納品</th><td class="r">含む</td></tr>
 <tr><th>消費税（10%）</th><td class="r">25,000</td></tr><tr><th>合計</th><td class="r">275,000</td></tr></table></div>'''
     return (head(f'お問い合わせ・お見積｜ハイブリッド配信のご相談｜{NAME}', '日程と会場、登壇者の人数がわかれば見積書をお出しします。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。')
-            + header(False, [('top', '見積を依頼する'), ('flow', '送信後の流れ'), ('sample', '見積書の見本'), ('consult', '見積の前に相談する'), ('tel', '電話で問い合わせる')]) + f'''<main id="main">
+            + header(False, sub) + f'''<main id="main">
 <div class="wrap ph-head stack s-48" id="top"><nav aria-label="パンくず"><ol class="crumb"><li><a href="index.html">トップ</a></li><li aria-current="page">お問い合わせ・お見積</li></ol></nav>
 {lab('Contact')}<h1 class="t-h1">見積書をお送りします</h1><p class="t-lead">{mk('必須の4項目だけ')}で送信できます。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。</p></div>
 <div class="wrap g75">
@@ -436,7 +447,7 @@ def contact():
 <aside class="stack s-48" aria-label="補足">
 <section class="stack" id="flow"><h2 class="sub">送信したあとの流れ</h2><ol class="steps">{fl}</ol></section>
 <section class="stack" id="sample"><h2 class="sub">届く見積書の見本</h2>{doc}</section>
-<section id="consult" class="boxd stack"><h2 class="t-h2s">まだ何も決まっていない方へ</h2><p class="t-note">15分のオンライン相談で、iPhoneで足りるかどうかから一緒にお話しします。</p>{btn('相談の日時を選ぶ', '#consult', 'light')}</section>
+<section id="consult" class="boxd stack"><h2 class="t-h2s">まだ何も決まっていない方へ</h2><p class="t-note">15分のオンライン相談で、iPhoneで足りるかどうかから一緒にお話しします。</p>{btn('相談の日時を選ぶ', '#consult')}</section>
 <section id="tel" class="stack s-16"><h2 class="sub">お電話でも受け付けています</h2><p class="t-ct">［電話番号］</p><p class="t-note t-sub">［受付時間］</p></section>
 <blockquote class="boxw stack"><p class="t-body">［担当者の声を1件。頼む前の不安に触れているもの］</p><footer class="t-note t-sub">［所属・役職］</footer></blockquote>
 </aside></div>
@@ -448,7 +459,7 @@ def thanks():
     return (head(f'送信が完了しました｜{NAME}', 'お見積のご依頼を受け付けました。')
             + header(False) + f'''<main id="main">
 <p class="form-msg" style="text-align:center">これは送信完了ページの見本です。フォームの送信先がまだ設定されていないため、実際には何も送信されていません。</p>
-<div class="wrap ph-head stack s-48">{lab('Thanks')}<h1 class="t-h1">ご依頼を受け付けました</h1>
+<div class="wrap ph-head stack s-48">{lab('送信完了')}<h1 class="t-h1">ご依頼を受け付けました</h1>
 <p class="t-lead">1営業日以内に、宛名入りの見積書PDFをメールでお送りします。確認メールが届かない場合は、［電話番号］までご連絡ください。</p>
 <ol class="flow">{fl}</ol></div>
 <section class="bandg sec-2" aria-labelledby="dl-title"><div class="wrap pad-band stack s-48"><h2 class="t-h2" id="dl-title">お待ちいただく間に、<br>稟議の準備にお使いください</h2>
@@ -458,6 +469,7 @@ def thanks():
 </main>''' + footer(False, form=False))
 
 def rules():
+    sub = rules.sub = [('rules-top', 'このページについて'), ('layout', '画面の組み方'), ('type', '文字の大きさと字間'), ('color', '色の役割'), ('marks', '目印と影'), ('motion', '動きの決まり'), ('platform', '使っているWeb標準')]
     css = (OUT / 'assets/site.css').read_text(encoding='utf-8')
     apis = [
         ('&lt;dialog&gt;（showModal）', 'Widely', 'スマホのメニュー。フォーカスを閉じ込め、Esc で閉じる', '— （JS が動かないときは、ヘッダーの「メニュー」がフッターのメニューへ移動）'),
@@ -483,7 +495,7 @@ def rules():
                  ('本文', '14 → 16', 'マイク音声を直接取り込みます。'), ('補足', '12 → 14', '相見積にそのまま使えます')]
     ty = ''.join(f'<tr><th scope="row">{a}</th><td data-l="大きさ（px）">{b}</td><td data-l="見本">{c}</td></tr>' for a, b, c in type_rows)
     return (head(f'デザインルール｜{NAME}', 'カルラライブのサイトのデザインルールと、使っている Web 標準の一覧です。')
-            + header(False, [('rules-top', 'このページについて'), ('layout', '画面の組み方'), ('type', '文字の大きさと字間'), ('color', '色の役割'), ('marks', '目印と影'), ('motion', '動きの決まり'), ('platform', '使っているWeb標準')]) + f'''<main id="main"><div class="wrap ph-head stack s-48" id="rules-top">{lab('Design rules')}<h1 class="t-h1">白い地に、<br>ティールで道しるべを置く。</h1>
+            + header(False, sub) + f'''<main id="main"><div class="wrap ph-head stack s-48" id="rules-top">{lab('Design rules')}<h1 class="t-h1">白い地に、<br>ティールで道しるべを置く。</h1>
 <p class="t-lead">C案を元に、スマホを基本に組み直したサイトのルールです。色・影・目印は recruit.handy.school の仕組みを参考にしています。文字と余白は、幅390pxのスマホから1200pxのPCまで、段差なく大きくなります。</p></div>
 <section class="sec-3" id="layout"><div class="wrap g57"><div class="stk">{lab('Layout')}</div><div class="stack s-48"><h2 class="t-h2">スマホは1段、PCは左のレール＋2段</h2>
 <ul class="rows"><li>スマホを基本に書き、幅1024px以上で広げます</li><li>PCは左に幅200pxの固定レールを置きます。上からロゴ、現在地つきの目次（単語ではなく「何が書いてあるか」がわかる言葉で）、2つの行動（黄＝8問でプラン診断、濃い珊瑚＝見積を依頼する）、ページの切り替え。右端の細い線が、ページを読み進めた量です</li><li>スマホでは上のバーと現在地つきのサブナビが一緒に追従し、下部に追従ボタン（プラン診断／見積を依頼する）を置きます。目次の中身はPCのレールと同じです</li><li>本文はレールの右で、左5：右7の2段</li><li>プラン診断はトップの最初の画面に置きます。PCでは見出しの右でその場で答え、スマホでは見出しのすぐ下の黄色いボタンから全画面のモーダル（dialog）で開きます。サブナビや下部の「プラン診断」からも同じモーダルが開きます</li></ul></div></div></section>
@@ -492,18 +504,19 @@ def rules():
 <p class="t-note t-sub">和文：Zen Kaku Gothic New の Medium（使う文字だけに絞って同梱）／英字・数字：Helvetica Neue。入力欄の文字はスマホでも16px。字間は大きさの2%、本文とリードの行送りは1.8、見出しは1.45。</p></div></div></section>
 <section class="sec-3" id="color"><div class="wrap g57"><div class="stk">{lab('Color')}</div><div class="stack s-48"><h2 class="t-h2">白の地に、主色のティール</h2>
 <ul class="logos" style="grid-template-columns:repeat(auto-fill,minmax(9rem,1fr))">{sw}</ul>
-<ul class="rows"><li>主色はティール。目次の現在地、ラベルの四角、一覧の見出しの下線、手順の番号、診断で選んだ答え、プラン名の帯に使います</li>
-<li>珊瑚は「行動」と「数える」もの：見積に進むボタン、よくある質問のQ、送信後の流れの「いまここ」</li>
-<li>黄は「気軽さ」と「要点」：プラン診断のボタン、要点のマーカー</li>
+<ul class="rows"><li>主色はティール。目次の現在地、見出しのタグ、アイコンの四角、一覧の見出しの下線、手順の番号、診断で選んだ答え、プラン名の帯、そのほかの行動のボタンに使います</li>
+<li>珊瑚は「見積を依頼する」だけ：見積に進むボタン（どこにあっても同じ色）。ほかに、よくある質問のQと、送信後の流れの「いまここ」</li>
+<li>黄（#FACA00）は「プラン診断をはじめる」だけ：左レール、スマホの入口、下部の追従ボタン、メニューの中。ほかの場所では使いません。要点のマーカーは別の淡い黄（#FFEB78）で、本文の要点だけに引きます</li>
+<li>同じ意味のボタンは同じ色：黄＝プラン診断をはじめる、珊瑚＝見積を依頼する、ティール＝そのほかの行動（次へ、相談する、ひな形を受け取る）、線だけ＝資料や補助</li>
 <li>地は白。セクションの面はクリーム（#F8F6F3）とティールの淡い色（#F2FBFC）の2つだけで、どちらも参考サイトの半透明の色を白に重ねた値です</li>
 <li>差し色は小さな面にだけ使い、大きな面は白・クリーム・淡いティールのまま。ボタンやラベルの四角は参考サイトどおり、差し色の上に白い文字を乗せます</li>
-<li>キーボードで操作しているときの枠は、見落とさないよう黄色（#FACA00）</li></ul></div></div></section>
+<li>キーボードで操作しているときの枠は濃い文字色（#333333）。暗い面の上では白</li></ul></div></div></section>
 <section class="sec-3" id="marks"><div class="wrap g57"><div class="stk">{lab('Marks &amp; Shadow')}</div><div class="stack s-48"><h2 class="t-h2">目が滑らないための目印</h2>
 <p class="t-lead">長いページでも読む場所を見失わないよう、4つの目印を決まった場所にだけ置きます。</p>
 <ul class="reasons">
 <li class="reason">{ico('check', 'teal')}<div class="stack s-16"><h3 class="t-ct">{mk('要点のマーカー')}</h3><p class="t-body">各セクションのリードで、いちばん伝えたい一文にだけ引きます。1つのセクションに1か所まで。文字の下半分を黄色（#FFEB78）にし、画面に入ったときに左から引かれます</p></div></li>
-<li class="reason">{ico('doc', 'coral')}<div class="stack s-16"><h3 class="t-ct">影は3段だけ</h3><p class="t-body">ずらさずに広げる影：置いてあるもの（カード、白い箱）は 0 0 30px 黒8%、色の面（レールの行動ボタン、開いた質問）は 0 0 30px 黒10%、物として見せるもの（見積書の見本、暗い囲み）は 0 5px 40px 黒20%。ボタンには影を付けません</p></div></li>
-<li class="reason">{ico('switch', 'yellow')}<div class="stack s-16"><h3 class="t-ct">色の角丸アイコン</h3><p class="t-body">線画のアイコンを、差し色の角丸の四角（44px、角丸10px）に入れます。一覧の頭や、要点のチェックに使います。飾りなので、読み上げからは外します。英字の小さなラベルは付けません</p></div></li>
+<li class="reason">{ico('doc', 'teal')}<div class="stack s-16"><h3 class="t-ct">影は重ねない</h3><p class="t-body">影が付くのは、いちばん外側の面だけ。影の付いた面の中に置くものは、線で区切ります。ボタンには影を付けません。強さは2つ：置いてあるもの（カード、白い箱、左レール）は 0 0 30px 黒8%、物として見せるもの（見積書の見本、暗い囲み）は 0 5px 40px 黒20%</p></div></li>
+<li class="reason">{ico('switch', 'teal')}<div class="stack s-16"><h3 class="t-ct">見出しのタグと、章の切れ目</h3><p class="t-body">各章の頭に、目次と同じ言葉のタグ（白地にティールの線の丸い札）を付けます。スマホでは、章の頭に端から端までティールの線を引き、その線の上にタグを乗せて切れ目を示します。線画のアイコンはティールの角丸の四角（44px、角丸10px）に入れ、飾りなので読み上げからは外します</p></div></li>
 <li class="reason">{ico('backup', 'teal')}<div class="stack s-16"><h3 class="t-ct">QとA、○と—</h3><p class="t-body">よくある質問は珊瑚のQとティールのA。お引き受けする会はティールの○、ほかの方法をおすすめする会は灰色の—で、読む前に種類がわかるようにします</p></div></li>
 </ul>
 <p class="t-note t-sub">穴埋め（［ ］）はマーカーと見分けがつくよう、灰色の斜線にしています。</p></div></div></section>
@@ -518,6 +531,6 @@ def rules():
 PAGES = {'index.html': index, 'contact.html': contact, 'thanks.html': thanks, 'rules.html': rules}
 if __name__ == '__main__':
     for name, fn in PAGES.items():
-        html = mark(fn())
+        html = mark(tag_sections(fn(), getattr(fn, 'sub', [])))
         (OUT / name).write_text(html, encoding='utf-8')
         print(name, len(html), 'holes', len(ANA.findall(re.sub(r'<[^>]+>', ' ', html))))

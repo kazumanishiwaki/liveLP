@@ -144,8 +144,8 @@ function renderResult(box, r) {
   }
   if (r.why.length) parts.push(el('p', { class: 't-note' }, 'こう判断した理由'), el('ul', { class: 'dg-why' }, r.why.map((w) => el('li', {}, w))));
   const btns = el('div', { class: 'btns' });
-  if (r.cta === 'quote') btns.append(el('a', { class: 'btn', href: 'contact.html' }, 'この内容で見積書を受け取る'), el('a', { class: 'btn line', href: '#price' }, '料金の内訳を見る'));
-  else if (r.cta === 'self') btns.append(el('a', { class: 'btn line', href: 'contact.html#consult' }, '念のため相談する'));
+  if (r.cta === 'quote') btns.append(el('a', { class: 'btn quote', href: 'contact.html' }, 'この内容で見積書を受け取る'), el('a', { class: 'btn line', href: '#price' }, '料金の内訳を見る'));
+  else if (r.cta === 'self') btns.append(el('a', { class: 'btn', href: 'contact.html#consult' }, '念のため相談する'));
   else btns.append(el('a', { class: 'btn', href: 'contact.html#consult' }, '15分のオンライン相談で確かめる'));
   parts.push(btns, el('button', { type: 'button', class: 'dg-again' }, '最初から診断しなおす'));
   box.replaceChildren(...parts);
