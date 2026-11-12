@@ -1,14 +1,16 @@
+import re
 from build import *
 from pages_top import pricing_block, options_block, coaching_stairs, public_flow, public_docs
 
 def price():
     return (page_head([('料金・体制・機材', '')], '料金・体制・機材',
                       'カルラライブの基本プラン「スタンダード」は、カメラ3台・スタッフ2名・マイク5本までで25万円（税別）です。誰が来て、何を持ち込み、何をするかを、このページにすべて載せています。')
-            + sec(pricing_block(full=True), h2='<span class="nb">25万円に</span><span class="nb">含まれるものすべて</span>', lead='見積書にも、ここに書いてあるとおりの内容を記載します。「配信業務一式」の1行だけの見積書はお出ししません。')
-            + sec(options_block(), band='sheet', h2='同じ日に頼めること', lead='記録写真も、記録映像も、同じ日にまとめてご依頼いただけます。見積も請求も打ち合わせも1回で済みます。')
+            + subnav([('std', '料金'), ('staff', '体制'), ('gear', '機材'), ('extra', '追加料金'), ('options', '同じ日に'), ('pay', '支払い')])
+            + sec(pricing_block(full=True), sid='std', h2='<span class="nb">25万円に</span><span class="nb">含まれるものすべて</span>', lead='見積書にも、ここに書いてあるとおりの内容を記載します。「配信業務一式」の1行だけの見積書はお出ししません。')
+            + sec(options_block(), sid='options', band='sheet', h2='同じ日に頼めること', lead='記録写真も、記録映像も、同じ日にまとめてご依頼いただけます。見積も請求も打ち合わせも1回で済みます。')
             + sec(f'''<div class="cols cols--2 start"><div class="box"><h3 class="h4">書類と支払い</h3>{ticks(['見積書・納品書・請求書の3点を発行します', '請求書払い（後払い）に対応しています', 'インボイス登録番号：［T0000000000000］', '相見積のための見積依頼も歓迎します'])}
 <p style="margin-top:16px"><a class="tlink" href="@public">大学・公共機関の発注の流れを見る</a></p></div>
-<div>{faq([FAQ_TOP[2], FAQ_TOP[3], FAQ_TOP[4], FAQ_TOP[5]])}</div></div>''', h2='支払いと、料金についてよくある質問')
+<div>{faq([FAQ_TOP[2], FAQ_TOP[3], FAQ_TOP[4], FAQ_TOP[5]])}</div></div>''', sid='pay', h2='支払いと、料金についてよくある質問')
             + cta('この内容で、見積書をお送りします', '日程と会場だけ教えてください。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。', '見積書を受け取る'))
 
 def works():
@@ -24,28 +26,34 @@ def works():
             + cta('近い事例の内容で、見積書をお送りします', '日程と会場だけ教えてください。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。', '近い事例で見積書を受け取る'))
 
 def check():
-    why = [('登壇者は2人以上いますか', '登壇者が複数いると、話す人に合わせてカメラを切り替える必要があります。1台の固定カメラでは、誰が話しているかが伝わりません。'),
-           ('会場でマイクとスピーカーを使いますか', '会場でスピーカーを使うと、ハウリングや音の回り込みが起きやすくなります。会場に流す音と配信に送る音を分ける必要があります。'),
-           ('会場からの質問を、オンラインの視聴者にも届けたいですか', '配信に入るのは、マイクを通った音だけです。質問用のマイクと、音の経路の設計が必要になります。'),
-           ('配信時間は2時間を超えますか', '長くなるほど、バッテリーや発熱、回線の切断に気づいて対処する人が必要になります。'),
-           ('終了後に録画データ（アーカイブ）を公開しますか', '公開する録画は、やり直しがききません。予備の録画と、聞き取りやすい音が欠かせません。'),
-           ('学外の視聴者や来賓がいますか', '学外の人が見ている会は、止まったときに「少しお待ちください」では済みません。止まったときの備えが必要です。')]
-    rows = ''.join(f'<tr><th style="white-space:normal">{q}</th><td>{a}</td></tr>' for q, a in why)
-    return (page_head([('iPhone診断', '')], 'iPhoneで足りるか、6問で確かめる',
-                      '6問に答えるだけで、ご自身で配信できるか、相談だけで済むか、依頼したほうがよいかがわかります。iPhoneで足りる会なら、そうお伝えします。')
-            + sec(f'<div style="max-width:920px">{quiz()}</div>')
-            + sec(f'<table class="tbl tbl--stack" style="max-width:920px"><thead><tr><th style="width:38%">質問</th><th>なぜ聞くのか</th></tr></thead><tbody>{rows}</tbody></table>',
-                  band='sheet', h2='6つの質問で、何を見ているか', lead='「はい」が増えるほど、当日に同時にやることが増えます。1人で見きれなくなる境目を確かめています。')
-            + sec('''<div class="cols cols--3">
-<div class="box"><h3 class="h4">ご自身で配信できます</h3><p>「はい」が1つ以下の会です。iPhoneと外付けマイクで足ります。</p><p><a class="tlink" href="@iphone-streaming">自前で配信するときの機材と注意点</a></p></div>
-<div class="box"><h3 class="h4">相談だけで済みそうです</h3><p>「はい」が2〜3個の会です。接続の図とチェックリストがあれば、ご自身で配信できる可能性が高い会です。</p><p><a class="tlink" href="@coaching">配信コーチング</a></p></div>
-<div class="box"><h3 class="h4">ご依頼をおすすめします</h3><p>「はい」が4つ以上、または登壇者が複数いて、質疑や学外の視聴者がある会です。</p><p><a class="tlink" href="@price">料金・体制・機材</a></p></div></div>''',
-                  h2='結果は3つのどれかです')
+    rows = [('登壇者の人数', '2人以上なら、話す人に合わせてカメラを切り替える必要があります。7人以上は、私たちの体制より大きな会です'),
+            ('会場に来る人数', '100人を超えると、会場の音響設備との接続と、客席後方からの撮影が必要になります'),
+            ('オンラインからの登壇', '会場とオンラインの声を行き来させる必要があり、音声担当の手が足りなくなります。スタッフを1名追加します'),
+            ('会場の質問を届けるか', '配信に入るのは、マイクを通った音だけです。質問用のマイクと、音の経路の設計が必要です'),
+            ('配信する時間', '3時間を超える場合は、延長料金がかかります'),
+            ('録画の公開・学外の視聴者', 'やり直しがきかない会です。予備の録画と予備の回線が欠かせません'),
+            ('同じ日に頼みたいもの', '2つ以上なら、写真・編集・ダイジェスト・文字起こしがすべて入った「まるごと」のほうが割安です'),
+            ('自分たちで配信したいか', '依頼する会でも、コーチング（同行）を組み合わせると、次の会から自分たちで回せるようになります')]
+    tr = ''.join(f'<tr><th style="white-space:normal">{q}</th><td>{a}</td></tr>' for q, a in rows)
+    res = [('iPhoneで足ります', '登壇者1人で、質疑を配信に乗せない小さな会。費用はかかりません', '@iphone-streaming', '自前でやるときの機材'),
+           ('配信コーチング：相談', '機材と接続を一度整理すれば、ご自身で配信できる会。［3万円］', '@coaching', '配信コーチング'),
+           ('スタンダード', 'カメラ3台・スタッフ2名・マイク5本。25万円（税別）', '@price', '料金・体制・機材'),
+           ('まるごと', 'スタンダードに、記録写真・記録映像の編集・ダイジェスト・文字起こしを加えたもの。［40］万円（税別）', '@price#options', '同じ日に頼めること'),
+           ('大手の制作会社', '登壇者7人以上、または会場300人以上の会。私たちの体制より大きな会です', '@contact#consult', '15分のオンライン相談')]
+    cards = ''.join(f'<div class="box"><h3 class="h4">{t}</h3><p>{d}</p><p><a class="tlink" href="{h}">{l}</a></p></div>' for t, d, h, l in res)
+    return (page_head([('プラン診断', '')], 'あなたの会に合うプランを、8問で診断します',
+                      '登壇者の人数、会場の規模、質疑や録画の予定など8問に答えると、おすすめのプランと、追加になる費用までわかります。iPhoneで足りる会なら、そうお伝えします。')
+            + subnav([('plan', '診断'), ('results', '結果の種類'), ('why', '質問の意味')])
+            + sec(f'<div class="dg-wrap">{diag()}</div>', sid='plan', band='mist', tight=True)
+            + sec(f'<div class="cols cols--3" style="gap:16px">{cards}</div>', sid='results', h2='結果は、この5つのどれかです', lead='どの結果でも、そのまま見積のご依頼に進めます。診断の内容は、見積のフォームに入った状態で始まります。')
+            + sec(f'<table class="tbl tbl--stack" style="max-width:920px"><thead><tr><th style="width:32%">質問</th><th>なぜ聞くのか</th></tr></thead><tbody>{tr}</tbody></table>',
+                  sid='why', band='sheet', h2='8つの質問で、何を見ているか', lead='当日に同時にやることが増えるほど、1人では見きれなくなります。その境目を確かめています。')
             + cta('結果を見ても迷うときは', '15分のオンライン相談で、iPhoneで足りるかどうかから一緒にお話しします。', 'オンライン相談について見る', '@contact#consult'))
 
 def demo():
     return (page_head([('ツールデモ', '')], '配信を支えるツールを、触ってみる',
                       '当日の質疑応答と進行、記録映像の作成に使っている道具です。このページで動きを試せます。当日は、私たちが用意して操作します。')
+            + subnav([('qa', '質疑応答'), ('que', '進行管理'), ('switcher', '記録映像')])
             + sec(f'''<div class="body"><p>会場とオンラインからの質問を1か所に集め、選んだ質問だけを登壇者の画面に表示します。</p></div>
 {ticks(['会場の来場者も、オンラインの視聴者も、同じ画面から質問を送れます', '届いた質問は、まずスタッフと司会だけに見えます', '司会が選んだ質問だけが、登壇者の画面に大きく表示されます'])}
 {qa_demo()}<p class="cap">当日は、会場に掲示したコードをスマホで読み取ると質問を送れます。体験用のコード：［000］</p>''', sid='qa', h2='質疑応答：QA Board')
@@ -63,10 +71,11 @@ def demo():
 def coaching():
     return (page_head([('配信コーチング', '')], '次は、自分たちで配信できるように',
                       '小さい会はご自身で、大きい会だけ私たちにお任せください。相談から卒業までの4段階で、配信を自分たちで回せる体制をつくります。手順書とチェックリストが残るので、担当者が替わっても引き継げます。')
-            + sec(coaching_stairs(detail=True) + '<p class="note" style="margin-top:20px;font-size:15px">必要な段階だけを選べます。相談だけで終える方もいます。</p>', band='mist', h2='相談から卒業まで、4つの段階', lead='段階が進むごとに、操作する人が私たちからご担当者に移ります。')
+            + subnav([('steps', '4つの段階'), ('left', '残るもの'), ('plan', '診断')])
+            + sec(coaching_stairs(detail=True) + '<p class="note" style="margin-top:20px;font-size:15px">必要な段階だけを選べます。相談だけで終える方もいます。</p>', sid='steps', band='mist', h2='相談から卒業まで、4つの段階', lead='段階が進むごとに、操作する人が私たちからご担当者に移ります。')
             + sec(f'''<div class="cols cols--2 start"><div><h3 class="h4">手元に残るもの</h3>{ticks(['機材と接続の図：どの機材を、どの順番でつなぐか', '当日のチェックリスト：開場前、本番中、終了後に確かめること', '手順書：担当者が替わっても、同じ手順で配信できます'])}</div>
-<div><h3 class="h4">こういう機関に向いています</h3>{ticks(['年に何度か、30人ほどの勉強会や研究会を開いている', '担当者が数年で替わり、やり方が引き継がれない', 'すべての会を外注する予算はないが、大きい会は任せたい'])}</div></div>''', h2='配信のたびに、人に頼らなくて済むように')
-            + sec(f'<div style="max-width:920px">{quiz()}</div>', band='sheet', h2='まず、自分たちでできる会かを確かめる', lead='6問の診断で、ご自身で配信できるか、相談だけで済むか、依頼したほうがよいかがわかります。')
+<div><h3 class="h4">こういう機関に向いています</h3>{ticks(['年に何度か、30人ほどの勉強会や研究会を開いている', '担当者が数年で替わり、やり方が引き継がれない', 'すべての会を外注する予算はないが、大きい会は任せたい'])}</div></div>''', sid='left', h2='配信のたびに、人に頼らなくて済むように')
+            + sec(f'<div class="dg-wrap">{diag()}</div>', sid='plan', band='sheet', h2='まず、自分たちでできる会かを確かめる', lead='8問のプラン診断で、ご自身で配信できるか、相談だけで済むか、依頼したほうがよいかがわかります。')
             + cta('コーチングについて相談する', 'いまの機材と、開いている会の規模を教えてください。どの段階から始めるのがよいかをお答えします。', 'コーチングについて相談する'))
 
 def public():
@@ -77,9 +86,10 @@ def public():
 <tr><th>当日のチェックリスト</th><td>PDF。ご担当者が当日に確かめることをまとめています</td><td class="r"><a class="tlink" href="@public" data-todo="当日のチェックリスト（PDF）">見る</a></td></tr></tbody></table>'''
     return (page_head([('大学・公共機関の方へ', '')], '大学・公共機関の方へ',
                       '稟議や相見積に必要な書類を、お問い合わせの前からご用意しています。見積書・納品書・請求書の3点を発行し、請求書払い（後払い）に対応しています。')
-            + sec(public_flow() + public_docs(), h2='大学・公共機関の発注手続きに合わせます', lead='お問い合わせから請求まで、5つの手順で進みます。決まっているのは日程と会場だけでかまいません。')
-            + sec(docs + '<p style="margin-top:28px"><a class="tlink" href="@streaming-spec">仕様書に何を書けばいいか、書き方の記事を読む</a></p>', band='sheet', h2='稟議と相見積に使える書類')
-            + sec(faq([FAQ_MORE[3], FAQ_MORE[4], FAQ_TOP[0], FAQ_TOP[4], FAQ_TOP[5]]), h2='発注についてよくある質問')
+            + subnav([('flow', '発注の流れ'), ('docs', '書類'), ('pfaq', '質問')])
+            + sec(public_flow() + public_docs(), sid='flow', h2='大学・公共機関の発注手続きに合わせます', lead='お問い合わせから請求まで、5つの手順で進みます。決まっているのは日程と会場だけでかまいません。')
+            + sec(docs + '<p style="margin-top:28px"><a class="tlink" href="@streaming-spec">仕様書に何を書けばいいか、書き方の記事を読む</a></p>', sid='docs', band='sheet', h2='稟議と相見積に使える書類')
+            + sec(faq([FAQ_MORE[3], FAQ_MORE[4], FAQ_TOP[0], FAQ_TOP[4], FAQ_TOP[5]]), sid='pfaq', h2='発注についてよくある質問')
             + cta())
 
 def faq_page():
@@ -141,9 +151,16 @@ def privacy():
 
 # ------------------------------------------------------------------ 記事
 def article(title, answer, body, nexts, pid):
+    heads = []
+    def _id(m):
+        i = f'h{len(heads) + 1}'; heads.append((i, m.group(1)))
+        return f'<h2 id="{i}">{m.group(1)}</h2>'
+    body = re.sub(r'<h2>(.*?)</h2>', _id, body)
+    short = lambda x: x if len(x) <= 9 else x[:8] + '…'
+    sn = subnav([('answer', '答え')] + [(i, short(re.sub('<[^>]+>', '', h))) for i, h in heads])
     n = ''.join(f'<li><a class="tlink" href="{h}">{t}</a></li>' for t, h in nexts)
     return (page_head([('配信の手引き', '@articles'), (title, '')], title, meta='<p class="meta"><span>公開日：［公開日］</span><span>書いた人：［氏名・経歴一行］</span></p>')
-            + f'<section class="band"><div class="wrap"><article class="prose"><p class="answer">{answer}</p>{body}</article>'
+            + sn + f'<section class="band"><div class="wrap"><article class="prose"><p class="answer" id="answer">{answer}</p>{body}</article>'
             + f'<aside class="next"><h2>次に読むページ</h2><ul>{n}</ul></aside></div></section>' + cta())
 
 def a_iphone():
@@ -171,10 +188,10 @@ def a_iphone():
 <li><strong>オンラインからの質問を見る人がいない。</strong>配信を操作している人は、文字の質問まで見られません。見る人を別に決めておきます</li>
 <li><strong>画面の向き。</strong>横向きに固定して、回転しない設定にしておきます</li></ol>
 <h2>迷ったら</h2>
-<p>ご自身の会がどちらに当たるかは、<a href="@check">6問の診断</a>で確かめられます。自分たちで続けていきたい場合は、機材と接続の図、当日のチェックリストを一緒に作る<a href="@coaching">配信コーチング</a>があります。</p>'''
+<p>ご自身の会がどちらに当たるかは、<a href="@check">8問のプラン診断</a>で確かめられます。自分たちで続けていきたい場合は、機材と接続の図、当日のチェックリストを一緒に作る<a href="@coaching">配信コーチング</a>があります。</p>'''
     return article('iPhoneでシンポジウムを配信して大丈夫な条件、だめな条件',
                    '登壇者が1〜2人で、会場からの質疑をオンラインに届けなくてよい会なら、iPhone1台と外付けマイク1本で配信できます。登壇者が3人以上いる、会場の質問をオンラインにも届けたい、スライドと話し手の両方を映したい。このどれかに当てはまると、1人では回らなくなります。',
-                   body, [('iPhoneで足りるか、6問で確かめる', '@check'), ('配信コーチング', '@coaching'), ('料金・体制・機材', '@price')], 'iphone-streaming')
+                   body, [('8問のプラン診断', '@check'), ('配信コーチング', '@coaching'), ('料金・体制・機材', '@price')], 'iphone-streaming')
 
 AUDIO_FIG = '''<figure><svg viewBox="0 0 760 330" role="img" aria-label="音の流れの図。会場のマイクの音はミキサーから会場のスピーカーと配信PCの両方へ送る。オンライン参加者の声は配信PCからミキサーに入れ、会場のスピーカーだけに出す">
 <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#eef2ee"/></marker><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#f08a78"/></marker></defs>
@@ -210,7 +227,7 @@ def a_audio():
 <p>カルラライブのスタンダードは、マイクを5本まで持ち込みます。登壇者4人分と、会場の質問用の1本です。会場設備のマイクがあれば、その音も配信機材に直接取り込みます。音声と配信の担当が1名つき、本番中は音を聞き続けます。</p>'''
     return article('ハイブリッド開催で音が聞こえない、ハウリングする原因と対策',
                    '原因のほとんどは、会場のスピーカーから出た音をマイクが拾い、もう一度配信に戻っていることです。「会場に流す音」と「配信に送る音」を分けて管理すれば止まります。',
-                   body, [('料金・体制・機材（マイク5本の内訳）', '@price'), ('会場とオンラインの質問をまとめる QA Board を試す', '@demo#qa'), ('iPhoneで足りるか、6問で確かめる', '@check')], 'hybrid-audio')
+                   body, [('料金・体制・機材（マイク5本の内訳）', '@price'), ('会場とオンラインの質問をまとめる QA Board を試す', '@demo#qa'), ('8問のプラン診断', '@check')], 'hybrid-audio')
 
 def a_spec():
     body = f'''<h2>仕様書に書く6つの項目</h2>

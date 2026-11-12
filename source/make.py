@@ -21,8 +21,8 @@ PAGES = [
       desc='基本プランは3カメラ・スタッフ2名・マイク5本まで、25万円（税別）。当日の人の配置、持ち込む機材の一覧、追加になる条件をすべて載せています。見積の前に予算感をつかめます。', ld='service'),
     P(id='works', path='/works/', fn=S.works, name='事例', title=f'配信の事例｜大学・自治体のシンポジウムと講演会｜{N}',
       desc='これまで担当したシンポジウム、講演会、公開講座の配信事例です。会の規模、スタッフの体制、使った機材、金額、当日起きたことを、すべて同じ項目で一件ずつ載せています。'),
-    P(id='check', path='/check/', fn=S.check, name='iPhone診断', title=f'iPhoneで配信して大丈夫？6問でわかる自前配信チェック｜{N}',
-      desc='登壇者の人数、マイクの有無、質疑や録画の予定など6問から、iPhoneや手持ちの機材で足りるかを判定します。足りるなら、そう答えます。業者に頼むべき場面だけがわかります。'),
+    P(id='check', path='/check/', fn=S.check, name='プラン診断', title=f'プラン診断｜8問で、合う配信プランと費用がわかる｜{N}',
+      desc='登壇者の人数、会場の規模、質疑や録画の予定など8問から、おすすめのプランと追加になる費用を判定します。iPhoneで足りる会なら、そう答えます。結果はそのまま見積のご依頼に使えます。'),
     P(id='demo', path='/demo/', fn=S.demo, name='ツールデモ', title=f'配信支援ツールのデモ｜質問ボード・進行管理・記録映像｜{N}',
       desc='会場とオンラインの質問をまとめるQA Board、残り時間と合図を共有するQue、話している人に合わせて記録映像を作るMovie Switcher。当日使う道具の動きを、このページで試せます。'),
     P(id='coaching', path='/coaching/', fn=S.coaching, name='配信コーチング', title=f'配信コーチング｜次から自分たちで配信できる体制づくり｜{N}',
@@ -30,7 +30,7 @@ PAGES = [
     P(id='public', path='/public/', fn=S.public, name='大学・公共機関の方へ', title=f'大学・公共機関の方へ｜仕様書のひな形・見積・請求書払いに対応｜{N}',
       desc='稟議や相見積に必要な仕様書のひな形、内訳つきの見積書、請求書払いと適格請求書に対応しています。発注の手続きで詰まりやすいところを、お問い合わせの前にまとめました。'),
     P(id='faq', path='/faq/', fn=S.faq_page, name='よくある質問', title=f'よくある質問｜ハイブリッド配信の準備・当日・費用｜{N}',
-      desc='何日前に頼めばいいか、会場の下見は必要か、録画データは残るか、対応エリアはどこまでか。ハイブリッド配信を依頼する前によく聞かれることに、一つずつ答えています。', ld='faq'),
+      desc='何日前に頼めばいいか、会場の下見は必要か、録画データは残るか、対応エリアはどこまでか。ハイブリッド配信を依頼する前によく聞かれることに、一つずつ、具体的に答えています。', ld='faq'),
     P(id='contact', path='/contact/', fn=S.contact, name='お問い合わせ・お見積', title=f'お問い合わせ・お見積｜ハイブリッド配信のご相談｜{N}', nobar=True,
       desc='日程と会場、登壇者の人数がわかれば見積書をお出しします。まだ決まっていないことが多くても大丈夫です。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。'),
     P(id='thanks', path='/contact/thanks/', fn=S.thanks, name='送信完了', title=f'送信が完了しました｜{N}', desc='', noindex=True, nobar=True, parent='contact'),
@@ -100,7 +100,7 @@ def head(p, mode):
     return f'''<!DOCTYPE html>
 <html lang="ja"{' data-mode="preview"' if mode == 'preview' else ''}{f' data-theme="{THEME}"' if THEME else ''}>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{p['title']}</title>{extra}
+<title>{p['title']}</title><script>document.documentElement.classList.add('js')</script>{extra}
 <link rel="icon" href="@@/favicon.svg" type="image/svg+xml">{FONT_PRELOAD}
 <link rel="stylesheet" href="@@/site.css"></head>
 <body>'''

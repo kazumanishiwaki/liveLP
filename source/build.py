@@ -18,7 +18,7 @@ CFG = dict(
 )
 
 THEME = ['']   # '' = 標準、'rondo' = 前のデザイン寄りの見た目
-LABS = {'price': 'Price', 'safety': 'On the day', 'demo': 'Tools', 'works': 'Works', 'check': 'Check', 'options': 'Options', 'coaching': 'Coaching', 'public': 'For universities', 'faq': 'FAQ'}
+LABS = {'plan': 'Plan check', 'price': 'Price', 'safety': 'On the day', 'demo': 'Tools', 'works': 'Works', 'check': 'Check', 'options': 'Options', 'coaching': 'Coaching', 'public': 'For universities', 'faq': 'FAQ'}
 _uid = [0]
 def uid(p='f'):
     _uid[0] += 1
@@ -184,25 +184,31 @@ def recovery_doc():
 <p class="doc-note">実物は、会場の設備と回線に合わせて会ごとに作成し、事前にお渡しします。</p></div>'''
 
 # ------------------------------------------------------------------ 診断・デモ
-QUIZ_Q = ['登壇者は2人以上いますか', '会場でマイクとスピーカーを使いますか', '会場からの質問を、オンラインの視聴者にも届けたいですか',
-          '配信時間は2時間を超えますか', '終了後に録画データ（アーカイブ）を公開しますか', '学外の視聴者や来賓がいますか']
-def quiz():
-    g = uid('q')
-    li = ''
-    for n, q in enumerate(QUIZ_Q, 1):
-        li += (f'<li><p id="{g}p{n}">{q}</p><div class="yn" role="radiogroup" aria-labelledby="{g}p{n}">'
-               f'<label><input type="radio" name="{g}_{n}" value="y"><span>はい</span></label>'
-               f'<label><input type="radio" name="{g}_{n}" value="n"><span>いいえ</span></label></div></li>')
-    return f'''<div class="quiz"><ol>{li}</ol>
-<div class="quiz-foot"><button type="button" class="btn quiz-go">診断結果を見る</button><p class="note quiz-warn" role="alert" hidden>6問すべてにお答えください</p></div>
-<div class="quiz-res" tabindex="-1" role="status" hidden>
-<div data-res="self"><h3>iPhoneやPCで足ります</h3><p>この条件なら、ご自身で配信できます。業者に頼む必要はありません。</p>
-<div class="btns"><a class="btn btn--ghost" href="@iphone-streaming">自分で配信するときの機材と注意点を読む</a></div></div>
-<div data-res="consult"><h3>相談だけで済みそうです</h3><p>機材と接続を一度整理すれば、ご自身で配信できる可能性が高い会です。60分の相談で、接続の図と当日のチェックリストを作成します。</p>
-<div class="btns"><a class="btn" href="@coaching">コーチングについて見る</a><a class="btn btn--ghost" href="@contact#consult">15分のオンライン相談</a></div></div>
-<div data-res="order"><h3>ご依頼をおすすめします</h3><p>ご担当者が配信にかかりきりになる条件がそろっています。カメラ3台・スタッフ2名の体制が合う会です。</p>
-<div class="btns"><a class="btn" href="@contact">見積書を受け取る</a><a class="btn btn--ghost" href="@price">料金・体制・機材を見る</a></div></div>
-<p class="h4 quiz-why-h" style="margin-top:24px">「はい」と答えた項目で、気をつけること</p><ul class="ticks quiz-why"></ul></div></div>'''
+DIAG_Q = [
+    ('spk', '登壇者は何人ですか', '司会は含めません。パネルディスカッションの方も数えます', [('1', '1人'), ('2-3', '2〜3人'), ('4-6', '4〜6人'), ('7+', '7人以上')]),
+    ('aud', '会場に来る人は、何人くらいですか', 'おおよそでかまいません', [('-30', '30人まで'), ('30-100', '30〜100人'), ('100-300', '100〜300人'), ('300+', '300人以上')]),
+    ('rmt', 'オンラインから登壇する人はいますか', '遠隔地の講師がZoomなどで話す場合です', [('n', 'いない'), ('y', 'いる')]),
+    ('qa', '会場の質問を、オンラインの視聴者にも届けたいですか', '会場の声は、マイクを通さないと配信に入りません', [('y', '届けたい'), ('n', '会場だけでいい')]),
+    ('time', '配信する時間は、どのくらいですか', '休憩を含めた、配信の開始から終了まで', [('-2', '2時間まで'), ('2-3', '2〜3時間'), ('3+', '3時間を超える')]),
+    ('pub', '録画を公開する予定や、学外の視聴者・来賓はありますか', 'どちらかに当てはまれば「ある」', [('y', 'ある'), ('n', 'ない')]),
+    ('opt', '同じ日に頼みたいものはありますか', 'いくつでも選べます。なければ、そのまま「次へ」', [('photo', '記録写真'), ('edit', '記録映像の編集'), ('digest', '2分のダイジェスト映像'), ('text', '文字起こし')]),
+    ('self', '来年度からは、自分たちで配信したいですか', '小さい会だけでも自分たちで、という場合も「はい」', [('y', 'はい'), ('n', 'いいえ、毎回任せたい')]),
+]
+def diag():
+    g = uid('d')
+    n = len(DIAG_Q)
+    qs = ''
+    for i, (key, q, hint, opts) in enumerate(DIAG_Q, 1):
+        multi = key == 'opt'
+        typ = 'checkbox' if multi else 'radio'
+        o = ''.join(f'<label><input type="{typ}" name="{g}_{key}" value="{v}"><span>{t}</span></label>' for v, t in opts)
+        nxt = '<button type="button" class="btn dg-next">次へ</button>' if multi else ''
+        qs += (f'<fieldset class="dg-q" data-key="{key}"{" data-multi" if multi else ""}><legend><span class="dg-n n">Q{i}</span>{q}</legend>'
+               f'<p class="dg-hint">{hint}</p><div class="dg-opts{" dg-opts--2" if len(opts) <= 2 else ""}">{o}</div>{nxt}</fieldset>')
+    return f'''<div class="dg" data-dg>
+<div class="dg-head"><p class="dg-count"><b class="n dg-i">1</b> / <span class="n">{n}</span></p><div class="dg-prog" aria-hidden="true"><i></i></div><button type="button" class="dg-back" hidden>戻る</button></div>
+<form class="dg-form" aria-label="プラン診断">{qs}<p class="dg-nojs note">JavaScriptが動かない環境では、結果を表示できません。<a href="@contact">見積のご依頼</a>からご相談ください。</p></form>
+<div class="dg-res" tabindex="-1" hidden></div></div>'''
 
 DEMO_TAG = '<p class="demo-tag">動きを体験するための簡易版です。実物は、当日スタッフが用意して操作します。</p>'
 def qa_demo():
@@ -247,7 +253,7 @@ FAQ_TOP = [
 FAQ_MORE = [
     ('会場の下見は必要ですか', '必要です。スタンダードに含まれています。電源、回線、会場設備のマイク、カメラを置く位置を事前に確認します。'),
     ('録画データはもらえますか', 'はい。録画データの納品はスタンダードに含まれています。話している人に合わせて切り替えた記録映像や字幕が必要な場合は、オプションの「記録映像の編集」をご利用ください。'),
-    ('iPhoneで足りる会かどうか、先に知りたい', '<a href="@check">6問の診断</a>でご確認いただけます。iPhoneで足りる会なら、そうお伝えします。'),
+    ('iPhoneで足りる会かどうか、先に知りたい', '<a href="@check">8問のプラン診断</a>でご確認いただけます。iPhoneで足りる会なら、そうお伝えします。'),
     ('相見積のための見積依頼でもかまいませんか', '歓迎します。<a href="@public#template">仕様書のひな形</a>と見積書の見本もお送りしますので、他社への依頼にもそのままお使いください。'),
     ('支払い方法を教えてください', '請求書払い（後払い）に対応しています。見積書・納品書・請求書の3点を発行します。'),
     ('小さい会は自分たちで配信できるようになりたい', '<a href="@coaching">配信コーチング</a>をご用意しています。相談、同行、伴走、卒業の4段階で、手順書とチェックリストが手元に残ります。'),
@@ -268,7 +274,7 @@ def page_head(crumbs, h1, lead='', meta='', paper=False):
 # ------------------------------------------------------------------ 共通の枠
 LOGO = lambda: ('KARURA LIVE<small>カルラライブ</small>' if THEME[0] == 'rondo' else '<i></i>カルラライブ<small>KARURA LIVE</small>')
 MQ = '<div class="mq" aria-hidden="true"><div>' + '<span>KARURA LIVE / Hybrid streaming for symposiums and lectures /</span>' * 4 + '</div></div>'
-NAV = [('price', '料金・体制・機材'), ('works', '事例'), ('demo', 'ツールデモ'), ('public', '大学・公共機関の方へ'), ('faq', 'よくある質問')]
+NAV = [('check', 'プラン診断'), ('price', '料金・体制・機材'), ('works', '事例'), ('demo', 'ツールデモ'), ('public', '大学・公共機関の方へ'), ('faq', 'よくある質問')]
 def header(cur):
     links = ''.join(f'<a href="@{i}" data-nav="{i}"' + (' aria-current="page"' if i == cur else '') + f'>{t}</a>' for i, t in NAV)
     return f'''<a class="skip" href="#main">本文へ移動</a>
@@ -280,7 +286,7 @@ def header(cur):
 {btn('見積を依頼する', '@contact', 'btn--s')}
 </div></header>'''
 
-FOOT_NAV = [('price', '料金・体制・機材'), ('works', '事例'), ('demo', 'ツールデモ'), ('check', 'iPhone診断'), ('coaching', '配信コーチング'),
+FOOT_NAV = [('check', 'プラン診断'), ('price', '料金・体制・機材'), ('works', '事例'), ('demo', 'ツールデモ'), ('check', 'プラン診断'), ('coaching', '配信コーチング'),
             ('public', '大学・公共機関の方へ'), ('faq', 'よくある質問'), ('articles', '配信の手引き'), ('contact', 'お問い合わせ・お見積'),
             ('about', '運営者情報'), ('privacy', 'プライバシーポリシー')]
 def footer():
@@ -292,4 +298,9 @@ def footer():
 <nav aria-label="フッターメニュー"><ul class="foot-nav">{links}</ul></nav></div>
 <p class="copy">© 2026 KARURA LIVE</p></div></footer>'''
 
-MBAR = '<div class="mbar"><a class="btn btn--ghost" href="@contact#tel">電話する</a><a class="btn" href="@contact">見積を依頼する</a></div>'
+MBAR = '<div class="mbar"><a class="btn btn--ghost" href="@home#plan">プラン診断</a><a class="btn" href="@contact">見積を依頼する</a></div>'
+
+def subnav(items):
+    """スマホで出る、現在地つきのサブナビ。items = [(セクションのid, 短い名前)]"""
+    li = ''.join(f'<li><a href="#{i}" data-sub="{i}">{t}</a></li>' for i, t in items)
+    return f'<nav class="subnav" aria-label="このページの目次"><ol>{li}</ol></nav>'

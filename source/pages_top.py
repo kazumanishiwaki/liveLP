@@ -34,9 +34,9 @@ def pricing_block(full=False):
     tail = '' if full else f'''<div class="btns">{btn('見積を依頼する', '@contact')}<a class="btn btn--ghost" href="@price#sample" data-todo="料金表と見積書見本（PDF）">料金表と見積書見本（PDF）を見る</a></div>
 <p class="note" style="margin-top:12px">上司への説明や、相見積にそのまま使えます</p>'''
     return f'''<div class="cols cols--75 start" id="sample">{doc}{plan}</div>
-<h3 class="h3">当日の体制：立っているだけのスタッフは連れていきません</h3>
+<h3 class="h3" id="staff">当日の体制：立っているだけのスタッフは連れていきません</h3>
 <div class="cols cols--2 start" style="margin-top:28px">{fig}{staff}</div>
-<div class="cols cols--75 start" style="margin-top:clamp(56px,7vw,96px)"><div><h3 class="h3">持ち込む機材の内訳</h3>{gear}</div><div><h3 class="h3">追加料金がかかるのは、この5つだけです</h3>{extra}</div></div>{tail}'''
+<div class="cols cols--75 start" style="margin-top:clamp(56px,7vw,96px)"><div><h3 class="h3" id="gear">持ち込む機材の内訳</h3>{gear}</div><div><h3 class="h3" id="extra">追加料金がかかるのは、この5つだけです</h3>{extra}</div></div>{tail}'''
 
 def options_block():
     o = [('P13', '記録写真の撮影', '記録写真', '報告書や広報に使える写真を、専任カメラマン1名が撮影します'),
@@ -78,9 +78,9 @@ def top():
 <h1><span>カメラ5台は</span><span>いりません。</span> <span>でも1台では、</span> <span>パネルディスカッションは</span> <span>撮れません。</span></h1>
 <p class="hero-price">カメラ<b class="n">3</b>台・スタッフ<b class="n">2</b>名・マイク<b class="n">5</b>本。<em><b class="n">25</b>万円（税別）。</em></p>
 {ticks(['登壇者2〜6人、会場50〜300人の会を専門にしています', '見積書に、スタッフ2名の役割と機材の内訳をすべて明記します', 'iPhoneで足りる会なら、そうお伝えします'])}
-<div class="hero-sp">{btn('日程と会場だけで見積書を受け取る', '@contact', 'btn--wide')}<p class="note">1営業日以内に、宛名入りの見積書PDFをメールでお送りします</p></div></div>
-<div>{switcher()}</div></div>
-<div class="wrap"><div class="strip">{quote_form(strip=True)}</div></div></section>'''
+<div class="hero-cta">{btn('8問でプランを診断する', '@home#plan')}{btn('見積を依頼する', '@contact', 'btn--ghost')}</div>
+<p class="note hero-cta-note">診断は1分ほど。おすすめのプランと、追加になる費用までわかります</p></div>
+<div>{switcher()}</div></div></section>'''
 
     t03 = sec(f'''<h2 class="h4">これまでに配信・記録を担当した機関</h2>
 <ul class="logos" style="margin-top:18px">{'<li>［取引先ロゴ］</li>' * 8}</ul>
@@ -90,8 +90,8 @@ def top():
 <div><p class="axis-size">登壇1人／30人以下</p><h3>ほかの方法をおすすめする会</h3><ul class="outs"><li><b>登壇者が1人の講演</b><span>スタッフ1名で来る業者で十分です</span></li><li><b>30人以下の勉強会</b><span>お手持ちのiPhoneやPCで足ります</span></li></ul></div>
 <div class="axis-us"><p class="axis-size">登壇2〜6人／会場50〜300人</p><h3>お引き受けする会</h3>{ticks(['登壇者が2〜6人で、パネルディスカッションや対談がある会', '会場に50〜300人が集まり、オンラインにも同時に配信したい会', '配信は3時間まで、半日で終わる会', '来賓や助成元、学外の視聴者がいて、配信を止められない会'])}</div>
 <div><p class="axis-size">複数会場／同時通訳</p><h3>ほかの方法をおすすめする会</h3><ul class="outs"><li><b>複数会場や同時通訳</b><span>大手の制作会社が向いています</span></li></ul></div></div>
-<p class="note" style="margin-top:20px;font-size:15px">迷った方は、<a href="@home#check">6問の診断</a>でご確認いただけます</p>''',
-              band='sheet', h2='このような会をお引き受けしています')
+<p class="note" style="margin-top:20px;font-size:15px">迷った方は、<a href="@home#plan">8問のプラン診断</a>でご確認いただけます</p>''',
+              sid='for', band='sheet', h2='このような会をお引き受けしています')
 
     t05 = sec(pricing_block(), sid='price', h2='<span class="nb">25万円に</span><span class="nb">含まれるものすべて</span>',
               lead='誰が来て、何を持ち込み、何をするか。見積書にも同じ内容を記載します。')
@@ -112,13 +112,13 @@ def top():
 <div class="tool"><h3><small>進行管理</small>Que</h3><p>残り時間と合図を、登壇者とスタッフのスマホに表示します。進行の遅れを防ぎます。</p><p><a class="tlink" href="@demo#que">Queを試す</a></p></div>
 <div class="tool"><h3><small>記録映像の作成</small>Movie Switcher</h3><p>3台のカメラの映像から、話している人に合わせて切り替えた記録映像と字幕を作ります。</p><p><a class="tlink" href="@demo#switcher">Movie Switcherを試す</a></p></div></div>
 <p class="note" style="margin-top:36px;font-size:15px;max-width:44em">これらの道具は、当日私たちが用意して操作します。ご自身で使えるようになりたい方には、<a href="@coaching">コーチング</a>をご用意しています。</p>''',
-              sid='demo', band='sheet', h2='現場で使っている道具を、いま試せます', lead='お手元のスマホでお試しください。当日の質疑応答と進行がどう進むかを確認できます。')
+              sid='demo', h2='現場で使っている道具を、いま試せます', lead='お手元のスマホでお試しください。当日の質疑応答と進行がどう進むかを確認できます。')
 
     t08 = sec(f'''{cases()}{VOICE}<div class="btns">{btn('近い事例で見積書を受け取る', '@contact')}<a class="btn btn--ghost" href="@works">事例をすべて見る</a></div>''',
               sid='works', band='mist', h2='<span class="nb">事例：人数も、機材も、</span><span class="nb">金額も公開しています</span>', lead='すべての事例を同じ項目で掲載しています。ご自身の会に近いものを探してみてください。')
 
-    t09 = sec(f'<div style="max-width:920px">{quiz()}</div>', sid='check', h2='iPhoneで足りるなら、そうお伝えします',
-              lead='6問に答えるだけで、ご自身で配信できるか、相談だけで済むか、依頼したほうがよいかがわかります。')
+    t09 = sec(f'<div class="dg-wrap">{diag()}</div>', sid='plan', band='mist', h2='<span class="nb">あなたの会に合うプランを、</span><span class="nb">8問で診断します</span>',
+              lead='登壇者の人数や質疑の有無から、おすすめのプランと、追加になる費用までわかります。iPhoneで足りる会なら、そうお伝えします。')
 
     t10 = sec(options_block(), sid='options', band='sheet', h2='カメラマンは、すでに会場にいます',
               lead='記録写真も、記録映像も、同じ日にまとめてご依頼いただけます。見積も請求も打ち合わせも1回で済みます。')
@@ -137,4 +137,6 @@ def top():
 <p class="avail">［年度末（2〜3月）の空き日程：残り〇日］</p>
 <p class="last-tel">お電話でも受け付けています<b>［電話番号］</b>［受付時間］</p></div>
 {quote_form(title='見積書を受け取る', text='必須の4項目だけで送信できます。')}</div></section>'''
-    return hero + t03 + t04 + t05 + t06 + t07 + t08 + t09 + t10 + t11 + t12 + t13 + t14
+    sn = subnav([('plan', '診断'), ('price', '料金'), ('safety', '当日'), ('works', '事例'), ('for', '対象'), ('demo', 'ツール'),
+                 ('options', '追加'), ('coaching', 'コーチング'), ('public', '発注'), ('faq', '質問'), ('form', '見積')])
+    return hero + sn + t09 + t03 + t05 + t06 + t08 + t04 + t07 + t10 + t11 + t12 + t13 + t14
