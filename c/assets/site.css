@@ -6,7 +6,7 @@
          details[name]、scroll-driven animations）は @supports の中でだけ使い、
          使えないブラウザでは見た目と操作が壊れない形に落とす。
    ===================================================================== */
-@layer reset, tokens, base, layout, components, color, enhance, utilities;
+@layer reset, tokens, base, layout, components, enhance, utilities;
 
 /* ---------------------------------------------------------------- reset */
 @layer reset {
@@ -35,22 +35,6 @@
     --line-d: #4a4a4d;
     --red: #d7281e;
     --focus: #f0b400;
-
-    /* 差し色：明るい色は飾りと「墨の文字を乗せる背景」にだけ使う。白い文字を乗せるときは濃い方 */
-    --teal: #00b4c3;      /* 墨の文字と 5.5:1 */
-    --teal-ink: #007b86;  /* 地の上の文字、白い文字の背景 5.0:1 */
-    --teal-tint: #e3f4f5;
-    --coral: #ff555f;     /* 墨の文字と 4.5:1 */
-    --coral-ink: #d33a43; /* 白い文字の背景 4.7:1 */
-    --coral-tint: #fde9ea;
-    --yellow: #faca00;    /* 墨の文字と 9.0:1 */
-    --yellow-tint: #fdf4cc;
-    --marker: #ffeb78;
-
-    /* 影：ずらさずに、ふわっと広げる（参考：recruit.handy.school） */
-    --shadow: 0 0 30px rgb(0 0 0 / .08);
-    --shadow-lift: 0 6px 40px rgb(0 0 0 / .14);
-    --radius-card: 10px;
 
     --font: "Helvetica Neue", Helvetica, Arial, "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
     --font-en: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -127,9 +111,8 @@
   p, li, dd { text-wrap: pretty; }
   strong, b { font-weight: 500; }
   .vh { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  /* 穴埋め：黄色のマーカーと見分けがつくよう、灰色の斜線にする */
-  .ana { background: repeating-linear-gradient(135deg, #e4e4e4 0 4px, #f2f2f2 4px 8px); color: #4d4d4d; padding-inline: .2em; border-radius: 3px; box-shadow: inset 0 0 0 1px #c9c9c9; }
-  .band .ana, .boxd .ana, .foot .ana { background: repeating-linear-gradient(135deg, #4d4d50 0 4px, #5a5a5d 4px 8px); color: #f0f0f0; box-shadow: inset 0 0 0 1px #77777a; }
+  .ana { background: #fff1a8; color: #5a4a00; padding-inline: .15em; border-radius: 2px; }
+  .band .ana, .boxd .ana, .foot .ana { background: #e9dc8c; color: #2b2400; }
 }
 
 /* ---------------------------------------------------------------- layout */
@@ -653,112 +636,4 @@
     .btn.pc-only { display: inline-flex !important; }
     .sp-only { display: none !important; }
   }
-}
-
-/* ---------------------------------------------------------------- color：差し色と影
-   目が滑らないよう、①セクションごとの差し色 ②要点の黄色いマーカー ③白いカードと柔らかい影 ④色の角丸アイコン、の4つで目印をつくる */
-@layer color {
-  [data-ac="teal"]   { --ac: var(--teal);   --ac-tint: var(--teal-tint); }
-  [data-ac="coral"]  { --ac: var(--coral);  --ac-tint: var(--coral-tint); }
-  [data-ac="yellow"] { --ac: var(--yellow); --ac-tint: var(--yellow-tint); }
-
-  /* ラベルの四角と、一覧の見出しの下線に差し色 */
-  .t-lab::before { background: var(--ac, currentColor); inline-size: 10px; block-size: 10px; border-radius: 3px; }
-  .sub { border-block-end: 3px solid var(--ac, currentColor); padding-block-end: 6px; }
-
-  /* 要点のマーカー：文字の下40%だけ黄色 */
-  mark.mk { background: linear-gradient(transparent 58%, var(--marker) 58%); color: inherit; padding-inline: .05em; }
-  .band mark.mk, .boxd mark.mk { background: linear-gradient(transparent 62%, rgb(250 202 0 / .55) 62%); }
-
-  /* 色の角丸アイコン */
-  .chipi { display: inline-grid; place-items: center; flex: none; inline-size: 2.75rem; block-size: 2.75rem; border-radius: 12px; color: var(--ink); box-shadow: var(--shadow);
-    & svg { inline-size: 58%; block-size: 58%; } }
-  .chipi--s { inline-size: 1.5rem; block-size: 1.5rem; border-radius: 6px; box-shadow: none; & svg { inline-size: 72%; block-size: 72%; stroke-width: 2.6; } }
-  .chipi--teal { background: var(--teal); }
-  .chipi--coral { background: var(--coral); }
-  .chipi--yellow { background: var(--yellow); }
-
-  /* ヒーローの要点 */
-  .ticklist { display: grid; gap: .75rem;
-    & li { display: flex; gap: .75rem; align-items: flex-start; line-height: 1.8; }
-    & .chipi { margin-block-start: .2em; } }
-
-  /* 白いカードと柔らかい影 */
-  .boxw, .dg, .doc-sample, .staff-card, .tiles li, .logos .ph { box-shadow: var(--shadow); }
-  .boxw, .dg, .doc-sample { border-radius: var(--radius-card); border: 1px solid rgb(255 255 255 / .6); }
-  .tiles li { background: var(--paper); border-radius: var(--radius-card); position: relative; overflow: hidden;
-    &::before { content: ""; position: absolute; inset: 0 auto 0 0; inline-size: 4px; background: var(--ac, var(--teal)); } }
-  .logos .ph { border-radius: var(--radius-card); }
-  .staff-card { background: var(--paper); border-radius: var(--radius-card); padding: .75rem .75rem 1.25rem; }
-  .hs > .hi { background: var(--paper); border-radius: var(--radius-card); padding: .75rem .75rem 1.25rem; box-shadow: var(--shadow); }
-  .bandg .hs > .hi { background: var(--paper); }
-  .zoom { border-radius: 8px; }
-  .hs > .hi .t-num, .hs > .hi :is(.t-ct, .t-body, .t-note) { padding-inline: .25rem; }
-
-  /* 診断：上に差し色の帯、選んだ選択肢は青緑 */
-  .dg { overflow: hidden; border-block-start: 4px solid var(--teal); }
-  .dg-prog { block-size: 4px; border-radius: 4px; & i { background: linear-gradient(90deg, var(--teal), var(--yellow)); border-radius: 4px; } }
-  .dg-opt { background: var(--paper); box-shadow: 0 0 0 1px var(--sand), 0 2px 10px rgb(0 0 0 / .04);
-    &:hover { background: var(--teal-tint); box-shadow: 0 0 0 1px var(--teal); }
-    & input { accent-color: var(--teal-ink); }
-    &:has(input:checked) { background: var(--teal); color: var(--ink); box-shadow: 0 0 0 2px var(--teal-ink), var(--shadow); } }
-  .dg-n { color: var(--teal-ink); }
-  .dg-res-plan { color: var(--ink); }
-  .dg-res .ana { font-size: .9em; }
-  .dg-why li::before { background: var(--coral); border-radius: 2px; }
-
-  /* 当日の4つ：アイコンと文 */
-  .reasons { display: grid; gap: 2rem; }
-  .reason { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.25rem; align-items: start;
-    & .t-num { display: block; margin-block-end: .5rem; color: #b9b7b2; } }
-  @media (width >= 64rem) { .reasons { grid-template-columns: 1fr 1fr; gap: 3rem 2.5rem; } }
-
-  /* 対象：○と× */
-  .rows--ok li, .rows--ng li { position: relative; padding-inline-start: 2rem; }
-  .rows--ok li::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: 1.05rem; inline-size: 1.25rem; block-size: 1.25rem; border-radius: 50%; background: var(--teal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3L15 7' fill='none' stroke='%232c2c2e' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100%; }
-  .rows--ng li::before { content: ""; position: absolute; inset-inline-start: .25rem; inset-block-start: 1.6rem; inline-size: .75rem; block-size: 2px; background: #a9a7a2; }
-
-  /* 手順の番号を、差し色の丸に */
-  .steps .n { display: inline-grid; place-items: center; inline-size: 1.75rem; block-size: 1.75rem; border-radius: 50%; background: var(--ac, var(--teal)); color: var(--ink); font-size: .75rem; }
-  .steps li { align-items: center; }
-  @media (width < 64rem) { .steps li { grid-template-columns: 2.25rem minmax(0, 1fr); } }
-  .band .steps .n { color: var(--ink); }
-  .flow li::before { color: var(--teal-ink); }
-  .flow .now::before { color: var(--coral-ink); }
-
-  /* よくある質問：1問ずつのカード */
-  .faq { border: 0; display: grid; gap: .75rem; }
-  .faq details { border: 0; background: var(--paper); border-radius: var(--radius-card); box-shadow: var(--shadow); padding-inline: 1.25rem 1rem; }
-  .faq summary { display: flex; gap: .875rem; align-items: center; padding-inline-end: 2rem; }
-  .faq details[open] { box-shadow: var(--shadow-lift); }
-  .faq .ans { display: flex; gap: .875rem; align-items: flex-start; }
-  .qa-mk { display: inline-grid; place-items: center; flex: none; inline-size: 1.75rem; block-size: 1.75rem; border-radius: 8px; font-family: var(--font-en); font-weight: 600; font-size: .875rem; letter-spacing: 0; color: var(--ink); }
-  .qa-mk--q { background: var(--coral); }
-  .qa-mk--a { background: var(--teal); margin-block-start: .25rem; }
-
-  /* ボタン：見積に進むものだけ、濃い珊瑚色＋影（白い文字 4.7:1） */
-  .btn:is([href^="contact.html"], [type="submit"]):not(.line, .light, .dg-next),
-  .btn.xl, .spbar a:last-child, .hdr-cta {
-    background: var(--coral-ink); border-color: var(--coral-ink); color: #fff; box-shadow: 0 6px 20px rgb(211 58 67 / .28);
-    &:hover { background: #b92f37; border-color: #b92f37; color: #fff; }
-  }
-  .dg-next { background: var(--ink); }
-  .band .btn:is([href^="contact.html"], [type="submit"]):not(.line, .light) { color: #fff; }
-  .spbar a:first-child { border-color: var(--teal-ink); color: var(--teal-ink); background: var(--paper); }
-
-  /* サブナビの現在地 */
-  .subnav a[aria-current="true"] { background: var(--ink); color: var(--paper); box-shadow: 0 2px 8px rgb(0 0 0 / .15); }
-  .subnav .subnav-meter { background: linear-gradient(90deg, var(--teal), var(--coral), var(--yellow)); block-size: 3px; }
-
-  /* 帯・囲み */
-  .t-bar { background: var(--sand-d); box-shadow: var(--shadow); }
-  #price .t-bar { background: var(--coral); color: var(--ink); }
-  #option .t-bar { background: var(--yellow); color: var(--ink); }
-  .boxd { box-shadow: var(--shadow-lift); }
-  .boxg { box-shadow: var(--shadow); }
-  .chip { box-shadow: inset 0 0 0 1px rgb(255 255 255 / .12); }
-  .pill { background: rgb(255 255 255 / .1); }
-  .case-tags .pill:first-child { background: var(--yellow); color: var(--ink); border-color: var(--yellow); }
-  .tip-btn { color: var(--teal-ink); }
-  .hero-kind::before { content: ""; display: inline-block; inline-size: 2rem; block-size: 4px; margin-inline-end: .75rem; vertical-align: .3em; border-radius: 4px; background: linear-gradient(90deg, var(--teal) 0 33%, var(--coral) 33% 66%, var(--yellow) 66%); }
 }
