@@ -25,8 +25,10 @@
 /* ---------------------------------------------------------------- tokens */
 @layer tokens {
   :root {
-    --bg: #f0f0f0;
-    --paper: #fbfbfb;
+    --bg: #ffffff;        /* 地は白（参考：recruit.handy.school） */
+    --paper: #fafafa;    /* 白い地に置く箱。影で浮かせる */
+    --cream: #f8f6f3;    /* クリームの面 = rgba(245,242,237,.7) を白に重ねた色 */
+    --wash: #f2fbfc;     /* ティールの淡い面 = rgba(0,180,195,.05) を白に重ねた色 */
     --ink: #2c2c2e;
     --ink-2: #353637;
     --sand: #d7d5d0;
@@ -86,7 +88,7 @@
     --btn-h: clamp(3rem, 2.6389rem + 1.4815vw, 3.75rem);
     --btn-f: clamp(0.8125rem, 0.7222rem + 0.3704vw, 1rem);
 
-    --rail: 9.5rem;   /* PCの左レール */
+    --rail: 12.5rem;  /* PCの左レール（目次の言葉が1行に収まる幅） */
     --head: 3.5rem;   /* スマホのヘッダー */
     --subh: 2.75rem;  /* スマホのサブナビ */
     --bar: 4.25rem;   /* スマホ下部の追従バー */
@@ -133,7 +135,7 @@
   .vh { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   /* 穴埋め：黄色のマーカーと見分けがつくよう、灰色の斜線にする */
   .ana { background: repeating-linear-gradient(135deg, #e4e4e4 0 4px, #f2f2f2 4px 8px); color: #4d4d4d; padding-inline: .2em; border-radius: 3px; box-shadow: inset 0 0 0 1px #c9c9c9; }
-  .band .ana, .boxd .ana, .foot .ana { background: repeating-linear-gradient(135deg, #4d4d50 0 4px, #5a5a5d 4px 8px); color: #f0f0f0; box-shadow: inset 0 0 0 1px #77777a; }
+  .boxd .ana, .foot .ana { background: repeating-linear-gradient(135deg, #4d4d50 0 4px, #5a5a5d 4px 8px); color: #f0f0f0; box-shadow: inset 0 0 0 1px #77777a; }
 }
 
 /* ---------------------------------------------------------------- layout */
@@ -159,9 +161,9 @@
   .sec-3 { margin-block-start: var(--sec-3); }
   .mtl { margin-block-start: var(--mtl); }
 
-  /* 暗い帯と砂色の帯 */
-  .band { background: var(--ink); color: var(--paper); }
-  .bandg { background: var(--sand); }
+  /* 帯：淡いティールとクリーム（地は白） */
+  .band { background: var(--wash); }   /* ティールの淡い面（参考：rgba(0,180,195,.05)） */
+  .bandg { background: var(--cream); }  /* クリームの面（参考：rgba(245,242,237,.7)） */
   .pad-band { padding-block: var(--band); }
   @media (width >= 64rem) {
     .band { margin-inline: 8px; border-radius: var(--radius); }
@@ -182,7 +184,7 @@
   .t-body { font-size: var(--fs-body); line-height: 1.8; letter-spacing: .02em; }
   .t-note { font-size: var(--fs-note); line-height: 1.7; letter-spacing: .04em; }
   .t-sub { color: var(--sub); }
-  .band .t-sub, .boxd .t-sub { color: #b9b7b2; }
+  .boxd .t-sub { color: #b9b7b2; }
   .t-lab {
     display: flex; align-items: center; gap: 8px;
     font-family: var(--font-en); font-weight: 400; font-size: var(--fs-lab); line-height: 1; letter-spacing: .01em;
@@ -219,8 +221,8 @@
     &.sm { min-block-size: 2.25rem; min-inline-size: 0; gap: .5rem; padding: 0 .75rem; border-radius: 4px; font-size: .75rem; }
     &.nav-cta { min-block-size: 2.25rem; min-inline-size: 0; padding: 0 .75rem; gap: .5rem; border-radius: 4px; font-size: .75rem; }
   }
-  .band .btn:not(.line, .light, .xl) { background: var(--paper); color: var(--ink); border-color: var(--paper); }
-  .band .btn.line { color: var(--paper); border-color: var(--paper); &:hover { background: var(--paper); color: var(--ink); } }
+
+
   .btns { display: flex; flex-wrap: wrap; gap: .75rem 1rem; align-items: center; }
   @media (width < 40rem) { .btns > .btn { inline-size: 100%; } }
   .tlink {
@@ -231,12 +233,12 @@
 
   /* ---------- 囲み ---------- */
   .pill { display: inline-flex; align-items: center; min-block-size: 1.5rem; padding: 0 .75rem; border: 1px solid currentColor; border-radius: 30px; font-size: .75rem; line-height: 1; letter-spacing: .1em; white-space: nowrap; }
-  .boxg { background: var(--sand); border-radius: var(--radius); padding: 2rem clamp(1rem, .5rem + 2vw, 2rem) 1.5rem; }
+  .boxg { background: var(--cream); border-radius: var(--radius); padding: 2rem clamp(1rem, .5rem + 2vw, 2rem) 1.5rem; }
   .boxw { background: var(--paper); border-radius: var(--radius); padding: 2rem clamp(1rem, .5rem + 2vw, 2rem) 1.5rem; color: var(--ink); }
   .boxd { background: var(--ink); color: var(--paper); border-radius: var(--radius); padding: clamp(2.5rem, 1.5rem + 3vw, 4rem) clamp(1.5rem, 1rem + 3vw, 4rem); }
   .cta-in { display: flex; flex-wrap: wrap; gap: 2rem 4rem; align-items: center; justify-content: space-between; & > :last-child { flex: 1 1 18rem; max-inline-size: 30rem; } }
   .ph { display: grid; place-items: center; padding: 1.25rem; text-align: center; font-size: .8125rem; line-height: 1.7; letter-spacing: .04em; border-radius: var(--radius); background: var(--sand); color: var(--sub); }
-  .band .ph { background: var(--line-d); color: #c4c4c4; }
+
 
   /* ---------- 一覧と表 ---------- */
   .rows { border-block-end: 1px solid var(--sand);
@@ -253,8 +255,8 @@
     .steps li { grid-template-columns: 1.75rem 15rem minmax(0, 1fr); }
     .steps .b { grid-column: 3; }
   }
-  .band :is(.rows, .rows li, .steps, .steps li, .faq, .faq details) { border-color: var(--line-d); }
-  .band .steps .a small { color: #c4c4c4; }
+
+
 
   .tbl { inline-size: 100%; border-collapse: collapse;
     & th { padding: 0 1rem 1rem 0; border-block-end: 1px solid var(--ink); font-weight: 500; font-size: .875rem; line-height: 1; color: var(--sub); text-align: start; white-space: nowrap; }
@@ -308,7 +310,7 @@
     .hdr {
       position: fixed; inset-block: 0; inset-inline-start: 0; inline-size: var(--rail);
       display: flex; flex-direction: column; gap: 1.5rem; padding: 1.75rem 0 1rem;
-      background: var(--paper); box-shadow: var(--sh-1);
+      background: var(--bg); box-shadow: var(--sh-1);
     }
     .hdr-bar { block-size: auto; padding-inline: 1.25rem; }
     .logo { display: grid; gap: .625rem; white-space: normal; font-size: 1rem; letter-spacing: .16em; padding: 0;
@@ -359,7 +361,7 @@
     .subnav, .railnav {
       flex: 1; min-block-size: 0; block-size: auto; background: none; border: 0;
       & ol { display: grid; gap: .125rem; align-content: start; block-size: 100%; overflow: hidden auto; padding-inline: .75rem; scrollbar-width: thin; }
-      & a { display: block; text-decoration: none; position: relative; padding: .4375rem .75rem .4375rem 1.25rem; border-radius: 8px; font-size: .875rem; white-space: normal; color: var(--ink-2); }
+      & a { display: block; text-decoration: none; position: relative; padding: .4375rem .75rem .4375rem 1.25rem; border-radius: 8px; font-size: .8125rem; line-height: 1.5; white-space: normal; word-break: auto-phrase; color: var(--ink-2); }
       & a::before { content: ""; position: absolute; inset-inline-start: .5rem; inset-block-start: 50%; inline-size: 4px; block-size: 4px; margin-block-start: -2px; border-radius: 50%; background: var(--sand); }
       & a:hover { background: var(--teal-tint); }
       & a[aria-current="true"] { background: var(--teal-tint); color: var(--ink); }
@@ -697,7 +699,7 @@
 
   /* 要点のマーカー：文字の下40%だけ黄色 */
   mark.mk { background: linear-gradient(var(--marker), var(--marker)) no-repeat 0 88% / 100% .55em; color: inherit; padding-inline: .05em; }
-  .band mark.mk, .boxd mark.mk { background-image: linear-gradient(rgb(250 202 0 / .55), rgb(250 202 0 / .55)); }
+  .boxd mark.mk { background-image: linear-gradient(rgb(250 202 0 / .55), rgb(250 202 0 / .55)); }
   @media (prefers-reduced-motion: no-preference) {
     .js mark.mk { background-size: 0 .55em; transition: background-size .8s cubic-bezier(.58, .21, .41, .96) .15s; }
     .js mark.mk.is-in { background-size: 100% .55em; }
@@ -759,7 +761,7 @@
   .steps .n { display: inline-grid; place-items: center; inline-size: 1.75rem; block-size: 1.75rem; border-radius: 50%; background: var(--ac, var(--teal)); color: var(--ink); font-size: .75rem; }
   .steps li { align-items: center; }
   @media (width < 64rem) { .steps li { grid-template-columns: 2.25rem minmax(0, 1fr); } }
-  .band .steps .n { color: var(--ink); }
+
   .flow li::before { color: var(--teal-ink); }
   .flow .now::before { color: var(--coral-ink); }
 
@@ -780,7 +782,7 @@
     &:hover { background: #b92f37; border-color: #b92f37; color: #fff; }
   }
   .dg-next { background: var(--ink); }
-  .band .btn:is([href^="contact.html"], [type="submit"]):not(.line, .light) { color: #fff; }
+
   .spbar a:first-child { border-color: var(--teal-ink); color: var(--teal-ink); background: var(--paper); }
 
   /* サブナビの現在地 */

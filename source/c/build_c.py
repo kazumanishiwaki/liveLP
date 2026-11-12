@@ -65,7 +65,7 @@ def head(title, desc, home=False, extra=''):
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#f0f0f0">
+<meta name="theme-color" content="#ffffff">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232c2c2e'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23d7281e'/%3E%3C/svg%3E">
 <script>document.documentElement.classList.add('js');{intro}</script>
 <link rel="preload" href="assets/fonts/zkgn-500.woff2" as="font" type="font/woff2" crossorigin>
@@ -242,8 +242,10 @@ FAQ = [
 ]
 
 def index():
-    sub = [('plan', '診断'), ('switching', '画面'), ('scope', '対象'), ('price', '料金'), ('team', '体制'), ('day', '当日'), ('demo', 'ツール'),
-           ('works', '事例'), ('option', '追加'), ('coaching', 'コーチング'), ('public', '発注'), ('faq', '質問'), ('contact', '見積')]
+    sub = [('plan', '8問でプラン診断'), ('switching', '配信画面の切り替え'), ('scope', 'お引き受けする会'), ('price', '25万円に含まれるもの'),
+           ('team', '当日の体制と機材'), ('day', '当日の流れ'), ('demo', '現場の道具を試す'), ('works', '事例と金額'),
+           ('option', '写真・映像の追加'), ('coaching', '自分たちで配信する'), ('public', '大学・公共機関の発注'), ('faq', 'よくある質問'),
+           ('contact', '見積を依頼する')]
     intro = '<div class="intro" aria-hidden="true"><p>' + ''.join(f'<span style="--i:{i}">{c}</span>' for i, c in enumerate(NAME_EN)) + '</p></div>'
 
     hero = f'''<section class="hero" aria-labelledby="hero-title"><div class="wrap">
@@ -422,7 +424,7 @@ def contact():
 <tr><th>予備の録画機・予備の回線</th><td class="r">含む</td></tr><tr><th>打ち合わせ・会場の下見・録画データの納品</th><td class="r">含む</td></tr>
 <tr><th>消費税（10%）</th><td class="r">25,000</td></tr><tr><th>合計</th><td class="r">275,000</td></tr></table></div>'''
     return (head(f'お問い合わせ・お見積｜ハイブリッド配信のご相談｜{NAME}', '日程と会場、登壇者の人数がわかれば見積書をお出しします。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。')
-            + header(False, [('top', '見積の依頼'), ('flow', '送信後の流れ'), ('sample', '見積書の見本'), ('consult', '相談'), ('tel', '電話')]) + f'''<main id="main">
+            + header(False, [('top', '見積を依頼する'), ('flow', '送信後の流れ'), ('sample', '見積書の見本'), ('consult', '見積の前に相談する'), ('tel', '電話で問い合わせる')]) + f'''<main id="main">
 <div class="wrap ph-head stack s-48" id="top"><nav aria-label="パンくず"><ol class="crumb"><li><a href="index.html">トップ</a></li><li aria-current="page">お問い合わせ・お見積</li></ol></nav>
 {lab('Contact')}<h1 class="t-h1">見積書をお送りします</h1><p class="t-lead">{mk('必須の4項目だけ')}で送信できます。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。</p></div>
 <div class="wrap g75">
@@ -469,27 +471,28 @@ def rules():
         ('word-break: auto-phrase', 'Limited', '見出しを文節で改行', '未対応では、通常の折り返し'),
     ]
     tr = ''.join(f'<tr><th scope="row">{a}</th><td data-l="Baseline">{b}</td><td data-l="使っている場所">{c}</td><td data-l="使えないとき">{d}</td></tr>' for a, b, c, d in apis)
-    tokens = re.findall(r'--(bg|paper|ink|ink-2|sand|sand-d|sub|red|teal|teal-ink|coral|coral-ink|yellow|marker): (#[0-9a-f]{6});', css)
-    names = {'bg': '地：ページの背景', 'paper': '紙：フォーム、白い箱', 'ink': '墨：文字、ボタン、暗い帯', 'ink-2': '墨（淡）：質問の文字', 'sand': '砂：帯、囲み、罫線', 'sand-d': '砂（濃）：プラン名のバー', 'sub': '副文字：補足', 'red': '配信中の赤：配信中の印と、必須の印だけ', 'teal': 'ティール（主色）：目次の現在地・診断・アイコン（墨の文字と5.5:1）', 'teal-ink': 'ティール（濃）：地の上の文字', 'coral': '珊瑚：Q・番号・アイコン（墨の文字と4.5:1）', 'coral-ink': '珊瑚（濃）：見積に進むボタン（白い文字と4.7:1）', 'yellow': '黄：アイコン・タグ（墨の文字と9.0:1）', 'marker': 'マーカー：要点の下線'}
+    tokens = re.findall(r'--(bg|paper|cream|wash|ink|ink-2|sand|sand-d|sub|red|teal|teal-ink|coral|coral-ink|yellow|marker): (#[0-9a-f]{6});', css)
+    names = {'bg': '地：ページの背景（白）', 'paper': '紙：白い地に置く箱、フォーム', 'cream': 'クリーム：帯、囲み', 'wash': '淡いティール：帯', 'ink': '墨：文字、ボタン、フッター', 'ink-2': '墨（淡）：質問の文字', 'sand': '砂：罫線', 'sand-d': '砂（濃）：プラン名のバー', 'sub': '副文字：補足', 'red': '配信中の赤：配信中の印と、必須の印だけ', 'teal': 'ティール（主色）：目次の現在地・診断・アイコン（墨の文字と5.5:1）', 'teal-ink': 'ティール（濃）：地の上の文字', 'coral': '珊瑚：Q・番号・アイコン（墨の文字と4.5:1）', 'coral-ink': '珊瑚（濃）：見積に進むボタン（白い文字と4.7:1）', 'yellow': '黄：アイコン・タグ（墨の文字と9.0:1）', 'marker': 'マーカー：要点の下線'}
     sw = ''.join(f'<li class="stack s-16"><span style="display:block;block-size:4rem;border-radius:6px;background:{v};box-shadow:inset 0 0 0 1px rgb(0 0 0 / .08)"></span><span class="t-note"><b>{v.upper()}</b><br>{names[k]}</span></li>' for k, v in tokens)
     type_rows = [('大見出し', '26 → 50', 'カメラ5台はいりません。'), ('セクション見出し', '26 → 44', '事例を公開しています'), ('囲みの見出し', '18 → 28', '日程と会場だけ'),
                  ('小見出し', '18 → 26', '持ち込む機材の内訳'), ('カードの題・質問', '16 → 20', '登壇者は何人ですか'), ('リード', '14 → 18', '登壇者を迎え、進行を見守る。'),
                  ('本文', '14 → 16', 'マイク音声を直接取り込みます。'), ('補足', '12 → 14', '相見積にそのまま使えます')]
     ty = ''.join(f'<tr><th scope="row">{a}</th><td data-l="大きさ（px）">{b}</td><td data-l="見本">{c}</td></tr>' for a, b, c in type_rows)
     return (head(f'デザインルール｜{NAME}', 'カルラライブのサイトのデザインルールと、使っている Web 標準の一覧です。')
-            + header(False, [('rules-top', 'はじめに'), ('layout', 'レイアウト'), ('type', '文字'), ('color', '色'), ('marks', '目印と影'), ('motion', '動き'), ('platform', 'Web標準')]) + f'''<main id="main"><div class="wrap ph-head stack s-48" id="rules-top">{lab('Design rules')}<h1 class="t-h1">静かなグレーに、<br>ティールで道しるべを置く。</h1>
+            + header(False, [('rules-top', 'このページについて'), ('layout', '画面の組み方'), ('type', '文字の大きさと字間'), ('color', '色の役割'), ('marks', '目印と影'), ('motion', '動きの決まり'), ('platform', '使っているWeb標準')]) + f'''<main id="main"><div class="wrap ph-head stack s-48" id="rules-top">{lab('Design rules')}<h1 class="t-h1">白い地に、<br>ティールで道しるべを置く。</h1>
 <p class="t-lead">C案を元に、スマホを基本に組み直したサイトのルールです。色・影・目印は recruit.handy.school の仕組みを参考にしています。文字と余白は、幅390pxのスマホから1200pxのPCまで、段差なく大きくなります。</p></div>
 <section class="sec-3" id="layout"><div class="wrap g57"><div class="stk">{lab('Layout')}</div><div class="stack s-48"><h2 class="t-h2">スマホは1段、PCは左のレール＋2段</h2>
-<ul class="rows"><li>スマホを基本に書き、幅1024px以上で広げます</li><li>PCは左に幅152pxの固定レールを置きます。上からロゴ、現在地つきの目次、2つの行動（黄＝8問でプラン診断、濃い珊瑚＝見積を依頼する）、ページの切り替え。右端の細い線が、ページを読み進めた量です</li><li>スマホでは上のバーと現在地つきのサブナビが一緒に追従し、下部に追従ボタン（プラン診断／見積を依頼する）を置きます。目次の中身はPCのレールと同じです</li><li>本文はレールの右で、左5：右7の2段</li><li>プラン診断はトップの最初の画面に置き、PCでは見出しの右、スマホでは見出しのすぐ下です</li></ul></div></div></section>
+<ul class="rows"><li>スマホを基本に書き、幅1024px以上で広げます</li><li>PCは左に幅200pxの固定レールを置きます。上からロゴ、現在地つきの目次（単語ではなく「何が書いてあるか」がわかる言葉で）、2つの行動（黄＝8問でプラン診断、濃い珊瑚＝見積を依頼する）、ページの切り替え。右端の細い線が、ページを読み進めた量です</li><li>スマホでは上のバーと現在地つきのサブナビが一緒に追従し、下部に追従ボタン（プラン診断／見積を依頼する）を置きます。目次の中身はPCのレールと同じです</li><li>本文はレールの右で、左5：右7の2段</li><li>プラン診断はトップの最初の画面に置き、PCでは見出しの右、スマホでは見出しのすぐ下です</li></ul></div></div></section>
 <section class="sec-3" id="type"><div class="wrap g57"><div class="stk">{lab('Type')}</div><div class="stack s-48"><h2 class="t-h2">1書体、1つの太さ</h2>
 <table class="tbl"><thead><tr><th scope="col">役割</th><th scope="col">大きさ（px、スマホ → PC）</th><th scope="col">見本</th></tr></thead><tbody>{ty}</tbody></table>
 <p class="t-note t-sub">和文：Zen Kaku Gothic New の Medium（使う文字だけに絞って同梱）／英字・数字：Helvetica Neue。入力欄の文字はスマホでも16px。字間は大きさの2%、本文とリードの行送りは1.8、見出しは1.45。</p></div></div></section>
-<section class="sec-3" id="color"><div class="wrap g57"><div class="stk">{lab('Color')}</div><div class="stack s-48"><h2 class="t-h2">灰色の地に、主色のティール</h2>
+<section class="sec-3" id="color"><div class="wrap g57"><div class="stk">{lab('Color')}</div><div class="stack s-48"><h2 class="t-h2">白の地に、主色のティール</h2>
 <ul class="logos" style="grid-template-columns:repeat(auto-fill,minmax(9rem,1fr))">{sw}</ul>
 <ul class="rows"><li>主色はティール。目次の現在地、ラベルの四角、一覧の見出しの下線、手順の番号、診断で選んだ答え、プラン名の帯に使います</li>
 <li>珊瑚は「行動」と「数える」もの：見積に進むボタン（白い文字なので濃い珊瑚 #D33A43）、よくある質問のQ</li>
 <li>黄は「気軽さ」と「要点」：プラン診断のボタン、要点のマーカー</li>
-<li>差し色は小さな面にだけ使い、大きな面は灰色・砂色・白のまま。明るい差し色の上には墨の文字だけを乗せます</li>
+<li>地は白。セクションの面はクリーム（#F8F6F3）とティールの淡い色（#F2FBFC）の2つだけで、どちらも参考サイトの半透明の色を白に重ねた値です</li>
+<li>差し色は小さな面にだけ使い、大きな面は白・クリーム・淡いティールのまま。明るい差し色の上には墨の文字だけを乗せます</li>
 <li>キーボードで操作しているときの枠は、見落とさないよう黄色（#F0B400）</li></ul></div></div></section>
 <section class="sec-3" id="marks"><div class="wrap g57"><div class="stk">{lab('Marks &amp; Shadow')}</div><div class="stack s-48"><h2 class="t-h2">目が滑らないための目印</h2>
 <p class="t-lead">長いページでも読む場所を見失わないよう、4つの目印を決まった場所にだけ置きます。</p>
