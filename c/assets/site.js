@@ -256,6 +256,27 @@ $$('.subnav').forEach((nav) => {
   update();
 });
 
+/* ------------------------------------------------ 3b. スマホではプラン診断を全画面のモーダルで開く（PCはその場で答える） */
+{
+  const modal = $('#diag-modal');
+  if (modal && typeof modal.showModal === 'function') {
+    let opener = null;
+    const open = (from) => {
+      if (pc.matches || modal.open) return false;
+      opener = from; modal.showModal();
+      return true;
+    };
+    document.addEventListener('click', (e) => {
+      const t = e.target.closest('[data-open-diag], a[href$="#plan"]');
+      if (!t || pc.matches) return;
+      if (t.closest('#menu')) $('#menu').close();
+      if (open(t)) e.preventDefault();
+    });
+    modal.addEventListener('close', () => { opener?.focus(); opener = null; });
+    pc.addEventListener('change', () => { if (pc.matches && modal.open) modal.close(); });
+  } else if (modal) { modal.classList.add('is-inline'); $('.dg-launch')?.remove(); }
+}
+
 /* ------------------------------------------------ 4b. 要点のマーカー：画面に入ったら引く（CSS の transition。動きを減らす設定では最初から引いた状態） */
 {
   const marks = $$('mark.mk');

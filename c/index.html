@@ -39,6 +39,9 @@
 <section id="plan" class="hero-plan stack s-16" aria-labelledby="plan-title">
 <div class="dg-top"><p class="t-lab">Plan check</p><p class="t-note t-sub">1分ほどで終わります</p></div>
 <h2 class="t-ct" id="plan-title">8問で、あなたの会に合うプランと費用がわかります</h2>
+<button type="button" class="dg-launch" data-open-diag aria-haspopup="dialog" aria-controls="diag-modal"><span class="dg-launch-t">プラン診断をはじめる</span><span class="dg-launch-s">8問・1分ほど。答えると、プランと費用が出ます</span><span class="dg-launch-a" aria-hidden="true">→</span></button>
+<dialog id="diag-modal" class="dg-modal" aria-label="プラン診断">
+<div class="dg-modal-head"><p class="t-ct">プラン診断</p><form method="dialog"><button class="menu-close">閉じる</button></form></div>
 <div class="dg" data-dg>
 <div class="dg-head"><p class="dg-count"><b class="dg-i">1</b> / 8</p><div class="dg-prog" aria-hidden="true"><i></i></div><button type="button" class="dg-back" hidden>戻る</button></div>
 <p class="vh dg-live" aria-live="polite"></p>
@@ -49,6 +52,7 @@
 </form>
 <section class="dg-res" tabindex="-1" aria-labelledby="dg-result-title" aria-live="polite"></section>
 </div>
+</dialog>
 </section>
 <div class="hero-side stack">
 <ul class="ticklist hero-text">
