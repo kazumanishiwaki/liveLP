@@ -1,465 +1,184 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>トップページ デザイン</title>
-<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500&display=swap" rel="stylesheet">
-<style>
-
-body{margin:0}
-html{scroll-behavior:smooth}
-a{color:#2c2c2e}a:hover{color:#6c6b68}
-a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #2c2c2e;outline-offset:3px}
-input::placeholder,textarea::placeholder{color:#777673}
-.root{font-family:'Helvetica Neue', Helvetica, Arial, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;font-weight:500;color:#2c2c2e;background:#f0f0f0;font-size:16px;line-height:2;letter-spacing:.08em;position:relative}
-.wrap{max-width:1920px;margin:0 auto;padding:0 clamp(2.5rem,-1.944rem + 6.94vw,5rem);box-sizing:border-box}
-.g57{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;align-items:start}
-.g75{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:40px;align-items:start}
-.stk{position:sticky;top:120px}
-.t-h1{margin:0;font-size:50px;line-height:1.6;letter-spacing:.04em;font-weight:500}
-.t-h2{margin:0;font-size:44px;line-height:1.6;letter-spacing:.08em;font-weight:500}
-.t-h2s{margin:0;font-size:28px;line-height:1.6;letter-spacing:.09em;font-weight:500}
-.t-h3{margin:0;font-size:26px;line-height:1.8;letter-spacing:.08em;font-weight:500}
-.t-ct{margin:0;font-size:20px;line-height:1.8;letter-spacing:.08em;font-weight:500}
-.t-lead{margin:0;font-size:18px;line-height:2.2;letter-spacing:.09em}
-.t-body{margin:0;font-size:16px;line-height:2;letter-spacing:.09em}
-.t-hero{margin:0;font-size:16px;line-height:2.2;letter-spacing:.08em}
-.t-price{margin:0;font-size:18px;line-height:2.1;letter-spacing:.04em}
-.t-note{margin:0;font-size:14px;line-height:1.6;letter-spacing:.04em}
-.t-sm{margin:0;font-size:13px;line-height:1.8;letter-spacing:.04em}
-.t-lab{margin:0;display:flex;align-items:center;gap:8px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:18px;line-height:1;letter-spacing:.01em}
-.t-lab::before{content:"";width:8px;height:8px;background:currentColor;flex:none}
-.t-num{font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:16px;line-height:1;letter-spacing:.03em}
-.t-bar{margin:0;padding:16px;border-radius:6px;text-align:center;font-size:22px;line-height:1;letter-spacing:.08em;font-weight:500;background:#7d7466;color:#fbfbfb}
-.t-big{margin:0;font-size:104px;line-height:1;letter-spacing:0}.t-big small{font-size:26px;letter-spacing:.08em}
-.t-big2{margin:0;font-size:72px;line-height:1;letter-spacing:0}.t-big2 small{font-size:22px;letter-spacing:.08em}
-.sub{margin:0;align-self:flex-start;padding:6px 0 4px;border-bottom:1px solid currentColor;font-size:16px;line-height:1;letter-spacing:.04em}
-.mt40{margin-top:40px}.mt200{margin-top:200px}.mt160{margin-top:160px}.mt120{margin-top:120px}.mtl{margin-top:120px}
-.st48{display:flex;flex-direction:column;gap:48px}
-.st56{display:flex;flex-direction:column;gap:56px;align-items:flex-start}
-.st64{display:flex;flex-direction:column;gap:64px}
-.st24{display:flex;flex-direction:column;gap:24px}
-.band{margin:0 8px;border-radius:6px;background:#2c2c2e;color:#fbfbfb}
-.bandg{background:#d7d5d0}
-.pad-band{padding-top:160px;padding-bottom:160px}
-.btn{display:inline-flex;align-items:center;justify-content:space-between;gap:40px;height:60px;min-width:273px;padding:0 28px;border-radius:6px;font-size:16px;line-height:1;letter-spacing:.08em;text-decoration:none;box-sizing:border-box;background:#2c2c2e;color:#fbfbfb;border:1px solid #2c2c2e}
-.btn:hover{color:#fbfbfb}
-.btn.line{background:transparent;color:#2c2c2e}.btn.line:hover{color:#2c2c2e}
-.btn.light{background:#fbfbfb;color:#2c2c2e;border-color:#fbfbfb}.btn.light:hover{color:#2c2c2e}
-.btn.full{display:flex;width:100%;min-width:0}
-.btn.xl{display:flex;width:100%;min-width:0;height:92px;padding:0 40px;font-size:20px;background:#d7d5d0;color:#2c2c2e;border-color:#d7d5d0}.btn.xl:hover{color:#2c2c2e}
-.btn.blk{display:flex;width:100%;min-width:0;height:58px;padding:0 16px;font-size:20px}
-.btn.sm{height:33px;min-width:0;padding:0 12px;gap:8px;border-radius:4px;font-size:12px}
-.bt{position:relative;display:block;overflow:hidden;padding:.1em 0;line-height:1.1}
-.bt>span{display:block;transition:transform .65s cubic-bezier(.19,1,.22,1)}
-.bt>span+span{position:absolute;left:0;top:100%;padding-top:.1em}
-.btn:hover .bt>span,.nav a:hover .bt>span{transform:translateY(calc(-100% - .1em))}
-.btn svg{flex:none;transition:transform .65s cubic-bezier(.19,1,.22,1)}
-.btn:hover svg{transform:translateX(3px)}
-.tlink{display:inline-flex;align-items:center;gap:8px;padding:14px 0 6px;font-size:14px;line-height:1;letter-spacing:.08em;text-decoration:none;background:linear-gradient(currentColor,currentColor) left bottom/100% 1px no-repeat}
-.tlink:hover{animation:ul .7s cubic-bezier(.19,1,.22,1)}
-.pill{display:inline-flex;align-items:center;height:27px;padding:0 12px;border-radius:30px;font-size:12px;line-height:1;letter-spacing:.1em;box-sizing:border-box;border:1px solid #2c2c2e;background:#2c2c2e;color:#fbfbfb;white-space:nowrap}
-.pill.line{background:transparent;color:#2c2c2e}
-.pill.inv{border-color:#fbfbfb;background:#fbfbfb;color:#2c2c2e}.pill.inv.line{background:transparent;color:#fbfbfb}
-.boxg{background:#d7d5d0;border-radius:6px;padding:32px 32px 24px}
-.boxw{background:#fbfbfb;border-radius:6px;padding:32px 32px 24px}
-.boxd{background:#2c2c2e;border-radius:6px;padding:64px}
-.fld{display:flex;flex-direction:column;gap:10px}
-.fld label{font-size:14px;line-height:1;color:#55544f}
-.fld input,.fld textarea{height:58px;padding:0 16px;border:0;border-radius:6px;background:#f0f0f0;color:#2c2c2e;font-size:16px;font-family:inherit;font-weight:500;letter-spacing:.04em;box-sizing:border-box;width:100%}
-.fld textarea{height:auto;padding:16px;line-height:1.8}
-.fld.w input,.fld.w textarea{background:#fbfbfb}
-.f2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-.hs{display:flex;flex-wrap:wrap;gap:64px 56px}
-.hs>.hi{flex:1 1 320px;min-width:0}
-.hs.w40{gap:64px 40px}.hs.w40>.hi{flex-basis:420px}
-.hs.w60{gap:80px 60px}.hs.w60>.hi{flex-basis:340px}
-.ph{display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;font-size:13px;line-height:1.7;letter-spacing:.04em;box-sizing:border-box;border-radius:6px}
-.zoom{overflow:hidden;border-radius:6px}
-.zoom>.ph{border-radius:0;transition:transform .42s cubic-bezier(.19,1,.22,1)}
-.zoom>img{display:block;transition:transform .42s cubic-bezier(.19,1,.22,1)}
-.hi:hover .zoom>.ph,.hi:hover .zoom>img{transform:scale(1.04)}
-.case-r{overflow:hidden}
-.case-r img{display:block;width:100%;height:100%;min-height:0;object-fit:cover;transition:transform .42s cubic-bezier(.19,1,.22,1)}
-.case-r img:first-child{grid-column:1 / 4}
-.case:hover .case-r img{transform:scale(1.02)}
-.case-l>*{position:relative}
-.case-l>.case-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(28px) brightness(.45);transform:scale(1.2)}
-.tiles{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-.tiles li{min-height:80px;padding:20px 24px;background:#f0f0f0;border-radius:6px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:16px;line-height:1.6;letter-spacing:.08em;box-sizing:border-box}
-.chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-.chip{background:rgba(240,240,240,.2);border-radius:4px;padding:16px 20px;text-align:center}
-.chip b{display:block;font-weight:500;font-size:14px;line-height:1;letter-spacing:.03em}
-.chip span{display:block;margin-top:12px;font-size:15px;line-height:1.5;letter-spacing:.03em}
-.tbl{width:100%;border-collapse:collapse}
-.tbl th{padding:0 16px 16px 0;border-bottom:1px solid #2c2c2e;font-weight:500;font-size:14px;line-height:1;color:#6c6b68;text-align:left;white-space:nowrap}
-.tbl td{padding:20px 16px 20px 0;border-bottom:1px solid #d7d5d0;font-size:16px;line-height:1.8;vertical-align:top}
-.tbl td:last-child,.tbl th:last-child{padding-right:0}
-.tbl .r{text-align:right;white-space:nowrap}
-.tbl .k{white-space:nowrap}.tbl .m{color:#6c6b68}
-.rows{margin:0;padding:0;list-style:none;border-bottom:1px solid #d7d5d0}
-.rows li{padding:12px 0;border-top:1px solid #d7d5d0;font-size:16px;line-height:2.2;letter-spacing:.09em}
-.steps{margin:0;padding:0;list-style:none;border-bottom:1px solid #d7d5d0}
-.steps li{display:grid;grid-template-columns:28px 240px minmax(0,1fr);gap:8px 24px;align-items:baseline;padding:28px 0;border-top:1px solid #d7d5d0}
-.steps .n{font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:16px;line-height:1;letter-spacing:.03em}
-.steps .a{font-size:20px;line-height:1.6;letter-spacing:.1em}
-.steps .a small{font-size:14px;letter-spacing:.04em;color:#6c6b68}
-.steps .b{font-size:16px;line-height:2;letter-spacing:.09em}
-.qa{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;padding:20px 0;border-top:1px solid #d7d5d0}
-.qa span{font-size:18px;line-height:1.8;letter-spacing:.09em}
-.qa button{height:44px;min-width:88px;padding:0 12px;border:1px solid #2c2c2e;border-radius:30px;background:transparent;color:#2c2c2e;font-size:14px;line-height:1;font-family:inherit;font-weight:500;letter-spacing:.1em;cursor:pointer;transition:background .3s,color .3s}
-.qa button:hover{background:#2c2c2e;color:#fbfbfb}
-.faq{margin:0;border-bottom:1px solid #d7d5d0}
-.faq div{padding:32px 0;border-top:1px solid #d7d5d0}
-.faq dt{font-size:20px;line-height:1.8;letter-spacing:.08em;color:#353637}
-.faq dd{margin:12px 0 0;font-size:16px;line-height:2;letter-spacing:.09em;color:#55544f}
-.case{position:sticky;top:0;height:800px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);background:#2c2c2e;color:#fbfbfb;overflow:hidden}
-.case-l{position:relative;padding:72px clamp(2.5rem,-1.944rem + 6.94vw,5rem) 64px;display:flex;flex-direction:column;gap:32px;background:#3b3b3e}
-.case-r{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:1.4fr 1fr 1fr;gap:6px;padding:0 0 0 6px}
-.case-r .ph{border-radius:0;background:#4a4a4d;color:#fbfbfb}
-.case-r .ph:first-child{grid-column:1 / 4}
-.cams{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-.cam{min-height:78px;padding:16px 12px;border:0;border-radius:4px;background:rgba(240,240,240,.2);color:#fbfbfb;font-family:inherit;font-weight:500;text-align:center;cursor:pointer;transition:background .3s}
-.cam:hover{background:rgba(240,240,240,.3)}
-.cam b{display:block;font-weight:500;font-size:14px;line-height:1;letter-spacing:.03em}
-.cam span{display:block;margin-top:12px;font-size:16px;line-height:1.3;letter-spacing:.03em}
-.screen{position:relative;aspect-ratio:16 / 10;background:#4a4a4d;border-radius:4px;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font-size:14px;letter-spacing:.04em;color:#fbfbfb;box-sizing:border-box;overflow:hidden}
-.screen .shot{animation:fadein .6s cubic-bezier(.19,1,.22,1)}
-.onair{position:absolute;left:16px;top:16px;display:flex;align-items:center;gap:8px;height:26px;padding:0 10px;border-radius:40px;background:#fbfbfb;color:#2c2c2e;font-size:12px;line-height:1}
-.onair i{width:8px;height:8px;border-radius:50%;background:#d7281e;animation:blink 1.6s ease-in-out infinite}
-.ring{position:absolute;right:16px;top:12px;width:44px;height:44px}
-.ring svg{display:block}
-.ring circle.p{stroke-dasharray:113.1;stroke-dashoffset:113.1;animation:ring 5s linear forwards;transform:rotate(-90deg);transform-origin:22px 22px}
-.ring span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:12px;letter-spacing:0;color:#fbfbfb}
-.sd{position:absolute;right:clamp(16px,2.6vw,40px);top:270px;display:flex;flex-direction:column;align-items:center;gap:12px}
-.sd span{writing-mode:vertical-rl;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:14px;line-height:1;letter-spacing:0;color:#353637}
-.sd i{position:relative;display:block;width:1px;height:96px;background:#d7d5d0;overflow:hidden}
-.sd i::after{content:"";position:absolute;left:0;top:0;width:1px;height:32px;background:#353637;animation:sd 2.4s cubic-bezier(.19,1,.22,1) infinite}
-.mq{position:relative;z-index:1;overflow:hidden;white-space:nowrap;pointer-events:none;margin-bottom:-14px}
-.mq-t{display:inline-flex;animation:mq 50s linear infinite}
-.mq-t span{font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:87px;line-height:1;letter-spacing:.03em;color:#d7d5d0;padding-right:.5em}
-.hdr{position:fixed;left:0;right:0;top:0;z-index:50;height:95px;mix-blend-mode:difference;color:#cececb;pointer-events:none}
-.hdr .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px;padding-right:200px}
-.hdr a,.hdr button{pointer-events:auto;color:#cececb}
-.logo{font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:17px;line-height:1;letter-spacing:.2em;text-decoration:none;padding:14px 0}
-.nav{display:flex;align-items:center;gap:24px;font-size:14px;line-height:1}
-.nav a{text-decoration:none;padding:12px 0}
-.hcta{position:fixed;z-index:51;top:31px;right:40px}
-.hamb{display:none}
-.hphone{font-size:14px;line-height:1.6}
-.intro{position:fixed;inset:0;z-index:100;background:#2c2c2e;display:flex;align-items:center;justify-content:center;pointer-events:none;animation:wipe .9s cubic-bezier(.19,1,.22,1) 1.5s forwards}
-.intro p{margin:0;display:flex;overflow:hidden;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:clamp(28px,4.6vw,64px);line-height:1.2;letter-spacing:.2em;color:#fbfbfb}
-.intro p span{display:inline-block;transform:translateY(110%);animation:rise 1s cubic-bezier(.19,1,.22,1) forwards}
-.foot{margin:160px 8px 8px;background:#2c2c2e;border-radius:6px;padding:74px clamp(16px,3.9vw,56px) 80px;color:#fbfbfb}
-.fnav{display:flex;flex-wrap:wrap;gap:0 40px;justify-content:space-between;padding-bottom:28px;border-bottom:1px solid #a8a6a2}
-.fnav a{font-size:15px;line-height:1;color:#fbfbfb;text-decoration:none;padding:12px 0}
-.sp{display:none}
-.band .rows,.band .rows li,.band .steps,.band .steps li,.band .faq,.band .faq div{border-color:#4a4a4d}
-.band .steps .a small,.band .faq dd{color:#c4c4c4}
-.band .faq dt{color:#fbfbfb}
-.spbar{display:none}
-.cta-in{display:flex;flex-wrap:wrap;gap:32px 64px;align-items:center;justify-content:space-between}
-.js-anim [data-rv] .wm{display:inline-block;overflow:hidden;vertical-align:top}
-.js-anim [data-rv] .w{display:inline-block;opacity:0;transform:translateY(.9em)}
-.js-anim [data-rv].is-in .w{animation:rw .92s cubic-bezier(.19,1,.22,1) forwards}
-.js-anim [data-rv=fade]{opacity:0;transform:translateY(24px)}
-.js-anim [data-rv=fade].is-in{animation:fadeup .92s cubic-bezier(.19,1,.22,1) forwards}
-.js-anim [data-rv=media]{opacity:0;transform:translateY(40px)}
-.js-anim [data-rv=media].is-in{animation:fadeup 1.1s cubic-bezier(.19,1,.22,1) forwards}
-.js-anim .nav .w{display:inline-block;opacity:0;transform:translateY(.9em);animation:rw .92s cubic-bezier(.19,1,.22,1) forwards}
-@keyframes rw{0%{opacity:0;transform:translateY(.9em)}100%{opacity:1;transform:none}}
-@keyframes fadeup{0%{opacity:0;transform:translateY(24px)}100%{opacity:1;transform:none}}
-@keyframes fadein{from{opacity:0}to{opacity:1}}
-@keyframes rise{to{transform:none}}
-@keyframes wipe{0%{clip-path:inset(0)}100%{clip-path:inset(0 0 100% 0)}}
-@keyframes ul{0%{background-position:right bottom;background-size:100% 1px}50%{background-position:right bottom;background-size:0% 1px}51%{background-position:left bottom;background-size:0% 1px}100%{background-position:left bottom;background-size:100% 1px}}
-@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes sd{0%{opacity:0;transform:translateY(0)}12%{opacity:1}78%{opacity:1;transform:translateY(64px)}100%{opacity:0;transform:translateY(64px)}}
-@keyframes ring{to{stroke-dashoffset:0}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
-@media (max-width:1023px){
-.wrap{padding:0 16px}
-.g57,.g75{grid-template-columns:minmax(0,1fr);gap:24px}
-.stk{position:static}
-.t-h1{font-size:26px;letter-spacing:.05em}
-.t-h2{font-size:26px;letter-spacing:.06em}
-.t-h2s{font-size:18px;letter-spacing:.08em}
-.t-h3{font-size:18px}
-.t-ct{font-size:16px;letter-spacing:.1em}
-.t-lead{font-size:14px;line-height:2.1;letter-spacing:.1em}
-.t-body{font-size:12px;line-height:1.8}
-.t-hero{font-size:12px;line-height:2.1;letter-spacing:.06em}
-.t-price{font-size:16px}
-.t-note,.t-sm{font-size:12px}
-.t-lab{font-size:14px}
-.t-num{font-size:14px}
-.t-bar{padding:14px 16px;border-radius:4px;font-size:16px}
-.t-big{font-size:64px}.t-big small{font-size:16px}
-.t-big2{font-size:48px}.t-big2 small{font-size:16px}
-.sub{font-size:13px}
-.mt200,.mt160{margin-top:100px}.mt120{margin-top:80px}.mtl{margin-top:88px}
-.st48{gap:16px}.st56{gap:28px}.st64{gap:40px}
-.band{margin:0;border-radius:0}
-.pad-band{padding-top:80px;padding-bottom:80px}
-.btn{height:48px;min-width:0;gap:24px;padding:0 20px;font-size:12px}
-.btn.xl{height:54px;padding:0 16px;border-radius:4px;font-size:14px}
-.btn.blk{height:52px;font-size:14px}
-.btn.sm{height:30px;padding:0 10px;font-size:11px}
-.tlink{font-size:12px}
-.pill{height:20px;padding:0 10px;border-radius:40px;font-size:10px}
-.boxg,.boxw{padding:32px 16px 24px}
-.boxd{padding:40px 24px 24px}
-.fld label{font-size:12px}
-.fld input{height:52px}
-.f2{grid-template-columns:minmax(0,1fr)}
-.hs,.hs.w40,.hs.w60{flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x mandatory;gap:16px;margin:0 -16px;padding:0 16px 12px;scrollbar-width:none}
-.hs>.hi,.hs.w40>.hi,.hs.w60>.hi{flex:0 0 280px;scroll-snap-align:start}
-.tiles{gap:12px}.tiles li{min-height:64px;padding:12px;font-size:12px}
-.chips{gap:12px}.chip{padding:12px}.chip b{font-size:10px}.chip span{margin-top:8px;font-size:14px}
-.tbl thead{display:none}
-.tbl,.tbl tbody{display:block}
-.tbl tr{display:block;padding:16px 0;border-bottom:1px solid #d7d5d0}
-.tbl td{display:block;padding:0;border:0;font-size:12px;line-height:1.8}
-.tbl td.k{font-size:14px}.tbl .r{text-align:left}
-.rows li{padding:10px 0;font-size:12px;line-height:2}
-.steps li{grid-template-columns:24px minmax(0,1fr);padding:20px 0}
-.steps .b{grid-column:2}
-.steps .n{font-size:14px}.steps .a{font-size:16px}.steps .b{font-size:12px;line-height:1.8}
-.qa{padding:16px 0}.qa span{font-size:14px}
-.qa button{height:36px;min-width:64px;font-size:12px}
-.faq div{padding:20px 0}.faq dt{font-size:14px}.faq dd{font-size:12px;line-height:1.8}
-.case{position:relative;height:auto;grid-template-columns:minmax(0,1fr)}
-.case-l{padding:48px 16px 40px;gap:24px}
-.case-r{grid-template-rows:180px 110px 110px;padding:6px 0 0}
-.cams{gap:8px}.cam{min-height:64px;padding:12px 6px}.cam b{font-size:10px}.cam span{margin-top:8px;font-size:12px}
-.sd{display:none}
-.mq{margin-bottom:-6px}.mq-t span{font-size:40px}
-.hdr{height:64px}
-.hdr .wrap{padding-right:16px}
-.logo{font-size:14px}
-.nav,.hphone{display:none}
-.hamb{display:flex;flex-direction:column;justify-content:center;gap:8px;width:44px;height:44px;margin-left:auto;border:0;background:transparent;cursor:pointer}
-.hamb i{display:block;width:32px;height:1px;background:currentColor}
-.hcta{top:17px;right:68px}
-.foot{margin:100px 0 0;border-radius:6px 6px 0 0;padding:48px 16px}
-.fnav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
-.fnav a{font-size:14px;padding:14px 0}
-.pc{display:none!important}
-.sp{display:block}
-.root{padding-bottom:68px}
-.spbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;gap:8px;padding:8px;background:#f0f0f0;border-top:1px solid #d7d5d0}
-.spbar a{display:flex;align-items:center;justify-content:center;height:52px;border-radius:6px;font-size:14px;line-height:1;letter-spacing:.08em;text-decoration:none;box-sizing:border-box}
-.spbar a:first-child{flex:0 0 104px;border:1px solid #2c2c2e;color:#2c2c2e}
-.spbar a:last-child{flex:1 1 0;justify-content:space-between;padding:0 20px;background:#2c2c2e;color:#fbfbfb}
-}
-@media (prefers-reduced-motion:reduce){
-*,*::before,*::after{animation:none!important;transition:none!important}
-.intro{display:none}
-}
-.js-anim [data-rv].is-in .wm:nth-of-type(1) .w{animation-delay:0.080s}
-.js-anim [data-rv].is-in .wm:nth-of-type(2) .w{animation-delay:0.105s}
-.js-anim [data-rv].is-in .wm:nth-of-type(3) .w{animation-delay:0.130s}
-.js-anim [data-rv].is-in .wm:nth-of-type(4) .w{animation-delay:0.155s}
-.js-anim [data-rv].is-in .wm:nth-of-type(5) .w{animation-delay:0.180s}
-.js-anim [data-rv].is-in .wm:nth-of-type(6) .w{animation-delay:0.205s}
-.js-anim [data-rv].is-in .wm:nth-of-type(7) .w{animation-delay:0.230s}
-.js-anim [data-rv].is-in .wm:nth-of-type(8) .w{animation-delay:0.255s}
-.js-anim [data-rv].is-in .wm:nth-of-type(9) .w{animation-delay:0.280s}
-.js-anim [data-rv].is-in .wm:nth-of-type(10) .w{animation-delay:0.305s}
-.js-anim [data-rv].is-in .wm:nth-of-type(11) .w{animation-delay:0.330s}
-.js-anim [data-rv].is-in .wm:nth-of-type(12) .w{animation-delay:0.355s}
-.js-anim [data-rv].is-in .wm:nth-of-type(13) .w{animation-delay:0.380s}
-.js-anim [data-rv].is-in .wm:nth-of-type(14) .w{animation-delay:0.405s}
-.js-anim [data-rv].is-in .wm:nth-of-type(15) .w{animation-delay:0.430s}
-.js-anim [data-rv].is-in .wm:nth-of-type(16) .w{animation-delay:0.455s}
-.js-anim [data-rv].is-in .wm:nth-of-type(17) .w{animation-delay:0.480s}
-.js-anim [data-rv].is-in .wm:nth-of-type(18) .w{animation-delay:0.505s}
-.js-anim [data-rv].is-in .wm:nth-of-type(19) .w{animation-delay:0.530s}
-.js-anim [data-rv].is-in .wm:nth-of-type(20) .w{animation-delay:0.555s}
-.js-anim [data-rv].is-in .wm:nth-of-type(21) .w{animation-delay:0.580s}
-.js-anim [data-rv].is-in .wm:nth-of-type(22) .w{animation-delay:0.605s}
-.js-anim [data-rv].is-in .wm:nth-of-type(23) .w{animation-delay:0.630s}
-.js-anim [data-rv].is-in .wm:nth-of-type(24) .w{animation-delay:0.655s}
-.js-anim [data-rv].is-in .wm:nth-of-type(25) .w{animation-delay:0.680s}
-.js-anim [data-rv].is-in .wm:nth-of-type(26) .w{animation-delay:0.705s}
-.js-anim [data-rv].is-in .wm:nth-of-type(27) .w{animation-delay:0.730s}
-.js-anim [data-rv].is-in .wm:nth-of-type(28) .w{animation-delay:0.755s}
-.js-anim [data-rv].is-in .wm:nth-of-type(29) .w{animation-delay:0.780s}
-.js-anim [data-rv].is-in .wm:nth-of-type(30) .w{animation-delay:0.805s}
-.js-anim .nav a:nth-child(1) .w{animation-delay:1.700s}
-.js-anim .nav a:nth-child(2) .w{animation-delay:1.725s}
-.js-anim .nav a:nth-child(3) .w{animation-delay:1.750s}
-.js-anim .nav a:nth-child(4) .w{animation-delay:1.775s}
-.js-anim .nav a:nth-child(5) .w{animation-delay:1.800s}
-.js-anim .nav a:nth-child(6) .w{animation-delay:1.825s}
-.js-anim .nav a:nth-child(7) .w{animation-delay:1.850s}
-.intro p span:nth-child(1){animation-delay:0.15s}
-.intro p span:nth-child(2){animation-delay:0.20s}
-.intro p span:nth-child(3){animation-delay:0.25s}
-.intro p span:nth-child(4){animation-delay:0.30s}
-.intro p span:nth-child(5){animation-delay:0.35s}
-.intro p span:nth-child(6){animation-delay:0.40s}
-.intro p span:nth-child(7){animation-delay:0.45s}
-.intro p span:nth-child(8){animation-delay:0.50s}
-.intro p span:nth-child(9){animation-delay:0.55s}
-.intro p span:nth-child(10){animation-delay:0.60s}
-.intro p span:nth-child(11){animation-delay:0.65s}
-
-</style>
-<style>.cam-slot{position:absolute;inset:0}.cam-slot[hidden]{display:none}</style></head>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>シンポジウム・講演会のハイブリッド配信代行｜3カメ・2名・25万円〜｜カルラライブ</title>
+<meta name="description" content="大学や公共機関のシンポジウム、公開講座をハイブリッドで配信します。3カメラ・スタッフ2名・マイク5本までで25万円（税別）から。8問のプラン診断で、合うプランと費用がわかります。">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f0f0f0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232c2c2e'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23d7281e'/%3E%3C/svg%3E">
+<script>document.documentElement.classList.add('js');try{if(!sessionStorage.getItem('karura-intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.classList.add('intro-on');sessionStorage.setItem('karura-intro','1')}}catch(e){}</script>
+<link rel="preload" href="assets/fonts/zkgn-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/site.css">
+<script type="module" src="assets/site.js"></script>
+</head>
 <body>
-
-
-<div class="root">
-<div class="intro" aria-hidden="true"><p><span>［</span><span>サ</span><span>ー</span><span>ビ</span><span>ス</span><span>名</span><span>］</span></p></div>
-<header class="hdr"><div class="wrap"><a href="index.html" class="logo">［サービス名］</a><nav class="nav" aria-label="メインメニュー"><a href="#price"><span class="w"><span class="bt"><span>料金・体制・機材</span><span aria-hidden="true">料金・体制・機材</span></span></span></a><a href="#works"><span class="w"><span class="bt"><span>事例</span><span aria-hidden="true">事例</span></span></span></a><a href="#demo"><span class="w"><span class="bt"><span>ツールデモ</span><span aria-hidden="true">ツールデモ</span></span></span></a><a href="#public"><span class="w"><span class="bt"><span>大学・公共機関の方へ</span><span aria-hidden="true">大学・公共機関の方へ</span></span></span></a><a href="#faq"><span class="w"><span class="bt"><span>よくある質問</span><span aria-hidden="true">よくある質問</span></span></span></a></nav><button type="button" class="hamb" aria-label="メニューを開く"><i></i><i></i></button></div></header>
-<div class="hcta"><a href="contact.html" class="btn sm"><span class="bt"><span>見積を依頼する</span><span aria-hidden="true">見積を依頼する</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a></div>
-<section style="position: relative" class="hero"><div class="wrap" style="padding-top: var(--hero-top, 176px)">
-<h1 class="t-h1" data-rv><span class="wm"><span class="w">カメラ5台は</span></span><span class="wm"><span class="w">いりません。</span></span><br><span class="wm"><span class="w">でも1台では</span></span><span class="wm"><span class="w">、</span></span><span class="wm"><span class="w">パネルディス</span></span><span class="wm"><span class="w">カッションは</span></span><span class="wm"><span class="w">撮れません。</span></span></h1>
-<div class="g75" style="margin-top: 40px">
-<div class="st24" data-rv="fade">
-<p class="t-hero">シンポジウム・講演会・公開講座のライブ配信／ハイブリッド配信（会場＋オンライン）<br>登壇者2〜6人、会場50〜300人の会を専門にしています<br>見積書に、スタッフ2名の役割と機材の内訳をすべて明記します<br>iPhoneで足りる会なら、そうお伝えします</p>
-<p class="t-price">カメラ3台・スタッフ2名・マイク5本。<br>25万円（税別）。</p>
+<div class="intro" aria-hidden="true"><p><span style="--i:0">K</span><span style="--i:1">A</span><span style="--i:2">R</span><span style="--i:3">U</span><span style="--i:4">R</span><span style="--i:5">A</span><span style="--i:6"> </span><span style="--i:7">L</span><span style="--i:8">I</span><span style="--i:9">V</span><span style="--i:10">E</span></p></div><a class="skip" href="#main">本文へ移動</a>
+<header class="hdr"><div class="wrap">
+<a class="logo" href="index.html" aria-label="カルラライブ トップページ">KARURA LIVE<small>カルラライブ</small></a>
+<nav class="gnav" aria-label="メインメニュー"><a href="#plan">プラン診断</a><a href="#price">料金・体制・機材</a><a href="#works">事例</a><a href="#demo">ツールデモ</a><a href="#public">大学・公共機関の方へ</a><a href="#faq">よくある質問</a></nav>
+<button type="button" class="menu-btn" data-open-menu aria-haspopup="dialog" aria-controls="menu"><span class="vh">メニューを開く</span><i></i><i></i></button>
+<a class="menu-fallback t-note" href="#fnav">メニュー</a>
+</div></header>
+<a class="btn nav-cta hdr-cta pc-only" href="contact.html">見積を依頼する</a>
+<dialog id="menu" class="menu" aria-label="メニュー">
+<div class="menu-head"><span class="logo">KARURA LIVE<small>カルラライブ</small></span><form method="dialog"><button class="menu-close">閉じる</button></form></div>
+<nav aria-label="メニュー"><ul><li><a href="#plan">プラン診断<span aria-hidden="true">›</span></a></li><li><a href="#price">料金・体制・機材<span aria-hidden="true">›</span></a></li><li><a href="#works">事例<span aria-hidden="true">›</span></a></li><li><a href="#demo">ツールデモ<span aria-hidden="true">›</span></a></li><li><a href="#public">大学・公共機関の方へ<span aria-hidden="true">›</span></a></li><li><a href="#faq">よくある質問<span aria-hidden="true">›</span></a></li><li><a href="contact.html">お問い合わせ・お見積<span aria-hidden="true">›</span></a></li></ul><a class="btn full" href="#plan">8問でプランを診断する</a></nav>
+</dialog>
+<nav class="subnav" aria-label="このページの目次"><ol><li><a href="#plan">診断</a></li><li><a href="#switching">画面</a></li><li><a href="#scope">対象</a></li><li><a href="#price">料金</a></li><li><a href="#team">体制</a></li><li><a href="#day">当日</a></li><li><a href="#demo">ツール</a></li><li><a href="#works">事例</a></li><li><a href="#option">追加</a></li><li><a href="#coaching">コーチング</a></li><li><a href="#public">発注</a></li><li><a href="#faq">質問</a></li><li><a href="#contact">見積</a></li></ol><span class="subnav-meter" aria-hidden="true"></span></nav><main id="main"><section class="hero" aria-labelledby="hero-title"><div class="wrap">
+<p class="hero-kind">シンポジウム・講演会・公開講座のライブ配信／ハイブリッド配信（会場＋オンライン）</p>
+<h1 class="t-h1" id="hero-title">カメラ5台はいりません。<br>でも1台では、パネルディスカッションは撮れません。</h1>
+<div class="g75 hero-grid">
+<section id="plan" class="hero-plan stack s-16" aria-labelledby="plan-title">
+<div class="dg-top"><p class="t-lab">Plan check</p><p class="t-note t-sub">1分ほどで終わります</p></div>
+<h2 class="t-ct" id="plan-title">8問で、あなたの会に合うプランと費用がわかります</h2>
+<div class="dg" data-dg>
+<div class="dg-head"><p class="dg-count"><b class="dg-i">1</b> / 8</p><div class="dg-prog" aria-hidden="true"><i></i></div><button type="button" class="dg-back" hidden>戻る</button></div>
+<p class="vh dg-live" aria-live="polite"></p>
+<form class="dg-form" action="contact.html" method="get" aria-label="プラン診断">
+<fieldset class="dg-q" data-key="spk" aria-describedby="dg-h1"><legend><span class="dg-n">Q1 / 8</span>登壇者は何人ですか</legend><p class="dg-hint" id="dg-h1">司会は含めません。パネルディスカッションの方も数えます</p><div class="dg-opts"><label class="dg-opt"><input type="radio" name="spk" value="1">1人</label><label class="dg-opt"><input type="radio" name="spk" value="2-3">2〜3人</label><label class="dg-opt"><input type="radio" name="spk" value="4-6">4〜6人</label><label class="dg-opt"><input type="radio" name="spk" value="7+">7人以上</label></div></fieldset><fieldset class="dg-q" data-key="aud" aria-describedby="dg-h2"><legend><span class="dg-n">Q2 / 8</span>会場に来る人は、何人くらいですか</legend><p class="dg-hint" id="dg-h2">おおよそでかまいません</p><div class="dg-opts"><label class="dg-opt"><input type="radio" name="aud" value="-30">30人まで</label><label class="dg-opt"><input type="radio" name="aud" value="30-100">30〜100人</label><label class="dg-opt"><input type="radio" name="aud" value="100-300">100〜300人</label><label class="dg-opt"><input type="radio" name="aud" value="300+">300人以上</label></div></fieldset><fieldset class="dg-q" data-key="rmt" aria-describedby="dg-h3"><legend><span class="dg-n">Q3 / 8</span>オンラインから登壇する人はいますか</legend><p class="dg-hint" id="dg-h3">遠隔地の講師がZoomなどで話す場合です</p><div class="dg-opts"><label class="dg-opt"><input type="radio" name="rmt" value="n">いない</label><label class="dg-opt"><input type="radio" name="rmt" value="y">いる</label></div></fieldset><fieldset class="dg-q" data-key="qa" aria-describedby="dg-h4"><legend><span class="dg-n">Q4 / 8</span>会場の質問を、オンラインの視聴者にも届けたいですか</legend><p class="dg-hint" id="dg-h4">会場の声は、マイクを通さないと配信に入りません</p><div class="dg-opts"><label class="dg-opt"><input type="radio" name="qa" value="y">届けたい</label><label class="dg-opt"><input type="radio" name="qa" value="n">会場だけでいい</label></div></fieldset><fieldset class="dg-q" data-key="time" aria-describedby="dg-h5"><legend><span class="dg-n">Q5 / 8</span>配信する時間は、どのくらいですか</legend><p class="dg-hint" id="dg-h5">休憩を含めた、配信の開始から終了まで</p><div class="dg-opts"><label class="dg-opt"><input type="radio" name="time" value="-2">2時間まで</label><label class="dg-opt"><input type="radio" name="time" value="2-3">2〜3時間</label><label class="dg-opt"><input type="radio" name="time" value="3+">3時間を超える</label></div></fieldset><fieldset class="dg-q" data-key="pub" aria-describedby="dg-h6"><legend><span class="dg-n">Q6 / 8</span>録画を公開する予定や、学外の視聴者・来賓はありますか</legend><p class="dg-hint" id="dg-h6">どちらかに当てはまれば「ある」</p><div class="dg-opts"><label class="dg-opt"><input type="radio" name="pub" value="y">ある</label><label class="dg-opt"><input type="radio" name="pub" value="n">ない</label></div></fieldset><fieldset class="dg-q" data-key="opt" data-multi aria-describedby="dg-h7"><legend><span class="dg-n">Q7 / 8</span>同じ日に頼みたいものはありますか</legend><p class="dg-hint" id="dg-h7">いくつでも選べます。なければ、そのまま「次へ」</p><div class="dg-opts"><label class="dg-opt"><input type="checkbox" name="opt" value="photo">記録写真</label><label class="dg-opt"><input type="checkbox" name="opt" value="edit">記録映像の編集</label><label class="dg-opt"><input type="checkbox" name="opt" value="digest">2分のダイジェスト映像</label><label class="dg-opt"><input type="checkbox" name="opt" value="text">文字起こし</label></div></fieldset><fieldset class="dg-q" data-key="self" aria-describedby="dg-h8"><legend><span class="dg-n">Q8 / 8</span>来年度からは、自分たちで配信したいですか</legend><p class="dg-hint" id="dg-h8">小さい会だけでも自分たちで、という場合も「はい」</p><div class="dg-opts"><label class="dg-opt"><input type="radio" name="self" value="y">はい</label><label class="dg-opt"><input type="radio" name="self" value="n">いいえ、毎回任せたい</label></div></fieldset>
+<div class="dg-ctl"><button class="btn dg-next" type="submit">次へ</button></div>
+<p class="dg-nojs t-note t-sub">お使いの環境では、結果をその場で表示できません。「次へ」を押すと、回答を持って見積のご依頼に進みます。</p>
+</form>
+<section class="dg-res" tabindex="-1" aria-labelledby="dg-result-title" aria-live="polite"></section>
 </div>
-<div style="display: flex; flex-direction: column; gap: 12px" data-rv="fade">
-<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px"><span class="pill ">見積依頼</span><span class="t-note">1営業日以内に、見積書PDFをお送りします</span></div>
-<div class="boxw st24" style="gap: 20px">
-<h2 class="t-ct">日程と会場だけで、見積書をお送りします</h2>
-<div class="fld "><label for="h-date">開催日（未定でも可）</label><input id="h-date" type="text" placeholder="例：2027年2月20日"></div><div class="fld "><label for="h-venue">会場</label><input id="h-venue" type="text" placeholder="例：〇〇大学 △△ホール"></div><div class="fld "><label for="h-size">登壇者と来場者のおおよその人数</label><input id="h-size" type="text" placeholder="例：登壇4人、来場150人"></div><div class="fld "><label for="h-mail">メールアドレス</label><input id="h-mail" type="email" placeholder="name@example.ac.jp"></div>
-<a href="thanks.html" class="btn full"><span class="bt"><span>見積書を受け取る</span><span aria-hidden="true">見積書を受け取る</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a>
-<p class="t-sm" style="color: #6c6b68">1営業日以内に、宛名入りの見積書PDFをメールでお送りします。相見積のためのご依頼も歓迎します。<br>まだ何も決まっていない方は、<a href="contact.html">15分のオンライン相談</a>をご利用ください</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sd" aria-hidden="true"><span>Scroll Down</span><i></i></div>
 </section>
-<section class="band mt160"><div class="wrap pad-band"><div class="g57" style="align-items: center">
-<div class="st48" style="gap: 40px"><div class="st24"><p class="t-lab" style="color: #fbfbfb">Switching</p><p class="t-h3" data-rv><span class="wm"><span class="w">カメラを選ぶ</span></span><span class="wm"><span class="w">と、</span></span><br><span class="wm"><span class="w">配信中の画面</span></span><span class="wm"><span class="w">が切り替わり</span></span><span class="wm"><span class="w">ます</span></span></p><p class="t-body" style="color: #c4c4c4" data-rv="fade">3台あると、話す人が替わるたびに映像を切り替えられます。</p></div>
-<div class="cams"><button type="button" class="cam" data-cam="1" aria-pressed="true"><b>カメラ1</b><span>話している人</span></button><button type="button" class="cam" data-cam="2" aria-pressed="false"><b>カメラ2</b><span>登壇者全体</span></button><button type="button" class="cam" data-cam="3" aria-pressed="false"><b>カメラ3</b><span>会場全体</span></button></div><p class="t-sm" style="color: #a8a6a2">写真は同じ会の3枚（P01・P02・P03）</p></div>
+<div class="hero-side stack">
+<p class="hero-text">登壇者2〜6人、会場50〜300人の会を専門にしています。<br>見積書に、スタッフ2名の役割と機材の内訳をすべて明記します。<br>iPhoneで足りる会なら、そうお伝えします。</p>
+<p class="hero-price">カメラ3台・スタッフ2名・マイク5本。<br><span class="t-big2">25<small>万円（税別）</small></span></p>
+<div class="btns"><a class="btn line" href="contact.html">見積を依頼する</a><a class="tlink" href="#price">25万円に含まれるもの</a></div>
+</div>
+</div></div>
+<div class="sd" aria-hidden="true"><span>Scroll Down</span><i></i></div>
+</section><section id="switching" class="band sec-2" aria-labelledby="sw-title"><div class="wrap pad-band"><div class="g57 sw" data-sw>
+<div class="stack s-48"><div class="stack"><p class="t-lab">Switching</p><h2 class="t-h3" id="sw-title" data-rv>カメラを選ぶと、<br>配信中の画面が切り替わります</h2>
+<p class="t-body">3台あると、話す人が替わるたびに映像を切り替えられます。</p></div>
+<fieldset class="cams"><legend class="vh">映すカメラを選ぶ</legend>
+<label class="cam"><input type="radio" name="cam" id="cam-1" value="1" checked><b>カメラ1</b><span>話している人</span></label>
+<label class="cam"><input type="radio" name="cam" id="cam-2" value="2"><b>カメラ2</b><span>登壇者全体</span></label>
+<label class="cam"><input type="radio" name="cam" id="cam-3" value="3"><b>カメラ3</b><span>会場全体</span></label></fieldset>
+<p class="t-note t-sub">写真は同じ会の3枚（ダミー：P01・P02・P03）</p></div>
 <div class="screen" data-rv="media">
-<div class="cam-slot" data-cam="1"><img class="shot" src="img/P01.webp" alt="（ダミー）話している人のアップ" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"><div class="ring" aria-hidden="true"><svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgba(251,251,251,.3)" stroke-width="1"></circle><circle class="p" cx="22" cy="22" r="18" fill="none" stroke="#fbfbfb" stroke-width="1"></circle></svg><span>1/3</span></div></div>
-<div class="cam-slot" data-cam="2" hidden><img class="shot" src="img/P02.webp" alt="（ダミー）パネルディスカッション全体" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"><div class="ring" aria-hidden="true"><svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgba(251,251,251,.3)" stroke-width="1"></circle><circle class="p" cx="22" cy="22" r="18" fill="none" stroke="#fbfbfb" stroke-width="1"></circle></svg><span>2/3</span></div></div>
-<div class="cam-slot" data-cam="3" hidden><img class="shot" src="img/P03.webp" alt="（ダミー）会場全体：客席とスクリーン" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"><div class="ring" aria-hidden="true"><svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgba(251,251,251,.3)" stroke-width="1"></circle><circle class="p" cx="22" cy="22" r="18" fill="none" stroke="#fbfbfb" stroke-width="1"></circle></svg><span>3/3</span></div></div>
-<div class="onair"><i></i>配信中の画面</div>
+<img class="shot shot-1" src="img/P01.webp" alt="（ダミー）カメラ1：話している人のアップ" width="1600" height="1000" loading="lazy" decoding="async"><img class="shot shot-2" src="img/P02.webp" alt="（ダミー）カメラ2：パネルディスカッション全体" width="1600" height="1000" loading="lazy" decoding="async"><img class="shot shot-3" src="img/P03.webp" alt="（ダミー）カメラ3：会場全体、客席とスクリーン" width="1600" height="1000" loading="lazy" decoding="async">
+<p class="onair"><i></i>配信中の画面</p>
+<button type="button" class="sw-pause" aria-pressed="false" hidden>切り替えを止める</button>
 </div>
-</div></div></section>
-<section class="mt200"><div class="wrap">
-<div style="border-top: 1px solid #d7d5d0; padding-top: 32px; display: flex; flex-wrap: wrap; gap: 8px 40px; justify-content: space-between; align-items: center"><p class="t-lab" style="color: #353637">Clients</p><span class="t-note" style="color: #6c6b68">これまでに配信・記録を担当した機関　［配信した会の件数、継続して依頼いただいている機関の数］</span></div>
-<div class="mt120" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px" data-rv="fade"><div class="ph" style="height: 88px; background: #fbfbfb; color: #6c6b68; font-size: 12px">［ロゴ］</div><div class="ph" style="height: 88px; background: #fbfbfb; color: #6c6b68; font-size: 12px">［ロゴ］</div><div class="ph" style="height: 88px; background: #fbfbfb; color: #6c6b68; font-size: 12px">［ロゴ］</div><div class="ph" style="height: 88px; background: #fbfbfb; color: #6c6b68; font-size: 12px">［ロゴ］</div><div class="ph" style="height: 88px; background: #fbfbfb; color: #6c6b68; font-size: 12px">［ロゴ］</div><div class="ph" style="height: 88px; background: #fbfbfb; color: #6c6b68; font-size: 12px">［ロゴ］</div></div>
-</div></section>
-<section class="mt200"><div class="wrap"><div class="g57"><div class="stk"><p class="t-lab" style="color: #353637">Scope</p></div>
-<div class="st56" style="align-items: stretch">
-<h2 class="t-h2" data-rv><span class="wm"><span class="w">このような会</span></span><span class="wm"><span class="w">を</span></span><br><span class="wm"><span class="w">お引き受けし</span></span><span class="wm"><span class="w">ています</span></span></h2>
-<div class="st24" data-rv="fade"><p class="sub" style="color: #55544f">お引き受けする会</p><ul class="rows"><li>登壇者が2〜6人で、パネルディスカッションや対談がある会</li><li>会場に50〜300人が集まり、オンラインにも同時に配信したい会</li><li>配信は3時間まで、半日で終わる会</li><li>来賓や助成元、学外の視聴者がいて、配信を止められない会</li></ul></div>
-<div class="st24" data-rv="fade"><p class="sub" style="color: #55544f">ほかの方法をおすすめする会</p><ul class="rows" style="color: #55544f"><li>登壇者が1人の講演：スタッフ1名で来る業者で十分です</li><li>30人以下の勉強会：お手持ちのiPhoneやPCで足ります</li><li>複数会場や同時通訳：大手の制作会社が向いています</li><li>迷った方は、<a href="#check">6問の診断</a>でご確認いただけます</li></ul></div>
-</div></div></div></section>
-<div class="mq mt160" aria-hidden="true"><div class="mq-t"><span>LIVE STREAMING × HYBRID EVENTS</span><span>LIVE STREAMING × HYBRID EVENTS</span><span>LIVE STREAMING × HYBRID EVENTS</span><span>LIVE STREAMING × HYBRID EVENTS</span></div></div>
-<section id="price" class="bandg"><div class="wrap pad-band"><div class="g57">
-<div class="stk st56">
-<div class="st48"><p class="t-lab" style="color: #353637">Price</p><h2 class="t-h2" data-rv><span class="wm"><span class="w">25万円に</span></span><br><span class="wm"><span class="w">含まれるもの</span></span><br><span class="wm"><span class="w">すべて</span></span></h2><p class="t-lead" data-rv="fade">誰が来て、何を持ち込み、何をするか。<br>見積書にも同じ内容を記載します。</p></div>
-<div class="pc"><a href="contact.html" class="btn "><span class="bt"><span>この内容で見積書を受け取る</span><span aria-hidden="true">この内容で見積書を受け取る</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a></div>
-</div>
-<div class="st48" data-rv="fade">
+</div></div></section><section class="sec" aria-labelledby="clients-title"><div class="wrap stack s-48">
+<div class="stack s-16"><p class="t-lab">Clients</p><h2 class="t-note" id="clients-title">これまでに配信・記録を担当した機関　<span class="ana">［配信した会の件数、継続して依頼いただいている機関の数］</span></h2></div>
+<ul class="logos"><li><div class="ph"><span class="ana">［ロゴ］</span></div></li><li><div class="ph"><span class="ana">［ロゴ］</span></div></li><li><div class="ph"><span class="ana">［ロゴ］</span></div></li><li><div class="ph"><span class="ana">［ロゴ］</span></div></li><li><div class="ph"><span class="ana">［ロゴ］</span></div></li><li><div class="ph"><span class="ana">［ロゴ］</span></div></li></ul>
+</div></section><section id="scope" class="sec" aria-labelledby="scope-title"><div class="wrap"><div class="g57"><div class="stk"><p class="t-lab">Scope</p></div>
+<div class="stack s-56">
+<h2 class="t-h2" id="scope-title" data-rv>このような会を<br>お引き受けしています</h2>
+<div class="stack"><h3 class="sub">お引き受けする会</h3><ul class="rows"><li>登壇者が2〜6人で、パネルディスカッションや対談がある会</li><li>会場に50〜300人が集まり、オンラインにも同時に配信したい会</li><li>配信は3時間まで、半日で終わる会</li><li>来賓や助成元、学外の視聴者がいて、配信を止められない会</li></ul></div>
+<div class="stack"><h3 class="sub">ほかの方法をおすすめする会</h3><ul class="rows"><li>登壇者が1人の講演：スタッフ1名で来る業者で十分です</li><li>30人以下の勉強会：お手持ちのiPhoneやPCで足ります</li><li>複数会場や同時通訳：大手の制作会社が向いています</li><li>迷った方は、<a href="#plan">8問のプラン診断</a>でご確認いただけます</li></ul></div>
+</div></div></div></section><div class="mq sec-2" aria-hidden="true"><div class="mq-t"><span>LIVE STREAMING × HYBRID EVENTS</span><span>LIVE STREAMING × HYBRID EVENTS</span><span>LIVE STREAMING × HYBRID EVENTS</span><span>LIVE STREAMING × HYBRID EVENTS</span></div></div>
+<section id="price" class="bandg" aria-labelledby="price-title"><div class="wrap pad-band"><div class="g57">
+<div class="stk stack s-56"><div class="stack s-48"><p class="t-lab">Price</p><h2 class="t-h2" id="price-title" data-rv>25万円に<br>含まれるもの<br>すべて</h2>
+<p class="t-lead">誰が来て、何を持ち込み、何をするか。<br>見積書にも同じ内容を記載します。</p></div>
+<div class="pc-only"><a class="btn " href="contact.html">この内容で見積書を受け取る</a></div></div>
+<div class="stack s-48">
 <h3 class="t-bar">スタンダード</h3>
 <p class="t-big">25<small>万円（税別）</small></p>
-<div class="st24"><p class="sub" style="color: #353637">含まれるもの</p><ul class="tiles"><li>スタッフ2名</li><li>カメラ3台と、発表スライドの映像取り込み</li><li>マイク5本までの持ち込み</li><li>会場設備のマイク音声も直接取り込みます</li><li>予備の録画機と、予備のインターネット回線</li><li>配信3時間まで、会場での作業6時間まで</li><li>事前の打ち合わせと会場の下見</li><li>録画データの納品</li></ul></div>
-<div class="sp"><a href="contact.html" class="btn full"><span class="bt"><span>この内容で見積書を受け取る</span><span aria-hidden="true">この内容で見積書を受け取る</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a></div>
-</div>
-</div></div></section>
-<section class="mt200"><div class="wrap"><div class="g57"><div class="stk"><p class="t-lab" style="color: #353637">Team &amp; Equipment</p></div>
-<div class="st64">
-<h2 class="t-h2" data-rv><span class="wm"><span class="w">当日の体制：</span></span><br><span class="wm"><span class="w">立っているだ</span></span><span class="wm"><span class="w">けのスタッフ</span></span><span class="wm"><span class="w">は</span></span><br><span class="wm"><span class="w">連れていきま</span></span><span class="wm"><span class="w">せん</span></span></h2>
-<div class="hs w40"><div class="hi st24" style="gap: 20px"><div class="zoom"><img src="img/P04.webp" alt="（ダミー）スタッフ：映像担当" style="display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; "></div><div><p class="t-ct">1人目：映像担当</p><p class="t-body" style="margin-top: 8px">カメラ3台の操作と、配信画面の切り替え</p><p class="t-note" style="margin-top: 4px; color: #6c6b68">［氏名・経歴一行］</p></div></div><div class="hi st24" style="gap: 20px"><div class="zoom"><img src="img/P05.webp" alt="（ダミー）スタッフ：音声・配信担当" style="display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; "></div><div><p class="t-ct">2人目：音声・配信担当</p><p class="t-body" style="margin-top: 8px">マイクと音量の調整、配信の監視、登壇者PCの接続</p><p class="t-note" style="margin-top: 4px; color: #6c6b68">［氏名・経歴一行］</p></div></div></div>
-<div data-rv="media"><div class="ph" style="aspect-ratio: 16 / 10; background: #fbfbfb; color: #6c6b68; ">［図：会場の見取り図に、カメラ3台・スタッフ2名・マイクの位置を置いた配置図］</div></div>
-<hr style="margin: 0; width: 100%; border: 0; border-top: 1px solid #c4c4c4">
-<div class="st24" style="gap: 32px"><h3 class="t-h3" data-rv><span class="wm"><span class="w">持ち込む機材</span></span><span class="wm"><span class="w">の内訳</span></span></h3>
-<table class="tbl"><thead><tr><th scope="col">種類</th><th scope="col">機種</th><th scope="col">数</th><th scope="col">用途</th></tr></thead><tbody><tr><td class="k">カメラ</td><td class="m">［機種名］</td><td class="k">3台</td><td>話している人のアップ、登壇者全体、会場全体</td></tr><tr><td class="k">マイク</td><td class="m">［機種名］</td><td class="k">5本</td><td>登壇者4人分と、会場の質問用1本</td></tr><tr><td class="k">画面の切り替え機</td><td class="m">［機種名］</td><td class="k">［数］</td><td>発表スライドとカメラ映像の切り替え</td></tr><tr><td class="k">録画機</td><td class="m">［機種名］</td><td class="k">2系統</td><td>片方が止まっても、もう片方で記録を残します</td></tr><tr><td class="k">回線</td><td class="m">［機種名・回線種別］</td><td class="k">2系統</td><td>会場の回線が切れても、予備回線で配信を続けます</td></tr></tbody></table></div>
-<hr style="margin: 0; width: 100%; border: 0; border-top: 1px solid #c4c4c4">
-<div class="st24" style="gap: 32px"><h3 class="t-h3" data-rv><span class="wm"><span class="w">追加料金がか</span></span><span class="wm"><span class="w">かるのは、</span></span><br><span class="wm"><span class="w">この5つだけ</span></span><span class="wm"><span class="w">です</span></span></h3>
-<table class="tbl"><thead><tr><th scope="col">条件</th><th scope="col" class="r">追加料金（税別）</th></tr></thead><tbody><tr><td>配信時間を1時間延長する</td><td class="r">［金額］</td></tr><tr><td>スタッフを1名追加する（オンライン登壇者がいる場合、マイク6本以上の場合）</td><td class="r">［金額］</td></tr><tr><td>カメラを1台追加する</td><td class="r">［金額］</td></tr><tr><td>会場に使えるインターネット回線がない</td><td class="r">［金額］</td></tr><tr><td>対応エリア外の交通費・宿泊費</td><td class="r">実費</td></tr></tbody></table></div>
-<div style="display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center"><a href="contact.html" class="btn "><span class="bt"><span>見積を依頼する</span><span aria-hidden="true">見積を依頼する</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a><a href="contact.html" class="tlink"><span>料金表と見積書見本（PDF）を見る</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a><span class="t-note" style="color: #6c6b68">上司への説明や、相見積にそのまま使えます</span></div>
+<div class="stack"><p class="sub">含まれるもの</p><ul class="tiles"><li><span>スタッフ2名</span></li><li><span>カメラ3台と、発表スライドの映像取り込み</span></li><li><span>マイク5本までの持ち込み<span class="tip"><button type="button" class="tip-btn" popovertarget="tip-mic" aria-label="マイクが5本の理由" style="anchor-name:--tip-mic">?</button><span id="tip-mic" popover class="tip-body" style="position-anchor:--tip-mic">登壇者4人分と、会場の質問用1本です。6本以上必要な会は、スタッフを1名追加します。</span></span></span></li><li><span>会場設備のマイク音声も直接取り込みます</span></li><li><span>予備の録画機と、予備のインターネット回線</span></li><li><span>配信3時間まで、会場での作業6時間まで<span class="tip"><button type="button" class="tip-btn" popovertarget="tip-time" aria-label="作業時間の内訳" style="anchor-name:--tip-time">?</button><span id="tip-time" popover class="tip-body" style="position-anchor:--tip-time">設営2時間、配信3時間、撤収1時間が目安です。</span></span></span></li><li><span>事前の打ち合わせと会場の下見</span></li><li><span>録画データの納品</span></li></ul></div>
+<div class="sp-only"><a class="btn full" href="contact.html">この内容で見積書を受け取る</a></div>
+</div></div></div></section><section id="team" class="sec" aria-labelledby="team-title"><div class="wrap"><div class="g57"><div class="stk"><p class="t-lab">Team &amp; Equipment</p></div>
+<div class="stack s-64">
+<h2 class="t-h2" id="team-title" data-rv>当日の体制：<br>立っているだけのスタッフは<br>連れていきません</h2>
+<div class="staff-wrap"><ul class="staff">
+<li class="staff-card"><div class="zoom"><img src="img/P04.webp" alt="（ダミー）映像担当のスタッフ" width="960" height="1200" loading="lazy" decoding="async"></div><div><h3 class="t-ct">1人目：映像担当</h3><p class="t-body">カメラ3台の操作と、配信画面の切り替え</p><p class="t-note t-sub"><span class="ana">［氏名・経歴一行］</span></p></div></li>
+<li class="staff-card"><div class="zoom"><img src="img/P05.webp" alt="（ダミー）音声・配信担当のスタッフ" width="960" height="1200" loading="lazy" decoding="async"></div><div><h3 class="t-ct">2人目：音声・配信担当</h3><p class="t-body">マイクと音量の調整、配信の監視、登壇者PCの接続</p><p class="t-note t-sub"><span class="ana">［氏名・経歴一行］</span></p></div></li></ul></div>
+<figure data-rv="media"><div class="ph" style="aspect-ratio:16/9"><span class="ana">［図：会場の見取り図に、カメラ3台・スタッフ2名・マイクの位置を置いた配置図］</span></div></figure>
+<div class="stack"><h3 class="t-h3">持ち込む機材の内訳</h3><table class="tbl"><caption class="vh">持ち込む機材の内訳</caption><thead><tr><th scope="col">種類</th><th scope="col">機種</th><th scope="col">数</th><th scope="col">用途</th></tr></thead><tbody><tr><td class="k">カメラ</td><td class="m" data-l="機種"><span class="ana">［機種名］</span></td><td class="k" data-l="数">3台</td><td data-l="用途">話している人のアップ、登壇者全体、会場全体</td></tr><tr><td class="k">マイク</td><td class="m" data-l="機種"><span class="ana">［機種名］</span></td><td class="k" data-l="数">5本</td><td data-l="用途">登壇者4人分と、会場の質問用1本</td></tr><tr><td class="k">画面の切り替え機</td><td class="m" data-l="機種"><span class="ana">［機種名］</span></td><td class="k" data-l="数"><span class="ana">［数］</span></td><td data-l="用途">発表スライドとカメラ映像の切り替え</td></tr><tr><td class="k">録画機</td><td class="m" data-l="機種"><span class="ana">［機種名］</span></td><td class="k" data-l="数">2系統</td><td data-l="用途">片方が止まっても、もう片方で記録を残します</td></tr><tr><td class="k">回線</td><td class="m" data-l="機種"><span class="ana">［機種名・回線種別］</span></td><td class="k" data-l="数">2系統</td><td data-l="用途">会場の回線が切れても、予備回線で配信を続けます</td></tr></tbody></table></div>
+<div class="stack"><h3 class="t-h3">追加料金がかかるのは、<br>この5つだけです</h3><table class="tbl"><caption class="vh">追加料金がかかる条件</caption><thead><tr><th scope="col">条件</th><th scope="col" class="r">追加料金（税別）</th></tr></thead><tbody><tr><td>配信時間を1時間延長する</td><td class="r" data-l="追加料金（税別）"><span class="ana">［金額］</span></td></tr><tr><td>スタッフを1名追加する（オンライン登壇者がいる場合、マイク6本以上の場合）</td><td class="r" data-l="追加料金（税別）"><span class="ana">［金額］</span></td></tr><tr><td>カメラを1台追加する</td><td class="r" data-l="追加料金（税別）"><span class="ana">［金額］</span></td></tr><tr><td>会場に使えるインターネット回線がない</td><td class="r" data-l="追加料金（税別）"><span class="ana">［金額］</span></td></tr><tr><td>対応エリア（新宿から90分圏内）外の交通費・宿泊費</td><td class="r" data-l="追加料金（税別）">実費</td></tr></tbody></table></div>
+<div class="btns"><a class="btn " href="contact.html">見積を依頼する</a><a class="tlink" href="contact.html">料金表と見積書見本（PDF）を見る</a><span class="t-note t-sub">上司への説明や、相見積にそのまま使えます</span></div>
 </div></div></div></section>
-<section class="mt120"><div class="wrap"><div style="border-top: 1px solid #d7d5d0; border-bottom: 1px solid #d7d5d0; padding: clamp(32px, 7vw, 100px) 0"><div class="boxd cta-in" data-rv="fade"><div class="st24" style="flex: 1 1 300px; min-width: 0; color: #d7d5d0; gap: 20px"><p class="t-h2s">この体制で、見積書を受け取る</p><p class="t-sm">日程と会場だけで、2名の役割と機材の内訳が入った見積書をお送りします。1営業日以内に、宛名入りのPDFでお届けします。</p></div><div style="flex: 0 1 403px; min-width: 0; width: 100%"><a href="contact.html" class="btn xl"><span class="bt"><span>見積書を受け取る</span><span aria-hidden="true">見積書を受け取る</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a></div></div></div></div></section>
-<section class="band mt160"><div class="wrap pad-band"><div class="g57">
-<div class="stk"><p class="t-lab" style="color: #fbfbfb">On the day</p></div>
-<div class="st48">
-<h2 class="t-h2" data-rv><span class="wm"><span class="w">当日、</span></span><span class="wm"><span class="w">ご担当者は配</span></span><span class="wm"><span class="w">信に</span></span><br><span class="wm"><span class="w">かかりきりに</span></span><span class="wm"><span class="w">ならずに済み</span></span><span class="wm"><span class="w">ます</span></span></h2>
-<p class="t-lead" style="color: #c4c4c4" data-rv="fade">登壇者を迎え、進行を見守り、来賓に挨拶する。<br>配信の実務はスタッフ2名にお任せください。</p>
-<ul style="margin: 0; padding: 0; list-style: none"><li data-rv="fade" style="display: flex; flex-direction: column; gap: 16px; padding: 40px 0; border-top: 1px solid #4a4a4d"><div style="display: flex; align-items: baseline; gap: 12px"><span class="t-num">01</span><h3 class="t-ct">聞き取りやすい音</h3></div><p class="t-body" style="color: #c4c4c4">会場のマイク音声を配信機材に直接取り込みます。会場にマイクがなければ5本まで持ち込みます。音が悪いと、研究まで低く見られます（<a href="https://researchportalplus.anu.edu.au/en/publications/good-sound-good-research-how-audio-quality-influences-perceptions/" style="color: #fbfbfb">Newman &amp; Schwarz 2018</a>）。</p></li><li data-rv="fade" style="display: flex; flex-direction: column; gap: 16px; padding: 40px 0; border-top: 1px solid #4a4a4d"><div style="display: flex; align-items: baseline; gap: 12px"><span class="t-num">02</span><h3 class="t-ct">表情がわかるアップの映像</h3></div><p class="t-body" style="color: #c4c4c4">客席の後ろから、話している人の表情を撮ります。来場者の視界をふさぎません。</p></li><li data-rv="fade" style="display: flex; flex-direction: column; gap: 16px; padding: 40px 0; border-top: 1px solid #4a4a4d"><div style="display: flex; align-items: baseline; gap: 12px"><span class="t-num">03</span><h3 class="t-ct">見やすい画面の切り替え</h3></div><p class="t-body" style="color: #c4c4c4">発表スライド、登壇者、会場全体の映像を状況に合わせて切り替えます。スライドの隅に登壇者の顔を出すこともできます。</p></li><li data-rv="fade" style="display: flex; flex-direction: column; gap: 16px; padding: 40px 0; border-top: 1px solid #4a4a4d"><div style="display: flex; align-items: baseline; gap: 12px"><span class="t-num">04</span><h3 class="t-ct">万が一に備える予備機材</h3></div><p class="t-body" style="color: #c4c4c4">録画機もインターネット回線も2系統ずつ用意します。どれか1つが止まっても、配信と記録は続きます。</p></li></ul>
-<div class="boxg" style="color: #2c2c2e; display: flex; flex-wrap: wrap; gap: 32px 64px; align-items: center" data-rv="fade">
-<div class="st24" style="flex: 1 1 300px; min-width: 0; gap: 20px">
-<h3 class="t-h2s">止まらないとは言いません。止まったときにどう戻すかを、事前にお渡しします</h3>
-<p class="t-sm" style="color: #55544f">事前に「復旧手順書」を1枚お渡しします。何が止まったら、誰が、何分で、どう復旧するかを明記しています。</p></div>
-<div style="flex: 0 1 197px; min-width: 0"><div class="ph" style="aspect-ratio: 210 / 297; background: #fbfbfb; color: #6c6b68; ">［画像：復旧手順書の実物　穴埋め08］</div></div>
+<section class="sec-3" aria-label="見積の依頼"><div class="wrap"><div class="boxd cta-in"><div class="stack"><p class="t-h2s">この体制で、見積書を受け取る</p>
+<p class="t-note">日程と会場だけで、2名の役割と機材の内訳が入った見積書をお送りします。1営業日以内に、宛名入りのPDFでお届けします。</p></div>
+<div><a class="btn xl" href="contact.html">見積書を受け取る</a></div></div></div></section><section id="day" class="band sec-2" aria-labelledby="day-title"><div class="wrap pad-band"><div class="g57">
+<div class="stk"><p class="t-lab">On the day</p></div>
+<div class="stack s-48">
+<h2 class="t-h2" id="day-title" data-rv>当日、ご担当者は配信に<br>かかりきりにならずに済みます</h2>
+<p class="t-lead">登壇者を迎え、進行を見守り、来賓に挨拶する。<br>配信の実務はスタッフ2名にお任せください。</p>
+<ul class="rows stack s-48" style="border:0"><li class="stack s-16"><p class="t-num">01</p><h3 class="t-ct">聞き取りやすい音</h3><p class="t-body">会場のマイク音声を配信機材に直接取り込みます。会場にマイクがなければ5本まで持ち込みます。音が悪いと、研究まで低く見られます（<a href="https://researchportalplus.anu.edu.au/en/publications/good-sound-good-research-how-audio-quality-influences-perceptions/">Newman &amp; Schwarz 2018</a>）。</p></li><li class="stack s-16"><p class="t-num">02</p><h3 class="t-ct">表情がわかるアップの映像</h3><p class="t-body">客席の後ろから、話している人の表情を撮ります。来場者の視界をふさぎません。</p></li><li class="stack s-16"><p class="t-num">03</p><h3 class="t-ct">見やすい画面の切り替え</h3><p class="t-body">発表スライド、登壇者、会場全体の映像を状況に合わせて切り替えます。スライドの隅に登壇者の顔を出すこともできます。</p></li><li class="stack s-16"><p class="t-num">04</p><h3 class="t-ct">万が一に備える予備機材</h3><p class="t-body">録画機もインターネット回線も2系統ずつ用意します。どれか1つが止まっても、配信と記録は続きます。</p></li></ul>
+<div class="boxg stack" style="color:var(--ink)"><h3 class="t-h2s">止まらないとは言いません。止まったときにどう戻すかを、事前にお渡しします</h3>
+<p class="t-note">事前に「復旧手順書」を1枚お渡しします。何が止まったら、誰が、何分で、どう復旧するかを明記しています。</p>
+<div class="ph" style="background:var(--paper)"><span class="ana">［画像：復旧手順書の実物　穴埋め08］</span></div></div>
+</div></div></div></section><section id="demo" class="sec" aria-labelledby="demo-title"><div class="wrap"><div class="g57"><div class="stk"><p class="t-lab">Demo</p></div>
+<div class="stack s-48"><h2 class="t-h2" id="demo-title" data-rv>現場で使っている道具を、<br>いま試せます</h2><p class="t-lead">お手元のスマホでお試しください。<br>当日の質疑応答と進行がどう進むかを確認できます。</p></div></div>
+<ul class="hs mtl" aria-label="道具の一覧"><li class="hi stack s-16"><div class="zoom"><img src="img/S01.webp" alt="（ダミー）QA Board の画面" width="1500" height="1000" loading="lazy" decoding="async"></div><h3 class="t-ct">質疑応答：QA Board</h3><p class="t-body">会場とオンラインからの質問を1か所に集め、選んだ質問だけを登壇者の画面に表示します。</p><p class="t-note t-sub"><span class="ana">［QR］</span>　コード <span class="ana">［000］</span>　質問を送ると、上の画面に表示されます</p></li><li class="hi stack s-16"><div class="zoom"><img src="img/S02.webp" alt="（ダミー）Que の画面" width="1500" height="1000" loading="lazy" decoding="async"></div><h3 class="t-ct">進行管理：Que</h3><p class="t-body">残り時間と合図を、登壇者とスタッフのスマホに表示します。進行の遅れを防ぎます。</p><p class="t-note t-sub"><span class="ana">［QR］</span>　読み取ると、デモの進行表が開きます</p></li><li class="hi stack s-16"><div class="zoom"><img src="img/S03.webp" alt="（ダミー）Movie Switcher の画面" width="1500" height="1000" loading="lazy" decoding="async"></div><h3 class="t-ct">記録映像の作成：Movie Switcher</h3><p class="t-body">3台のカメラの映像から、話している人に合わせて切り替えた記録映像と字幕を作ります。</p></li></ul>
+<p class="t-note t-sub mtl">これらの道具は、当日私たちが用意して操作します。ご自身で使えるようになりたい方には、<a href="#coaching">コーチング</a>をご用意しています。　<span class="ana">［穴埋め09：デモ環境］</span></p>
+</div></section><section id="works" class="sec" aria-labelledby="works-title"><div class="wrap"><div class="g57"><div class="stk"><p class="t-lab">Case Study</p></div>
+<div class="stack s-48"><h2 class="t-h2" id="works-title" data-rv>事例：人数も、機材も、<br>金額も公開しています</h2><p class="t-lead">すべての事例を同じ項目で掲載しています。<br>ご自身の会に近いものを探してみてください。</p></div></div></div>
+<div class="mtl">
+<article class="case" aria-labelledby="case1-t"><div class="case-l"><img class="case-bg" src="img/P02.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async">
+<p class="t-note">Case #01　|　<span class="ana">［主催機関名］</span></p>
+<div class="case-tags"><span class="pill"><span class="ana">［大学］</span></span><span class="pill"><span class="ana">［シンポジウム］</span></span></div>
+<h3 class="t-ct" id="case1-t"><span class="ana">［会の名称：課題と成果を一文で］</span></h3>
+<p class="t-body"><span class="ana">［当日起きたことと、どう戻したか。2〜3行］</span></p>
+<dl class="chips"><div class="chip"><dt>会の規模</dt><dd>登壇<span class="ana">［ ］</span>人、会場<span class="ana">［ ］</span>人</dd></div><div class="chip"><dt>当日の体制</dt><dd>スタッフ<span class="ana">［ ］</span>名（映像1名、音声・配信1名）</dd></div>
+<div class="chip"><dt>使用機材</dt><dd>カメラ<span class="ana">［ ］</span>台、マイク<span class="ana">［ ］</span>本</dd></div><div class="chip"><dt>金額</dt><dd><span class="ana">［25万〜30万円］</span></dd></div></dl></div>
+<div class="case-r"><img src="img/P02.webp" alt="（ダミー）パネルディスカッション全体" width="1600" height="1000" loading="lazy" decoding="async"><img src="img/P06.webp" alt="（ダミー）客席後方のカメラ" width="1500" height="1000" loading="lazy" decoding="async"><img src="img/P07.webp" alt="（ダミー）ミキサーとマイク" width="1500" height="1000" loading="lazy" decoding="async"><img src="img/P08.webp" alt="（ダミー）配信卓とモニター" width="1500" height="1000" loading="lazy" decoding="async"><img src="img/P10.webp" alt="（ダミー）会場からの質問" width="1500" height="1000" loading="lazy" decoding="async"><img src="img/P11.webp" alt="（ダミー）受付と案内表示" width="1500" height="1000" loading="lazy" decoding="async"><img src="img/P12.webp" alt="（ダミー）開場前の設営" width="1500" height="1000" loading="lazy" decoding="async"></div></article>
+<article class="case" aria-labelledby="case2-t"><div class="case-l"><img class="case-bg" src="img/P03.webp" alt="" width="1600" height="1000" loading="lazy" decoding="async">
+<p class="t-note">Case #02　|　<span class="ana">［主催機関名］</span></p>
+<div class="case-tags"><span class="pill"><span class="ana">［大学］</span></span><span class="pill"><span class="ana">［シンポジウム］</span></span></div>
+<h3 class="t-ct" id="case2-t"><span class="ana">［会の名称：課題と成果を一文で］</span></h3>
+<p class="t-body"><span class="ana">［当日起きたことと、どう戻したか。2〜3行］</span></p>
+<dl class="chips"><div class="chip"><dt>会の規模</dt><dd>登壇<span class="ana">［ ］</span>人、会場<span class="ana">［ ］</span>人</dd></div><div class="chip"><dt>当日の体制</dt><dd>スタッフ<span class="ana">［ ］</span>名</dd></div>
+<div class="chip"><dt>使用機材</dt><dd>カメラ<span class="ana">［ ］</span>台、マイク<span class="ana">［ ］</span>本</dd></div><div class="chip"><dt>金額</dt><dd><span class="ana">［25万〜30万円］</span></dd></div></dl></div>
+<div class="case-r"><img src="img/P03.webp" alt="（ダミー）会場全体" width="1600" height="1000" loading="lazy" decoding="async"><img src="img/P01.webp" alt="（ダミー）話している人のアップ" width="1600" height="1000" loading="lazy" decoding="async"><img src="img/P09.webp" alt="（ダミー）オンライン登壇者の映る画面" width="1500" height="1000" loading="lazy" decoding="async"><img src="img/P07.webp" alt="（ダミー）ミキサーとマイク" width="1500" height="1000" loading="lazy" decoding="async"><img src="img/P06.webp" alt="（ダミー）客席後方のカメラ" width="1500" height="1000" loading="lazy" decoding="async"><img src="img/P12.webp" alt="（ダミー）開場前の設営" width="1500" height="1000" loading="lazy" decoding="async"><img src="img/P10.webp" alt="（ダミー）会場からの質問" width="1500" height="1000" loading="lazy" decoding="async"></div></article>
+<article class="case" aria-labelledby="case3-t"><div class="case-l"><img class="case-bg" src="img/P10.webp" alt="" width="1500" height="1000" loading="lazy" decoding="async">
+<p class="t-note">Case #03　|　<span class="ana">［主催機関名］</span></p>
+<div class="case-tags"><span class="pill"><span class="ana">［大学］</span></span><span class="pill"><span class="ana">［シンポジウム］</span></span></div>
+<h3 class="t-ct" id="case3-t"><span class="ana">［会の名称：課題と成果を一文で］</span></h3>
+<p class="t-body"><span class="ana">［当日起きたことと、どう戻したか。2〜3行］</span></p>
+<dl class="chips"><div class="chip"><dt>会の規模</dt><dd>登壇<span class="ana">［ ］</span>人、会場<span class="ana">［ ］</span>人</dd></div><div class="chip"><dt>当日の体制</dt><dd>スタッフ<span class="ana">［ ］</span>名</dd></div>
+<div class="chip"><dt>使用機材</dt><dd>カメラ<span class="ana">［ ］</span>台、マイク<span class="ana">［ ］</span>本</dd></div><div class="chip"><dt>金額</dt><dd><span class="ana">［25万〜30万円］</span></dd></div></dl></div>
+<div class="case-r"><img src="img/P10.webp" alt="（ダミー）会場からの質問" width="1500" height="1000" loading="lazy" decoding="async"><img src="img/P02.webp" alt="（ダミー）パネルディスカッション全体" width="1600" height="1000" loading="lazy" decoding="async"><img src="img/P08.webp" alt="（ダミー）配信卓とモニター" width="1500" height="1000" loading="lazy" decoding="async"><img src="img/P11.webp" alt="（ダミー）受付と案内表示" width="1500" height="1000" loading="lazy" decoding="async"><img src="img/P01.webp" alt="（ダミー）話している人のアップ" width="1600" height="1000" loading="lazy" decoding="async"><img src="img/P06.webp" alt="（ダミー）客席後方のカメラ" width="1500" height="1000" loading="lazy" decoding="async"><img src="img/P03.webp" alt="（ダミー）会場全体" width="1600" height="1000" loading="lazy" decoding="async"></div></article>
 </div>
-</div></div></div></section>
-<section id="demo" class="mt200"><div class="wrap"><div class="g57"><div class="stk"><p class="t-lab" style="color: #353637">Demo</p></div><div class="st48"><h2 class="t-h2" data-rv><span class="wm"><span class="w">現場で使って</span></span><span class="wm"><span class="w">いる道具を、</span></span><br><span class="wm"><span class="w">いま試せます</span></span></h2><p class="t-lead" data-rv="fade">お手元のスマホでお試しください。<br>当日の質疑応答と進行がどう進むかを確認できます。</p></div></div><div class="mtl"><div class="hs" data-rv="fade"><div class="hi" style="display: flex; flex-direction: column"><div class="zoom"><img src="img/S01.webp" alt="（ダミー）QA Board の画面" style="display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; "></div><h3 class="t-ct" style="margin-top: 27px; color: #353637">質疑応答：QA Board</h3><p class="t-body" style="margin-top: 16px">会場とオンラインからの質問を1か所に集め、選んだ質問だけを登壇者の画面に表示します。</p><div style="margin-top: 24px; display: flex; gap: 20px; align-items: center; padding-top: 24px; border-top: 1px solid #d7d5d0"><div class="ph" style="flex: 0 0 88px; height: 88px; padding: 0; background: #fbfbfb; color: #6c6b68; font-size: 12px">［QR］</div><p class="t-note">コード <span style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; font-size: 24px; letter-spacing: 0.1em">［000］</span><br>質問を送ると、上の画面に表示されます</p></div></div><div class="hi" style="display: flex; flex-direction: column"><div class="zoom"><img src="img/S02.webp" alt="（ダミー）Que の画面" style="display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; "></div><h3 class="t-ct" style="margin-top: 27px; color: #353637">進行管理：Que</h3><p class="t-body" style="margin-top: 16px">残り時間と合図を、登壇者とスタッフのスマホに表示します。進行の遅れを防ぎます。</p><div style="margin-top: 24px; display: flex; gap: 20px; align-items: center; padding-top: 24px; border-top: 1px solid #d7d5d0"><div class="ph" style="flex: 0 0 88px; height: 88px; padding: 0; background: #fbfbfb; color: #6c6b68; font-size: 12px">［QR］</div><p class="t-note">読み取ると、デモの進行表が開きます。登壇者にはこのように見えます</p></div></div><div class="hi" style="display: flex; flex-direction: column"><div class="zoom"><img src="img/S03.webp" alt="（ダミー）Movie Switcher の画面" style="display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; "></div><h3 class="t-ct" style="margin-top: 27px; color: #353637">記録映像の作成：Movie Switcher</h3><p class="t-body" style="margin-top: 16px">3台のカメラの映像から、話している人に合わせて切り替えた記録映像と字幕を作ります。</p></div></div><p class="t-note mtl" style="color: #6c6b68">これらの道具は、当日私たちが用意して操作します。ご自身で使えるようになりたい方には、<a href="#coaching">コーチング</a>をご用意しています。　［穴埋め09：デモ環境］</p></div></div></section>
-<section id="works" class="mt200"><div class="wrap"><div class="g57"><div class="stk"><p class="t-lab" style="color: #353637">Case Study</p></div><div class="st56"><div class="st48"><h2 class="t-h2" data-rv><span class="wm"><span class="w">事例：</span></span><span class="wm"><span class="w">人数も、</span></span><span class="wm"><span class="w">機材も、</span></span><br><span class="wm"><span class="w">金額も公開し</span></span><span class="wm"><span class="w">ています</span></span></h2><p class="t-lead" data-rv="fade">すべての事例を同じ項目で掲載しています。<br>ご自身の会に近いものを探してみてください。</p></div><div data-rv="fade"><a href="#works" class="btn "><span class="bt"><span>事例をすべて見る</span><span aria-hidden="true">事例をすべて見る</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a></div></div></div></div>
-<div class="mtl"><article class="case"><div class="case-l"><img class="case-bg" src="img/P02.webp" alt=""><p class="t-note" style="display: flex; gap: 16px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400"><span>Case #01</span><span>|</span><span style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif; font-weight: 500">［主催機関名］</span></p><div style="display: flex; flex-wrap: wrap; gap: 8px"><span class="pill inv">［大学］</span><span class="pill inv line">［シンポジウム］</span></div><h3 class="t-h2s" style="font-size: inherit"><span class="t-ct" style="display: block; font-size: clamp(16px, 2.2vw, 26px)">［会の名称：課題と成果を一文で］</span></h3><p class="t-body" style="color: #c4c4c4">［当日起きたことと、どう戻したか。2〜3行］</p><div class="chips" style="margin-top: auto"><div class="chip"><b>会の規模</b><span>登壇［ ］人、会場［ ］人</span></div><div class="chip"><b>当日の体制</b><span>スタッフ［ ］名（映像1名、音声・配信1名）</span></div><div class="chip"><b>使用機材</b><span>カメラ［ ］台、マイク［ ］本</span></div><div class="chip"><b>金額</b><span>［25万〜30万円］</span></div></div></div><div class="case-r"><img src="img/P02.webp" alt="（ダミー）パネルディスカッション全体"><img src="img/P06.webp" alt="（ダミー）客席後方のカメラ"><img src="img/P07.webp" alt="（ダミー）ミキサーとマイク"><img src="img/P08.webp" alt="（ダミー）配信卓とモニター"><img src="img/P10.webp" alt="（ダミー）会場からの質問"><img src="img/P11.webp" alt="（ダミー）受付と案内表示"><img src="img/P12.webp" alt="（ダミー）開場前の設営"></div></article><article class="case"><div class="case-l"><img class="case-bg" src="img/P03.webp" alt=""><p class="t-note" style="display: flex; gap: 16px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400"><span>Case #02</span><span>|</span><span style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif; font-weight: 500">［主催機関名］</span></p><div style="display: flex; flex-wrap: wrap; gap: 8px"><span class="pill inv">［大学］</span><span class="pill inv line">［シンポジウム］</span></div><h3 class="t-h2s" style="font-size: inherit"><span class="t-ct" style="display: block; font-size: clamp(16px, 2.2vw, 26px)">［会の名称：課題と成果を一文で］</span></h3><p class="t-body" style="color: #c4c4c4">［当日起きたことと、どう戻したか。2〜3行］</p><div class="chips" style="margin-top: auto"><div class="chip"><b>会の規模</b><span>登壇［ ］人、会場［ ］人</span></div><div class="chip"><b>当日の体制</b><span>スタッフ［ ］名</span></div><div class="chip"><b>使用機材</b><span>カメラ［ ］台、マイク［ ］本</span></div><div class="chip"><b>金額</b><span>［金額帯］</span></div></div></div><div class="case-r"><img src="img/P03.webp" alt="（ダミー）会場全体：客席とスクリーン"><img src="img/P01.webp" alt="（ダミー）話している人のアップ"><img src="img/P09.webp" alt="（ダミー）オンライン登壇者の映る画面"><img src="img/P07.webp" alt="（ダミー）ミキサーとマイク"><img src="img/P06.webp" alt="（ダミー）客席後方のカメラ"><img src="img/P12.webp" alt="（ダミー）開場前の設営"><img src="img/P10.webp" alt="（ダミー）会場からの質問"></div></article><article class="case"><div class="case-l"><img class="case-bg" src="img/P10.webp" alt=""><p class="t-note" style="display: flex; gap: 16px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400"><span>Case #03</span><span>|</span><span style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif; font-weight: 500">［主催機関名］</span></p><div style="display: flex; flex-wrap: wrap; gap: 8px"><span class="pill inv">［大学］</span><span class="pill inv line">［シンポジウム］</span></div><h3 class="t-h2s" style="font-size: inherit"><span class="t-ct" style="display: block; font-size: clamp(16px, 2.2vw, 26px)">［会の名称：課題と成果を一文で］</span></h3><p class="t-body" style="color: #c4c4c4">［当日起きたことと、どう戻したか。2〜3行］</p><div class="chips" style="margin-top: auto"><div class="chip"><b>会の規模</b><span>登壇［ ］人、会場［ ］人</span></div><div class="chip"><b>当日の体制</b><span>スタッフ［ ］名</span></div><div class="chip"><b>使用機材</b><span>カメラ［ ］台、マイク［ ］本</span></div><div class="chip"><b>金額</b><span>［金額帯］</span></div></div></div><div class="case-r"><img src="img/P10.webp" alt="（ダミー）会場からの質問"><img src="img/P02.webp" alt="（ダミー）パネルディスカッション全体"><img src="img/P08.webp" alt="（ダミー）配信卓とモニター"><img src="img/P11.webp" alt="（ダミー）受付と案内表示"><img src="img/P01.webp" alt="（ダミー）話している人のアップ"><img src="img/P06.webp" alt="（ダミー）客席後方のカメラ"><img src="img/P09.webp" alt="（ダミー）オンライン登壇者の映る画面"></div></article></div>
-<div class="wrap mtl"><div class="hs w60"><blockquote class="hi" style="margin: 0; padding: 40px 0 0; border-top: 1px solid #d7d5d0"><p class="t-lead">［担当者の声：頼む前に不安だったこと、当日どうだったか。2〜3行］</p><footer class="t-note" style="margin-top: 24px; color: #6c6b68">［所属・役職・氏名（掲載できる範囲）　穴埋め11］</footer></blockquote><blockquote class="hi" style="margin: 0; padding: 40px 0 0; border-top: 1px solid #d7d5d0"><p class="t-lead">［担当者の声：頼む前に不安だったこと、当日どうだったか。2〜3行］</p><footer class="t-note" style="margin-top: 24px; color: #6c6b68">［所属・役職・氏名（掲載できる範囲）］</footer></blockquote></div></div>
-</section>
-<section class="mt120"><div class="wrap"><div style="border-top: 1px solid #d7d5d0; border-bottom: 1px solid #d7d5d0; padding: clamp(32px, 7vw, 100px) 0"><div class="boxd cta-in" data-rv="fade"><div class="st24" style="flex: 1 1 300px; min-width: 0; color: #d7d5d0; gap: 20px"><p class="t-h2s">近い事例で見積書を受け取る</p><p class="t-sm">日程と会場だけで、見積書をお送りします。1営業日以内に、宛名入りのPDFをメールでお届けします。</p></div><div style="flex: 0 1 403px; min-width: 0; width: 100%"><a href="contact.html" class="btn xl"><span class="bt"><span>見積書を受け取る</span><span aria-hidden="true">見積書を受け取る</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a></div></div></div></div></section>
-<section id="check" class="mt120"><div class="wrap"><div class="g57"><div class="stk"><p class="t-lab" style="color: #353637">Check</p></div><div class="st48"><h2 class="t-h2" data-rv><span class="wm"><span class="w">iPhone</span></span><span class="wm"><span class="w">で足りるなら</span></span><span class="wm"><span class="w">、</span></span><br><span class="wm"><span class="w">そうお伝えし</span></span><span class="wm"><span class="w">ます</span></span></h2><p class="t-lead" data-rv="fade">6問に答えるだけで、ご自身で配信できるか、<br>相談だけで済むか、依頼したほうがよいかがわかります。</p></div></div><div class="mtl"><div class="g57"><div class="pc"></div><div class="st56" style="align-items: stretch"><div style="border-bottom: 1px solid #d7d5d0" data-rv="fade"><div class="qa"><span>登壇者は2人以上いますか</span><span style="display: flex; gap: 4px"><button type="button">はい</button><button type="button">いいえ</button></span></div><div class="qa"><span>会場でマイクとスピーカーを使いますか</span><span style="display: flex; gap: 4px"><button type="button">はい</button><button type="button">いいえ</button></span></div><div class="qa"><span>会場からの質問を、オンラインの視聴者にも届けたいですか</span><span style="display: flex; gap: 4px"><button type="button">はい</button><button type="button">いいえ</button></span></div><div class="qa"><span>配信時間は2時間を超えますか</span><span style="display: flex; gap: 4px"><button type="button">はい</button><button type="button">いいえ</button></span></div><div class="qa"><span>終了後に録画データ（アーカイブ）を公開しますか</span><span style="display: flex; gap: 4px"><button type="button">はい</button><button type="button">いいえ</button></span></div><div class="qa"><span>学外の視聴者や来賓がいますか</span><span style="display: flex; gap: 4px"><button type="button">はい</button><button type="button">いいえ</button></span></div></div><div><a href="#check" class="btn line"><span class="bt"><span>診断結果を見る</span><span aria-hidden="true">診断結果を見る</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a></div></div></div></div></div></section>
-<section class="bandg mt160"><div class="wrap pad-band"><div class="g57"><div class="stk"><p class="t-lab" style="color: #353637">Option</p></div><div class="st48"><h2 class="t-h2" data-rv><span class="wm"><span class="w">カメラマンは</span></span><span class="wm"><span class="w">、</span></span><br><span class="wm"><span class="w">すでに会場に</span></span><span class="wm"><span class="w">います</span></span></h2><p class="t-lead" data-rv="fade">記録写真も、記録映像も、同じ日にまとめてご依頼いただけます。<br>見積も請求も打ち合わせも1回で済みます。</p></div></div><div class="mtl"><div class="hs w40" data-rv="fade"><div class="hi" style="display: flex; flex-direction: column; gap: 27px"><div style="display: flex; align-items: baseline; gap: 12px"><span class="t-num">01</span><h3 class="t-ct">記録写真</h3></div><div class="zoom" style="position: relative; aspect-ratio: 424 / 268; color: #fbfbfb"><img src="img/P13.webp" alt="（ダミー）記録写真の撮影" style="display: block; width: 100%; object-fit: cover; border-radius: 6px; position: absolute; inset: 0; height: 100%; border-radius: 0"><div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.45)"></div><p class="t-body" style="position: absolute; left: 0; right: 0; bottom: 0; padding: clamp(16px, 3vw, 40px)">報告書や広報に使える写真を、専任カメラマン1名が撮影します</p></div></div><div class="hi" style="display: flex; flex-direction: column; gap: 27px"><div style="display: flex; align-items: baseline; gap: 12px"><span class="t-num">02</span><h3 class="t-ct">記録映像の編集（アーカイブ編集）</h3></div><div class="zoom" style="position: relative; aspect-ratio: 424 / 268; color: #fbfbfb"><img src="img/P14.webp" alt="（ダミー）記録映像の編集" style="display: block; width: 100%; object-fit: cover; border-radius: 6px; position: absolute; inset: 0; height: 100%; border-radius: 0"><div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.45)"></div><p class="t-body" style="position: absolute; left: 0; right: 0; bottom: 0; padding: clamp(16px, 3vw, 40px)">話している人に合わせて画面を切り替えた記録映像を、字幕つきで作成します</p></div></div><div class="hi" style="display: flex; flex-direction: column; gap: 27px"><div style="display: flex; align-items: baseline; gap: 12px"><span class="t-num">03</span><h3 class="t-ct">2分のダイジェスト映像</h3></div><div class="zoom" style="position: relative; aspect-ratio: 424 / 268; color: #fbfbfb"><img src="img/P15.webp" alt="（ダミー）ダイジェスト映像" style="display: block; width: 100%; object-fit: cover; border-radius: 6px; position: absolute; inset: 0; height: 100%; border-radius: 0"><div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.45)"></div><p class="t-body" style="position: absolute; left: 0; right: 0; bottom: 0; padding: clamp(16px, 3vw, 40px)">次回の告知や、成果報告に使える短いまとめ映像を作ります</p></div></div><div class="hi" style="display: flex; flex-direction: column; gap: 27px"><div style="display: flex; align-items: baseline; gap: 12px"><span class="t-num">04</span><h3 class="t-ct">文字起こし</h3></div><div class="zoom" style="position: relative; aspect-ratio: 424 / 268; color: #fbfbfb"><img src="img/P16.webp" alt="（ダミー）文字起こしと報告書" style="display: block; width: 100%; object-fit: cover; border-radius: 6px; position: absolute; inset: 0; height: 100%; border-radius: 0"><div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.45)"></div><p class="t-body" style="position: absolute; left: 0; right: 0; bottom: 0; padding: clamp(16px, 3vw, 40px)">報告書の下書きにそのまま使えるテキストデータを作成します</p></div></div></div>
-<div class="g57 mtl"><div class="st48" style="gap: 40px" data-rv="fade"><h3 class="t-bar">まるごと</h3><p class="t-big2">［40<small>万円］（税別）</small></p></div>
-<div class="st56"><p class="t-lead" data-rv="fade">スタンダードに上の4つを加えて、スタッフ3名で伺います。<br>一回の現場で、報告書の素材まで揃います。</p><a href="contact.html" class="btn "><span class="bt"><span>まるごとプランで見積書を受け取る</span><span aria-hidden="true">まるごとプランで見積書を受け取る</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a></div></div></div></div></section>
-<div class="mt40"></div><section id="coaching" class="mt200"><div class="wrap"><div class="g57"><div class="stk"><p class="t-lab" style="color: #353637">Coaching</p></div><div class="st48"><h2 class="t-h2" data-rv><span class="wm"><span class="w">来年度からは</span></span><br><span class="wm"><span class="w">自分たちで配</span></span><span class="wm"><span class="w">信する</span></span></h2><p class="t-lead" data-rv="fade">小さい会はご自身で、大きい会だけ私たちにお任せください。<br>手順書とチェックリストが残るので、担当者が替わっても引き継げます。</p></div></div><div class="mtl"><div class="g57"><div class="pc"></div><div class="st56" style="align-items: stretch"><div data-rv="fade"><ol class="steps"><li><span class="n">01</span><span class="a">相談 <small>［3万円］</small></span><span class="b">オンライン60分。機材と接続の図、当日のチェックリストを作成します</span></li><li><span class="n">02</span><span class="a">同行 <small>［代行＋3万円］</small></span><span class="b">私たちの配信現場に入り、実際の動きを横で見て覚えます</span></li><li><span class="n">03</span><span class="a">伴走 <small>［12万円］</small></span><span class="b">ご自身で配信を操作し、私たちは横で待機します</span></li><li><span class="n">04</span><span class="a">卒業 <small>［5万円］</small></span><span class="b">事前の機材点検と、当日のオンライン待機だけで見守ります</span></li></ol></div><div><a href="contact.html" class="btn line"><span class="bt"><span>コーチングについて相談する</span><span aria-hidden="true">コーチングについて相談する</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a></div></div></div></div></div></section>
-<section class="mt120"><div class="wrap"><div style="border-top: 1px solid #d7d5d0; border-bottom: 1px solid #d7d5d0; padding: clamp(32px, 7vw, 100px) 0"><div class="boxd cta-in" data-rv="fade"><div class="st24" style="flex: 1 1 300px; min-width: 0; color: #d7d5d0; gap: 20px"><p class="t-h2s">まだ何も決まっていない方へ</p><p class="t-sm">15分のオンライン相談で、iPhoneで足りるかどうかから一緒にお話しします。決まっているのが日程だけでもかまいません。</p></div><div style="flex: 0 1 403px; min-width: 0; width: 100%"><a href="contact.html" class="btn xl"><span class="bt"><span>相談の日時を選ぶ</span><span aria-hidden="true">相談の日時を選ぶ</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a></div></div></div></div></section>
-<section id="public" class="band mt160"><div class="wrap pad-band"><div class="g57"><div class="stk"><p class="t-lab" style="color: #fbfbfb">For public sector</p></div><div class="st48"><h2 class="t-h2" data-rv><span class="wm"><span class="w">大学・</span></span><span class="wm"><span class="w">公共機関の</span></span><br><span class="wm"><span class="w">発注手続きに</span></span><span class="wm"><span class="w">合わせます</span></span></h2><p class="t-lead" data-rv="fade">稟議や相見積に必要な書類を、<br>お問い合わせの前からご用意しています。</p></div></div><div class="mtl"><div class="g57"><div class="pc"></div><div class="st64">
-<div data-rv="fade"><ol class="steps"><li><span class="n">01</span><span class="a">問い合わせ</span><span class="b">決まっているのは日程と会場だけでかまいません</span></li><li><span class="n">02</span><span class="a">見積書</span><span class="b">1営業日以内に、宛名入りのPDFでお送りします</span></li><li><span class="n">03</span><span class="a">打ち合わせと会場確認</span><span class="b">オンラインで30分の打ち合わせと、会場の下見を行います</span></li><li><span class="n">04</span><span class="a">本番</span><span class="b">当日、スタッフ2名で会場に伺います</span></li><li><span class="n">05</span><span class="a">納品と請求</span><span class="b">完了報告書、納品書、請求書をまとめてお送りします</span></li></ol></div>
-<div class="st24" data-rv="fade"><p class="sub" style="color: #c4c4c4">書類と支払い</p><ul class="rows"><li>見積書・納品書・請求書の3点を発行します</li><li>請求書払い（後払い）に対応しています</li><li>インボイス登録番号：［T0000000000000］</li><li>相見積のための見積依頼も歓迎します</li></ul></div>
-<div class="boxg st24" data-rv="fade" style="color: #2c2c2e">
-<h3 class="t-h2s">仕様書のひな形を、そのまま使えます</h3>
-<p class="t-sm" style="color: #55544f">配信業務の仕様書（A4 1枚、Word形式）と、見積書の見本をお送りします。他社への相見積にもそのままお使いください。</p>
-<div class="fld w "><label for="spec-mail">メールアドレス</label><input id="spec-mail" type="email" placeholder="name@example.ac.jp"></div>
-<a href="thanks.html" class="btn blk"><span class="bt"><span>ひな形を受け取る</span><span aria-hidden="true">ひな形を受け取る</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a>
-</div></div></div></div></div></section>
-<section id="faq" class="mt200"><div class="wrap"><div class="g57"><div class="stk"><p class="t-lab" style="color: #353637">FAQ</p></div><div class="st48"><h2 class="t-h2" data-rv><span class="wm"><span class="w">よくある質問</span></span></h2></div></div><div class="mtl"><div class="g57"><div class="pc"></div><dl class="faq" data-rv="fade"><div><dt>何日前までに頼めば間に合いますか</dt><dd>［最短の日数と、繁忙期の目安］</dd></div><div><dt>Zoom、YouTube、Teamsのどれに対応していますか</dt><dd>［対応している配信先］</dd></div><div><dt>登壇者の一部がオンラインから参加します</dt><dd>対応できます。スタッフを1名追加します（［金額］）。</dd></div><div><dt>会場にインターネット回線がありません</dt><dd>配信用の回線を持ち込みます（［金額］）。事前に会場で電波状況を確認します。</dd></div><div><dt>配信が止まった場合、料金はどうなりますか</dt><dd>［返金・減額の規定］</dd></div><div><dt>対応エリアはどこまでですか</dt><dd>［エリアと、下見が込みになる範囲］</dd></div></dl></div></div></div></section>
+<div class="wrap mtl"><blockquote class="boxw stack" style="max-width:48rem"><p class="t-lead"><span class="ana">［頼む前に不安だったこと、当日どうだったか。2〜3行］</span></p><footer class="t-note t-sub"><span class="ana">［所属・役職・氏名（掲載できる範囲）］</span></footer></blockquote></div>
+</section><section id="option" class="bandg sec-2" aria-labelledby="option-title"><div class="wrap pad-band"><div class="g57"><div class="stk"><p class="t-lab">Option</p></div>
+<div class="stack s-48"><h2 class="t-h2" id="option-title" data-rv>カメラマンは、<br>すでに会場にいます</h2><p class="t-lead">記録写真も、記録映像も、同じ日にまとめてご依頼いただけます。<br>見積も請求も打ち合わせも1回で済みます。</p></div></div>
+<ul class="hs w40 mtl" aria-label="同じ日に頼めること"><li class="hi stack s-16"><p class="t-num">01</p><h3 class="t-ct">記録写真</h3><div class="zoom"><img src="img/P13.webp" alt="（ダミー）記録写真の撮影" width="1500" height="1000" loading="lazy" decoding="async"></div><p class="t-body">報告書や広報に使える写真を、専任カメラマン1名が撮影します</p></li><li class="hi stack s-16"><p class="t-num">02</p><h3 class="t-ct">記録映像の編集（アーカイブ編集）</h3><div class="zoom"><img src="img/P14.webp" alt="（ダミー）記録映像の編集" width="1500" height="1000" loading="lazy" decoding="async"></div><p class="t-body">話している人に合わせて画面を切り替えた記録映像を、字幕つきで作成します</p></li><li class="hi stack s-16"><p class="t-num">03</p><h3 class="t-ct">2分のダイジェスト映像</h3><div class="zoom"><img src="img/P15.webp" alt="（ダミー）ダイジェスト映像" width="1500" height="1000" loading="lazy" decoding="async"></div><p class="t-body">次回の告知や、成果報告に使える短いまとめ映像を作ります</p></li><li class="hi stack s-16"><p class="t-num">04</p><h3 class="t-ct">文字起こし</h3><div class="zoom"><img src="img/P16.webp" alt="（ダミー）文字起こしと報告書" width="1500" height="1000" loading="lazy" decoding="async"></div><p class="t-body">報告書の下書きにそのまま使えるテキストデータを作成します</p></li></ul>
+<div class="g57 mtl"><div class="stack s-48"><h3 class="t-bar">まるごと</h3><p class="t-big2">［40<small>万円］（税別）</small></p></div>
+<div class="stack s-56"><p class="t-lead">スタンダードに上の4つを加えて、スタッフ3名で伺います。<br>一回の現場で、報告書の素材まで揃います。</p><a class="btn " href="contact.html">まるごとプランで見積書を受け取る</a></div></div>
+</div></section><section id="coaching" class="sec" aria-labelledby="coaching-title"><div class="wrap"><div class="g57"><div class="stk"><p class="t-lab">Coaching</p></div>
+<div class="stack s-48"><h2 class="t-h2" id="coaching-title" data-rv>来年度からは<br>自分たちで配信する</h2><p class="t-lead">小さい会はご自身で、大きい会だけ私たちにお任せください。<br>手順書とチェックリストが残るので、担当者が替わっても引き継げます。</p>
+<ol class="steps"><li><span class="n">01</span><span class="a">相談 <small><span class="ana">［3万円］</span></small></span><span class="b">オンライン60分。機材と接続の図、当日のチェックリストを作成します</span></li><li><span class="n">02</span><span class="a">同行 <small><span class="ana">［代行＋3万円］</span></small></span><span class="b">私たちの配信現場に入り、実際の動きを横で見て覚えます</span></li><li><span class="n">03</span><span class="a">伴走 <small><span class="ana">［12万円］</span></small></span><span class="b">ご自身で配信を操作し、私たちは横で待機します</span></li><li><span class="n">04</span><span class="a">卒業 <small><span class="ana">［5万円］</span></small></span><span class="b">事前の機材点検と、当日のオンライン待機だけで見守ります</span></li></ol>
+<div class="btns"><a class="btn line" href="contact.html">コーチングについて相談する</a></div></div></div></div></section>
+<section class="sec-3" aria-label="オンライン相談"><div class="wrap"><div class="boxd cta-in"><div class="stack"><p class="t-h2s">まだ何も決まっていない方へ</p>
+<p class="t-note">15分のオンライン相談で、iPhoneで足りるかどうかから一緒にお話しします。決まっているのが日程だけでもかまいません。</p></div>
+<div><a class="btn xl" href="contact.html#consult">相談の日時を選ぶ</a></div></div></div></section><section id="public" class="band sec-2" aria-labelledby="public-title"><div class="wrap pad-band"><div class="g57"><div class="stk"><p class="t-lab">For public sector</p></div>
+<div class="stack s-64"><div class="stack s-48"><h2 class="t-h2" id="public-title" data-rv>大学・公共機関の<br>発注手続きに合わせます</h2><p class="t-lead">稟議や相見積に必要な書類を、<br>お問い合わせの前からご用意しています。</p></div>
+<ol class="steps"><li><span class="n">01</span><span class="a">問い合わせ</span><span class="b">決まっているのは日程と会場だけでかまいません</span></li><li><span class="n">02</span><span class="a">見積書</span><span class="b">1営業日以内に、宛名入りのPDFでお送りします</span></li><li><span class="n">03</span><span class="a">打ち合わせと会場確認</span><span class="b">オンラインで30分の打ち合わせと、会場の下見を行います</span></li><li><span class="n">04</span><span class="a">本番</span><span class="b">当日、スタッフ2名で会場に伺います</span></li><li><span class="n">05</span><span class="a">納品と請求</span><span class="b">完了報告書、納品書、請求書をまとめてお送りします</span></li></ol>
+<div class="stack"><h3 class="sub">書類と支払い</h3><ul class="rows"><li>見積書・納品書・請求書の3点を発行します</li><li>請求書払い（後払い）に対応しています</li><li>インボイス登録番号：<span class="ana">［T0000000000000］</span></li><li>相見積のための見積依頼も歓迎します</li></ul></div>
+<form id="spec" class="boxg stack" style="color:var(--ink)" data-form="spec" data-endpoint="" aria-labelledby="spec-title">
+<h3 class="t-h2s" id="spec-title">仕様書のひな形を、そのまま使えます</h3>
+<p class="t-note">配信業務の仕様書（A4 1枚、Word形式）と、見積書の見本をお送りします。他社への相見積にもそのままお使いください。</p>
+<div class="fld"><label for="spec-mail">メールアドレス<span class="req">必須</span></label><input id="spec-mail" name="email" type="email" placeholder="name@example.ac.jp" required autocomplete="email" aria-describedby="spec-mail-e"><p class="err" id="spec-mail-e">メールアドレスの形で入力してください</p></div>
+<button class="btn full" type="submit">ひな形を受け取る</button>
+<p class="form-msg" role="status" hidden></p></form>
+</div></div></div></section><section id="faq" class="sec" aria-labelledby="faq-title"><div class="wrap"><div class="g57"><div class="stk"><p class="t-lab">FAQ</p></div>
+<div class="stack s-48"><h2 class="t-h2" id="faq-title" data-rv>よくある質問</h2><div class="faq"><details name="faq"><summary>何日前までに頼めば間に合いますか</summary><div class="ans"><p class="t-body"><span class="ana">［最短の日数と、繁忙期の目安］</span></p></div></details><details name="faq"><summary>Zoom、YouTube、Teamsのどれに対応していますか</summary><div class="ans"><p class="t-body"><span class="ana">［対応している配信先］</span></p></div></details><details name="faq"><summary>登壇者の一部がオンラインから参加します</summary><div class="ans"><p class="t-body">対応できます。スタッフを1名追加します（<span class="ana">［金額］</span>）。</p></div></details><details name="faq"><summary>会場にインターネット回線がありません</summary><div class="ans"><p class="t-body">配信用の回線を持ち込みます（<span class="ana">［金額］</span>）。事前に会場で電波状況を確認します。</p></div></details><details name="faq"><summary>配信が止まった場合、料金はどうなりますか</summary><div class="ans"><p class="t-body"><span class="ana">［返金・減額の規定］</span></p></div></details><details name="faq"><summary>対応エリアはどこまでですか</summary><div class="ans"><p class="t-body">新宿駅からおおむね90分以内で伺える会場が対応エリアです。エリア内は、会場の下見も交通費も25万円に含まれます。エリア外の会場は、交通費と宿泊費の実費で伺います。</p></div></details><details name="faq"><summary>iPhoneで足りる会かどうか、先に知りたい</summary><div class="ans"><p class="t-body"><a href="#plan">8問のプラン診断</a>でご確認いただけます。iPhoneで足りる会なら、そうお伝えします。</p></div></details><details name="faq"><summary>相見積のための見積依頼でもかまいませんか</summary><div class="ans"><p class="t-body">歓迎します。<a href="#spec">仕様書のひな形</a>と見積書の見本もお送りしますので、他社への依頼にもそのままお使いください。</p></div></details><details name="faq"><summary>支払い方法を教えてください</summary><div class="ans"><p class="t-body">請求書払い（後払い）に対応しています。見積書・納品書・請求書の3点を発行します。</p></div></details></div></div></div></div></section></main><div class="mq" aria-hidden="true"><div class="mq-t"><span>LIVE STREAMING × HYBRID EVENTS</span><span>LIVE STREAMING × HYBRID EVENTS</span><span>LIVE STREAMING × HYBRID EVENTS</span><span>LIVE STREAMING × HYBRID EVENTS</span></div></div>
 <footer class="foot">
-<section id="contact" class="boxg st24" style="color: #2c2c2e">
-<p class="t-lab" style="color: #353637">Contact</p>
-<h2 class="t-h2s" data-rv><span class="wm"><span class="w">日程と会場だ</span></span><span class="wm"><span class="w">け、</span></span><span class="wm"><span class="w">教えてくださ</span></span><span class="wm"><span class="w">い</span></span></h2>
-<p class="t-sm" style="color: #55544f">1営業日以内に、宛名入りの見積書PDFをメールでお送りします。詳しい内容は、その後のやりとりで詰めていきます。</p>
-<div class="f2"><div class="fld w "><label for="e-date">開催日（未定でも可）</label><input id="e-date" type="text" placeholder="例：2027年2月20日"></div><div class="fld w "><label for="e-venue">会場</label><input id="e-venue" type="text" placeholder="例：〇〇大学 △△ホール"></div><div class="fld w "><label for="e-size">登壇者と来場者のおおよその人数</label><input id="e-size" type="text" placeholder="例：登壇4人、来場150人"></div><div class="fld w "><label for="e-mail">メールアドレス</label><input id="e-mail" type="email" placeholder="name@example.ac.jp"></div></div>
-<a href="thanks.html" class="btn blk"><span class="bt"><span>見積書を受け取る</span><span aria-hidden="true">見積書を受け取る</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a>
-<div style="display: flex; flex-wrap: wrap; gap: 8px 40px; justify-content: space-between; align-items: center">
-<p class="t-sm" style="color: #55544f">［年度末（2〜3月）の空き日程：残り〇日　穴埋め16］</p>
-<a href="contact.html" class="tlink"><span>15分のオンライン相談を予約する</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a>
-</div>
-</section>
-<div class="mt160" style="display: flex; flex-wrap: wrap; gap: 32px 64px; justify-content: space-between">
-<div><p style="margin: 0; font-size: 18px; line-height: 1; letter-spacing: 0.1em">［運営者名］</p>
-<p class="t-note" style="margin-top: 32px; color: #a8a6a2">［所在地］</p>
-<p class="t-note" style="margin-top: 20px; color: #a8a6a2">お電話でも受け付けています<br><span style="font-size: 28px; line-height: 1.6; color: #fbfbfb; letter-spacing: 0.04em">［電話番号］</span><br>［受付時間］</p></div>
-<div style="flex: 0 1 306px; min-width: 0"><img src="img/P06.webp" alt="（ダミー）客席後方のカメラ" style="display: block; width: 100%; aspect-ratio: 306 / 178; object-fit: cover; border-radius: 6px; "></div>
-</div>
-<nav class="fnav mt120" aria-label="フッターメニュー"><a href="index.html">トップ</a><a href="#price">料金・体制・機材</a><a href="#works">事例</a><a href="#demo">ツールデモ</a><a href="#public">大学・公共機関の方へ</a><a href="#faq">よくある質問</a><a href="contact.html">見積依頼</a></nav>
-<div class="mt120" style="display: flex; flex-wrap: wrap; gap: 16px 40px; justify-content: space-between; align-items: flex-end">
-<span style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 400; font-size: clamp(24px, 3.4vw, 44px); line-height: 1; letter-spacing: 0.2em">［サービス名］</span>
-<span class="t-sm" style="color: #a8a6a2">プライバシーポリシー　／　運営者情報</span>
-</div>
-</footer>
-<nav class="spbar" aria-label="見積の依頼"><a href="contact.html">電話する</a><a href="contact.html"><span>見積を依頼する</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a></nav>
-</div>
+<section id="contact" class="boxg stack s-48" aria-labelledby="contact-title" style="color:var(--ink)">
+<div class="g57">
+<div class="stack"><p class="t-lab">Contact</p><h2 id="contact-title" class="t-h2">日程と会場だけ、<br>教えてください</h2>
+<p class="t-lead">1営業日以内に、宛名入りの見積書PDFをメールでお送りします。詳しい内容は、その後のやりとりで詰めていきます。</p>
+<p class="t-note"><span class="ana">［年度末（2〜3月）の空き日程：残り〇日］</span></p>
+<p class="t-note" id="tel">お電話でも受け付けています　<span class="ana">［電話番号］</span>　<span class="ana">［受付時間］</span></p></div>
+<form class="boxw stack" data-form="quote" data-endpoint="" aria-label="見積の依頼">
+<h3 class="t-ct">見積書を受け取る</h3>
+<div class="f2"><div class="fld"><label for="f-date">開催日（未定でも可）<span class="req">必須</span></label><input id="f-date" name="date" type="text" placeholder="例：2027年2月20日" required aria-describedby="f-date-e"><p class="err" id="f-date-e">開催日を入力してください。未定なら「未定」で大丈夫です</p></div><div class="fld"><label for="f-venue">会場<span class="req">必須</span></label><input id="f-venue" name="venue" type="text" placeholder="例：〇〇大学 △△ホール" required aria-describedby="f-venue-e"><p class="err" id="f-venue-e">会場を入力してください</p></div><div class="fld"><label for="f-size">登壇者と来場者のおおよその人数<span class="req">必須</span></label><input id="f-size" name="size" type="text" placeholder="例：登壇4人、来場150人" required aria-describedby="f-size-e"><p class="err" id="f-size-e">おおよその人数を入力してください</p></div><div class="fld"><label for="f-email">メールアドレス<span class="req">必須</span></label><input id="f-email" name="email" type="email" placeholder="name@example.ac.jp" required autocomplete="email" inputmode="email" aria-describedby="f-email-e"><p class="err" id="f-email-e">メールアドレスの形で入力してください（例：name@example.ac.jp）</p></div></div>
 
-<script>
-(function(){
-var root=document.documentElement;
-var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-if(!reduce&&'IntersectionObserver' in window){
- root.classList.add('js-anim');
- var io=new IntersectionObserver(function(l){l.forEach(function(e){if(e.isIntersecting){e.target.classList.add('is-in');io.unobserve(e.target);}});},{rootMargin:'0px 0px -12% 0px'});
- document.querySelectorAll('[data-rv]').forEach(function(el){io.observe(el);});
-}
-var btns=[].slice.call(document.querySelectorAll('.cam[data-cam]')), slots=[].slice.call(document.querySelectorAll('.cam-slot'));
-if(!btns.length)return;
-var cam=1,timer=null;
-function show(n){cam=n;slots.forEach(function(s){s.hidden=+s.dataset.cam!==n;});btns.forEach(function(b){var on=+b.dataset.cam===n;b.setAttribute('aria-pressed',on);b.style.boxShadow=on?'inset 0 0 0 1px #fbfbfb':'none';});}
-function start(){if(reduce)return;clearInterval(timer);timer=setInterval(function(){show(cam%3+1);},5000);}
-btns.forEach(function(b){b.addEventListener('click',function(){show(+b.dataset.cam);start();});});
-show(1);start();
-})();
-</script></body>
+<button class="btn full" type="submit">見積書を受け取る</button>
+<p class="t-note t-sub">送信いただいても、こちらから電話での営業はいたしません。相見積のためのご依頼も歓迎します。</p>
+<p class="form-msg" role="status" hidden></p>
+</form>
+</div></section>
+<nav class="mtl" aria-label="フッターメニュー" id="fnav"><ul class="fnav"><li><a href="#plan">プラン診断</a></li><li><a href="#price">料金・体制・機材</a></li><li><a href="#works">事例</a></li><li><a href="#demo">ツールデモ</a></li><li><a href="#coaching">配信コーチング</a></li><li><a href="#public">大学・公共機関の方へ</a></li><li><a href="#faq">よくある質問</a></li><li><a href="contact.html">お問い合わせ・お見積</a></li><li><a href="rules.html">デザインルール</a></li></ul></nav>
+<p class="copy">© 2026 KARURA LIVE　対応エリア：新宿から90分圏内　<span class="ana">［運営者名］</span></p>
+</footer>
+<nav class="spbar" aria-label="よく使う操作"><a href="#plan">プラン診断</a><a href="contact.html">見積を依頼する</a></nav>
+</body>
 </html>

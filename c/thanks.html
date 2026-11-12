@@ -1,352 +1,46 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>送信完了 デザイン</title>
-<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500&display=swap" rel="stylesheet">
-<style>
-
-body{margin:0}
-html{scroll-behavior:smooth}
-a{color:#2c2c2e}a:hover{color:#6c6b68}
-a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #2c2c2e;outline-offset:3px}
-input::placeholder,textarea::placeholder{color:#777673}
-.root{font-family:'Helvetica Neue', Helvetica, Arial, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;font-weight:500;color:#2c2c2e;background:#f0f0f0;font-size:16px;line-height:2;letter-spacing:.08em;position:relative}
-.wrap{max-width:1920px;margin:0 auto;padding:0 clamp(2.5rem,-1.944rem + 6.94vw,5rem);box-sizing:border-box}
-.g57{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;align-items:start}
-.g75{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:40px;align-items:start}
-.stk{position:sticky;top:120px}
-.t-h1{margin:0;font-size:50px;line-height:1.6;letter-spacing:.04em;font-weight:500}
-.t-h2{margin:0;font-size:44px;line-height:1.6;letter-spacing:.08em;font-weight:500}
-.t-h2s{margin:0;font-size:28px;line-height:1.6;letter-spacing:.09em;font-weight:500}
-.t-h3{margin:0;font-size:26px;line-height:1.8;letter-spacing:.08em;font-weight:500}
-.t-ct{margin:0;font-size:20px;line-height:1.8;letter-spacing:.08em;font-weight:500}
-.t-lead{margin:0;font-size:18px;line-height:2.2;letter-spacing:.09em}
-.t-body{margin:0;font-size:16px;line-height:2;letter-spacing:.09em}
-.t-hero{margin:0;font-size:16px;line-height:2.2;letter-spacing:.08em}
-.t-price{margin:0;font-size:18px;line-height:2.1;letter-spacing:.04em}
-.t-note{margin:0;font-size:14px;line-height:1.6;letter-spacing:.04em}
-.t-sm{margin:0;font-size:13px;line-height:1.8;letter-spacing:.04em}
-.t-lab{margin:0;display:flex;align-items:center;gap:8px;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:18px;line-height:1;letter-spacing:.01em}
-.t-lab::before{content:"";width:8px;height:8px;background:currentColor;flex:none}
-.t-num{font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:16px;line-height:1;letter-spacing:.03em}
-.t-bar{margin:0;padding:16px;border-radius:6px;text-align:center;font-size:22px;line-height:1;letter-spacing:.08em;font-weight:500;background:#7d7466;color:#fbfbfb}
-.t-big{margin:0;font-size:104px;line-height:1;letter-spacing:0}.t-big small{font-size:26px;letter-spacing:.08em}
-.t-big2{margin:0;font-size:72px;line-height:1;letter-spacing:0}.t-big2 small{font-size:22px;letter-spacing:.08em}
-.sub{margin:0;align-self:flex-start;padding:6px 0 4px;border-bottom:1px solid currentColor;font-size:16px;line-height:1;letter-spacing:.04em}
-.mt40{margin-top:40px}.mt200{margin-top:200px}.mt160{margin-top:160px}.mt120{margin-top:120px}.mtl{margin-top:120px}
-.st48{display:flex;flex-direction:column;gap:48px}
-.st56{display:flex;flex-direction:column;gap:56px;align-items:flex-start}
-.st64{display:flex;flex-direction:column;gap:64px}
-.st24{display:flex;flex-direction:column;gap:24px}
-.band{margin:0 8px;border-radius:6px;background:#2c2c2e;color:#fbfbfb}
-.bandg{background:#d7d5d0}
-.pad-band{padding-top:160px;padding-bottom:160px}
-.btn{display:inline-flex;align-items:center;justify-content:space-between;gap:40px;height:60px;min-width:273px;padding:0 28px;border-radius:6px;font-size:16px;line-height:1;letter-spacing:.08em;text-decoration:none;box-sizing:border-box;background:#2c2c2e;color:#fbfbfb;border:1px solid #2c2c2e}
-.btn:hover{color:#fbfbfb}
-.btn.line{background:transparent;color:#2c2c2e}.btn.line:hover{color:#2c2c2e}
-.btn.light{background:#fbfbfb;color:#2c2c2e;border-color:#fbfbfb}.btn.light:hover{color:#2c2c2e}
-.btn.full{display:flex;width:100%;min-width:0}
-.btn.xl{display:flex;width:100%;min-width:0;height:92px;padding:0 40px;font-size:20px;background:#d7d5d0;color:#2c2c2e;border-color:#d7d5d0}.btn.xl:hover{color:#2c2c2e}
-.btn.blk{display:flex;width:100%;min-width:0;height:58px;padding:0 16px;font-size:20px}
-.btn.sm{height:33px;min-width:0;padding:0 12px;gap:8px;border-radius:4px;font-size:12px}
-.bt{position:relative;display:block;overflow:hidden;padding:.1em 0;line-height:1.1}
-.bt>span{display:block;transition:transform .65s cubic-bezier(.19,1,.22,1)}
-.bt>span+span{position:absolute;left:0;top:100%;padding-top:.1em}
-.btn:hover .bt>span,.nav a:hover .bt>span{transform:translateY(calc(-100% - .1em))}
-.btn svg{flex:none;transition:transform .65s cubic-bezier(.19,1,.22,1)}
-.btn:hover svg{transform:translateX(3px)}
-.tlink{display:inline-flex;align-items:center;gap:8px;padding:14px 0 6px;font-size:14px;line-height:1;letter-spacing:.08em;text-decoration:none;background:linear-gradient(currentColor,currentColor) left bottom/100% 1px no-repeat}
-.tlink:hover{animation:ul .7s cubic-bezier(.19,1,.22,1)}
-.pill{display:inline-flex;align-items:center;height:27px;padding:0 12px;border-radius:30px;font-size:12px;line-height:1;letter-spacing:.1em;box-sizing:border-box;border:1px solid #2c2c2e;background:#2c2c2e;color:#fbfbfb;white-space:nowrap}
-.pill.line{background:transparent;color:#2c2c2e}
-.pill.inv{border-color:#fbfbfb;background:#fbfbfb;color:#2c2c2e}.pill.inv.line{background:transparent;color:#fbfbfb}
-.boxg{background:#d7d5d0;border-radius:6px;padding:32px 32px 24px}
-.boxw{background:#fbfbfb;border-radius:6px;padding:32px 32px 24px}
-.boxd{background:#2c2c2e;border-radius:6px;padding:64px}
-.fld{display:flex;flex-direction:column;gap:10px}
-.fld label{font-size:14px;line-height:1;color:#55544f}
-.fld input,.fld textarea{height:58px;padding:0 16px;border:0;border-radius:6px;background:#f0f0f0;color:#2c2c2e;font-size:16px;font-family:inherit;font-weight:500;letter-spacing:.04em;box-sizing:border-box;width:100%}
-.fld textarea{height:auto;padding:16px;line-height:1.8}
-.fld.w input,.fld.w textarea{background:#fbfbfb}
-.f2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-.hs{display:flex;flex-wrap:wrap;gap:64px 56px}
-.hs>.hi{flex:1 1 320px;min-width:0}
-.hs.w40{gap:64px 40px}.hs.w40>.hi{flex-basis:420px}
-.hs.w60{gap:80px 60px}.hs.w60>.hi{flex-basis:340px}
-.ph{display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;font-size:13px;line-height:1.7;letter-spacing:.04em;box-sizing:border-box;border-radius:6px}
-.zoom{overflow:hidden;border-radius:6px}
-.zoom>.ph{border-radius:0;transition:transform .42s cubic-bezier(.19,1,.22,1)}
-.zoom>img{display:block;transition:transform .42s cubic-bezier(.19,1,.22,1)}
-.hi:hover .zoom>.ph,.hi:hover .zoom>img{transform:scale(1.04)}
-.case-r{overflow:hidden}
-.case-r img{display:block;width:100%;height:100%;min-height:0;object-fit:cover;transition:transform .42s cubic-bezier(.19,1,.22,1)}
-.case-r img:first-child{grid-column:1 / 4}
-.case:hover .case-r img{transform:scale(1.02)}
-.case-l>*{position:relative}
-.case-l>.case-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(28px) brightness(.45);transform:scale(1.2)}
-.tiles{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-.tiles li{min-height:80px;padding:20px 24px;background:#f0f0f0;border-radius:6px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:16px;line-height:1.6;letter-spacing:.08em;box-sizing:border-box}
-.chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-.chip{background:rgba(240,240,240,.2);border-radius:4px;padding:16px 20px;text-align:center}
-.chip b{display:block;font-weight:500;font-size:14px;line-height:1;letter-spacing:.03em}
-.chip span{display:block;margin-top:12px;font-size:15px;line-height:1.5;letter-spacing:.03em}
-.tbl{width:100%;border-collapse:collapse}
-.tbl th{padding:0 16px 16px 0;border-bottom:1px solid #2c2c2e;font-weight:500;font-size:14px;line-height:1;color:#6c6b68;text-align:left;white-space:nowrap}
-.tbl td{padding:20px 16px 20px 0;border-bottom:1px solid #d7d5d0;font-size:16px;line-height:1.8;vertical-align:top}
-.tbl td:last-child,.tbl th:last-child{padding-right:0}
-.tbl .r{text-align:right;white-space:nowrap}
-.tbl .k{white-space:nowrap}.tbl .m{color:#6c6b68}
-.rows{margin:0;padding:0;list-style:none;border-bottom:1px solid #d7d5d0}
-.rows li{padding:12px 0;border-top:1px solid #d7d5d0;font-size:16px;line-height:2.2;letter-spacing:.09em}
-.steps{margin:0;padding:0;list-style:none;border-bottom:1px solid #d7d5d0}
-.steps li{display:grid;grid-template-columns:28px 240px minmax(0,1fr);gap:8px 24px;align-items:baseline;padding:28px 0;border-top:1px solid #d7d5d0}
-.steps .n{font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:16px;line-height:1;letter-spacing:.03em}
-.steps .a{font-size:20px;line-height:1.6;letter-spacing:.1em}
-.steps .a small{font-size:14px;letter-spacing:.04em;color:#6c6b68}
-.steps .b{font-size:16px;line-height:2;letter-spacing:.09em}
-.qa{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;padding:20px 0;border-top:1px solid #d7d5d0}
-.qa span{font-size:18px;line-height:1.8;letter-spacing:.09em}
-.qa button{height:44px;min-width:88px;padding:0 12px;border:1px solid #2c2c2e;border-radius:30px;background:transparent;color:#2c2c2e;font-size:14px;line-height:1;font-family:inherit;font-weight:500;letter-spacing:.1em;cursor:pointer;transition:background .3s,color .3s}
-.qa button:hover{background:#2c2c2e;color:#fbfbfb}
-.faq{margin:0;border-bottom:1px solid #d7d5d0}
-.faq div{padding:32px 0;border-top:1px solid #d7d5d0}
-.faq dt{font-size:20px;line-height:1.8;letter-spacing:.08em;color:#353637}
-.faq dd{margin:12px 0 0;font-size:16px;line-height:2;letter-spacing:.09em;color:#55544f}
-.case{position:sticky;top:0;height:800px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);background:#2c2c2e;color:#fbfbfb;overflow:hidden}
-.case-l{position:relative;padding:72px clamp(2.5rem,-1.944rem + 6.94vw,5rem) 64px;display:flex;flex-direction:column;gap:32px;background:#3b3b3e}
-.case-r{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:1.4fr 1fr 1fr;gap:6px;padding:0 0 0 6px}
-.case-r .ph{border-radius:0;background:#4a4a4d;color:#fbfbfb}
-.case-r .ph:first-child{grid-column:1 / 4}
-.cams{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-.cam{min-height:78px;padding:16px 12px;border:0;border-radius:4px;background:rgba(240,240,240,.2);color:#fbfbfb;font-family:inherit;font-weight:500;text-align:center;cursor:pointer;transition:background .3s}
-.cam:hover{background:rgba(240,240,240,.3)}
-.cam b{display:block;font-weight:500;font-size:14px;line-height:1;letter-spacing:.03em}
-.cam span{display:block;margin-top:12px;font-size:16px;line-height:1.3;letter-spacing:.03em}
-.screen{position:relative;aspect-ratio:16 / 10;background:#4a4a4d;border-radius:4px;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font-size:14px;letter-spacing:.04em;color:#fbfbfb;box-sizing:border-box;overflow:hidden}
-.screen .shot{animation:fadein .6s cubic-bezier(.19,1,.22,1)}
-.onair{position:absolute;left:16px;top:16px;display:flex;align-items:center;gap:8px;height:26px;padding:0 10px;border-radius:40px;background:#fbfbfb;color:#2c2c2e;font-size:12px;line-height:1}
-.onair i{width:8px;height:8px;border-radius:50%;background:#d7281e;animation:blink 1.6s ease-in-out infinite}
-.ring{position:absolute;right:16px;top:12px;width:44px;height:44px}
-.ring svg{display:block}
-.ring circle.p{stroke-dasharray:113.1;stroke-dashoffset:113.1;animation:ring 5s linear forwards;transform:rotate(-90deg);transform-origin:22px 22px}
-.ring span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:12px;letter-spacing:0;color:#fbfbfb}
-.sd{position:absolute;right:clamp(16px,2.6vw,40px);top:270px;display:flex;flex-direction:column;align-items:center;gap:12px}
-.sd span{writing-mode:vertical-rl;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:14px;line-height:1;letter-spacing:0;color:#353637}
-.sd i{position:relative;display:block;width:1px;height:96px;background:#d7d5d0;overflow:hidden}
-.sd i::after{content:"";position:absolute;left:0;top:0;width:1px;height:32px;background:#353637;animation:sd 2.4s cubic-bezier(.19,1,.22,1) infinite}
-.mq{position:relative;z-index:1;overflow:hidden;white-space:nowrap;pointer-events:none;margin-bottom:-14px}
-.mq-t{display:inline-flex;animation:mq 50s linear infinite}
-.mq-t span{font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:87px;line-height:1;letter-spacing:.03em;color:#d7d5d0;padding-right:.5em}
-.hdr{position:fixed;left:0;right:0;top:0;z-index:50;height:95px;mix-blend-mode:difference;color:#cececb;pointer-events:none}
-.hdr .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px;padding-right:200px}
-.hdr a,.hdr button{pointer-events:auto;color:#cececb}
-.logo{font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:17px;line-height:1;letter-spacing:.2em;text-decoration:none;padding:14px 0}
-.nav{display:flex;align-items:center;gap:24px;font-size:14px;line-height:1}
-.nav a{text-decoration:none;padding:12px 0}
-.hcta{position:fixed;z-index:51;top:31px;right:40px}
-.hamb{display:none}
-.hphone{font-size:14px;line-height:1.6}
-.intro{position:fixed;inset:0;z-index:100;background:#2c2c2e;display:flex;align-items:center;justify-content:center;pointer-events:none;animation:wipe .9s cubic-bezier(.19,1,.22,1) 1.5s forwards}
-.intro p{margin:0;display:flex;overflow:hidden;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:400;font-size:clamp(28px,4.6vw,64px);line-height:1.2;letter-spacing:.2em;color:#fbfbfb}
-.intro p span{display:inline-block;transform:translateY(110%);animation:rise 1s cubic-bezier(.19,1,.22,1) forwards}
-.foot{margin:160px 8px 8px;background:#2c2c2e;border-radius:6px;padding:74px clamp(16px,3.9vw,56px) 80px;color:#fbfbfb}
-.fnav{display:flex;flex-wrap:wrap;gap:0 40px;justify-content:space-between;padding-bottom:28px;border-bottom:1px solid #a8a6a2}
-.fnav a{font-size:15px;line-height:1;color:#fbfbfb;text-decoration:none;padding:12px 0}
-.sp{display:none}
-.band .rows,.band .rows li,.band .steps,.band .steps li,.band .faq,.band .faq div{border-color:#4a4a4d}
-.band .steps .a small,.band .faq dd{color:#c4c4c4}
-.band .faq dt{color:#fbfbfb}
-.spbar{display:none}
-.cta-in{display:flex;flex-wrap:wrap;gap:32px 64px;align-items:center;justify-content:space-between}
-.js-anim [data-rv] .wm{display:inline-block;overflow:hidden;vertical-align:top}
-.js-anim [data-rv] .w{display:inline-block;opacity:0;transform:translateY(.9em)}
-.js-anim [data-rv].is-in .w{animation:rw .92s cubic-bezier(.19,1,.22,1) forwards}
-.js-anim [data-rv=fade]{opacity:0;transform:translateY(24px)}
-.js-anim [data-rv=fade].is-in{animation:fadeup .92s cubic-bezier(.19,1,.22,1) forwards}
-.js-anim [data-rv=media]{opacity:0;transform:translateY(40px)}
-.js-anim [data-rv=media].is-in{animation:fadeup 1.1s cubic-bezier(.19,1,.22,1) forwards}
-.js-anim .nav .w{display:inline-block;opacity:0;transform:translateY(.9em);animation:rw .92s cubic-bezier(.19,1,.22,1) forwards}
-@keyframes rw{0%{opacity:0;transform:translateY(.9em)}100%{opacity:1;transform:none}}
-@keyframes fadeup{0%{opacity:0;transform:translateY(24px)}100%{opacity:1;transform:none}}
-@keyframes fadein{from{opacity:0}to{opacity:1}}
-@keyframes rise{to{transform:none}}
-@keyframes wipe{0%{clip-path:inset(0)}100%{clip-path:inset(0 0 100% 0)}}
-@keyframes ul{0%{background-position:right bottom;background-size:100% 1px}50%{background-position:right bottom;background-size:0% 1px}51%{background-position:left bottom;background-size:0% 1px}100%{background-position:left bottom;background-size:100% 1px}}
-@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes sd{0%{opacity:0;transform:translateY(0)}12%{opacity:1}78%{opacity:1;transform:translateY(64px)}100%{opacity:0;transform:translateY(64px)}}
-@keyframes ring{to{stroke-dashoffset:0}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
-@media (max-width:1023px){
-.wrap{padding:0 16px}
-.g57,.g75{grid-template-columns:minmax(0,1fr);gap:24px}
-.stk{position:static}
-.t-h1{font-size:26px;letter-spacing:.05em}
-.t-h2{font-size:26px;letter-spacing:.06em}
-.t-h2s{font-size:18px;letter-spacing:.08em}
-.t-h3{font-size:18px}
-.t-ct{font-size:16px;letter-spacing:.1em}
-.t-lead{font-size:14px;line-height:2.1;letter-spacing:.1em}
-.t-body{font-size:12px;line-height:1.8}
-.t-hero{font-size:12px;line-height:2.1;letter-spacing:.06em}
-.t-price{font-size:16px}
-.t-note,.t-sm{font-size:12px}
-.t-lab{font-size:14px}
-.t-num{font-size:14px}
-.t-bar{padding:14px 16px;border-radius:4px;font-size:16px}
-.t-big{font-size:64px}.t-big small{font-size:16px}
-.t-big2{font-size:48px}.t-big2 small{font-size:16px}
-.sub{font-size:13px}
-.mt200,.mt160{margin-top:100px}.mt120{margin-top:80px}.mtl{margin-top:88px}
-.st48{gap:16px}.st56{gap:28px}.st64{gap:40px}
-.band{margin:0;border-radius:0}
-.pad-band{padding-top:80px;padding-bottom:80px}
-.btn{height:48px;min-width:0;gap:24px;padding:0 20px;font-size:12px}
-.btn.xl{height:54px;padding:0 16px;border-radius:4px;font-size:14px}
-.btn.blk{height:52px;font-size:14px}
-.btn.sm{height:30px;padding:0 10px;font-size:11px}
-.tlink{font-size:12px}
-.pill{height:20px;padding:0 10px;border-radius:40px;font-size:10px}
-.boxg,.boxw{padding:32px 16px 24px}
-.boxd{padding:40px 24px 24px}
-.fld label{font-size:12px}
-.fld input{height:52px}
-.f2{grid-template-columns:minmax(0,1fr)}
-.hs,.hs.w40,.hs.w60{flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x mandatory;gap:16px;margin:0 -16px;padding:0 16px 12px;scrollbar-width:none}
-.hs>.hi,.hs.w40>.hi,.hs.w60>.hi{flex:0 0 280px;scroll-snap-align:start}
-.tiles{gap:12px}.tiles li{min-height:64px;padding:12px;font-size:12px}
-.chips{gap:12px}.chip{padding:12px}.chip b{font-size:10px}.chip span{margin-top:8px;font-size:14px}
-.tbl thead{display:none}
-.tbl,.tbl tbody{display:block}
-.tbl tr{display:block;padding:16px 0;border-bottom:1px solid #d7d5d0}
-.tbl td{display:block;padding:0;border:0;font-size:12px;line-height:1.8}
-.tbl td.k{font-size:14px}.tbl .r{text-align:left}
-.rows li{padding:10px 0;font-size:12px;line-height:2}
-.steps li{grid-template-columns:24px minmax(0,1fr);padding:20px 0}
-.steps .b{grid-column:2}
-.steps .n{font-size:14px}.steps .a{font-size:16px}.steps .b{font-size:12px;line-height:1.8}
-.qa{padding:16px 0}.qa span{font-size:14px}
-.qa button{height:36px;min-width:64px;font-size:12px}
-.faq div{padding:20px 0}.faq dt{font-size:14px}.faq dd{font-size:12px;line-height:1.8}
-.case{position:relative;height:auto;grid-template-columns:minmax(0,1fr)}
-.case-l{padding:48px 16px 40px;gap:24px}
-.case-r{grid-template-rows:180px 110px 110px;padding:6px 0 0}
-.cams{gap:8px}.cam{min-height:64px;padding:12px 6px}.cam b{font-size:10px}.cam span{margin-top:8px;font-size:12px}
-.sd{display:none}
-.mq{margin-bottom:-6px}.mq-t span{font-size:40px}
-.hdr{height:64px}
-.hdr .wrap{padding-right:16px}
-.logo{font-size:14px}
-.nav,.hphone{display:none}
-.hamb{display:flex;flex-direction:column;justify-content:center;gap:8px;width:44px;height:44px;margin-left:auto;border:0;background:transparent;cursor:pointer}
-.hamb i{display:block;width:32px;height:1px;background:currentColor}
-.hcta{top:17px;right:68px}
-.foot{margin:100px 0 0;border-radius:6px 6px 0 0;padding:48px 16px}
-.fnav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
-.fnav a{font-size:14px;padding:14px 0}
-.pc{display:none!important}
-.sp{display:block}
-.root{padding-bottom:68px}
-.spbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;gap:8px;padding:8px;background:#f0f0f0;border-top:1px solid #d7d5d0}
-.spbar a{display:flex;align-items:center;justify-content:center;height:52px;border-radius:6px;font-size:14px;line-height:1;letter-spacing:.08em;text-decoration:none;box-sizing:border-box}
-.spbar a:first-child{flex:0 0 104px;border:1px solid #2c2c2e;color:#2c2c2e}
-.spbar a:last-child{flex:1 1 0;justify-content:space-between;padding:0 20px;background:#2c2c2e;color:#fbfbfb}
-}
-@media (prefers-reduced-motion:reduce){
-*,*::before,*::after{animation:none!important;transition:none!important}
-.intro{display:none}
-}
-.js-anim [data-rv].is-in .wm:nth-of-type(1) .w{animation-delay:0.080s}
-.js-anim [data-rv].is-in .wm:nth-of-type(2) .w{animation-delay:0.105s}
-.js-anim [data-rv].is-in .wm:nth-of-type(3) .w{animation-delay:0.130s}
-.js-anim [data-rv].is-in .wm:nth-of-type(4) .w{animation-delay:0.155s}
-.js-anim [data-rv].is-in .wm:nth-of-type(5) .w{animation-delay:0.180s}
-.js-anim [data-rv].is-in .wm:nth-of-type(6) .w{animation-delay:0.205s}
-.js-anim [data-rv].is-in .wm:nth-of-type(7) .w{animation-delay:0.230s}
-.js-anim [data-rv].is-in .wm:nth-of-type(8) .w{animation-delay:0.255s}
-.js-anim [data-rv].is-in .wm:nth-of-type(9) .w{animation-delay:0.280s}
-.js-anim [data-rv].is-in .wm:nth-of-type(10) .w{animation-delay:0.305s}
-.js-anim [data-rv].is-in .wm:nth-of-type(11) .w{animation-delay:0.330s}
-.js-anim [data-rv].is-in .wm:nth-of-type(12) .w{animation-delay:0.355s}
-.js-anim [data-rv].is-in .wm:nth-of-type(13) .w{animation-delay:0.380s}
-.js-anim [data-rv].is-in .wm:nth-of-type(14) .w{animation-delay:0.405s}
-.js-anim [data-rv].is-in .wm:nth-of-type(15) .w{animation-delay:0.430s}
-.js-anim [data-rv].is-in .wm:nth-of-type(16) .w{animation-delay:0.455s}
-.js-anim [data-rv].is-in .wm:nth-of-type(17) .w{animation-delay:0.480s}
-.js-anim [data-rv].is-in .wm:nth-of-type(18) .w{animation-delay:0.505s}
-.js-anim [data-rv].is-in .wm:nth-of-type(19) .w{animation-delay:0.530s}
-.js-anim [data-rv].is-in .wm:nth-of-type(20) .w{animation-delay:0.555s}
-.js-anim [data-rv].is-in .wm:nth-of-type(21) .w{animation-delay:0.580s}
-.js-anim [data-rv].is-in .wm:nth-of-type(22) .w{animation-delay:0.605s}
-.js-anim [data-rv].is-in .wm:nth-of-type(23) .w{animation-delay:0.630s}
-.js-anim [data-rv].is-in .wm:nth-of-type(24) .w{animation-delay:0.655s}
-.js-anim [data-rv].is-in .wm:nth-of-type(25) .w{animation-delay:0.680s}
-.js-anim [data-rv].is-in .wm:nth-of-type(26) .w{animation-delay:0.705s}
-.js-anim [data-rv].is-in .wm:nth-of-type(27) .w{animation-delay:0.730s}
-.js-anim [data-rv].is-in .wm:nth-of-type(28) .w{animation-delay:0.755s}
-.js-anim [data-rv].is-in .wm:nth-of-type(29) .w{animation-delay:0.780s}
-.js-anim [data-rv].is-in .wm:nth-of-type(30) .w{animation-delay:0.805s}
-.js-anim .nav a:nth-child(1) .w{animation-delay:1.700s}
-.js-anim .nav a:nth-child(2) .w{animation-delay:1.725s}
-.js-anim .nav a:nth-child(3) .w{animation-delay:1.750s}
-.js-anim .nav a:nth-child(4) .w{animation-delay:1.775s}
-.js-anim .nav a:nth-child(5) .w{animation-delay:1.800s}
-.js-anim .nav a:nth-child(6) .w{animation-delay:1.825s}
-.js-anim .nav a:nth-child(7) .w{animation-delay:1.850s}
-.intro p span:nth-child(1){animation-delay:0.15s}
-.intro p span:nth-child(2){animation-delay:0.20s}
-.intro p span:nth-child(3){animation-delay:0.25s}
-.intro p span:nth-child(4){animation-delay:0.30s}
-.intro p span:nth-child(5){animation-delay:0.35s}
-.intro p span:nth-child(6){animation-delay:0.40s}
-.intro p span:nth-child(7){animation-delay:0.45s}
-.intro p span:nth-child(8){animation-delay:0.50s}
-.intro p span:nth-child(9){animation-delay:0.55s}
-.intro p span:nth-child(10){animation-delay:0.60s}
-.intro p span:nth-child(11){animation-delay:0.65s}
-
-</style>
-<style>.cam-slot{position:absolute;inset:0}.cam-slot[hidden]{display:none}</style></head>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>送信が完了しました｜カルラライブ</title>
+<meta name="description" content="お見積のご依頼を受け付けました。">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f0f0f0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232c2c2e'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23d7281e'/%3E%3C/svg%3E">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preload" href="assets/fonts/zkgn-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/site.css">
+<script type="module" src="assets/site.js"></script>
+</head>
 <body>
+<a class="skip" href="#main">本文へ移動</a>
+<header class="hdr"><div class="wrap">
+<a class="logo" href="index.html" aria-label="カルラライブ トップページ">KARURA LIVE<small>カルラライブ</small></a>
+<nav class="gnav" aria-label="メインメニュー"><a href="index.html#plan">プラン診断</a><a href="index.html#price">料金・体制・機材</a><a href="index.html#works">事例</a><a href="index.html#demo">ツールデモ</a><a href="index.html#public">大学・公共機関の方へ</a><a href="index.html#faq">よくある質問</a></nav>
+<button type="button" class="menu-btn" data-open-menu aria-haspopup="dialog" aria-controls="menu"><span class="vh">メニューを開く</span><i></i><i></i></button>
+<a class="menu-fallback t-note" href="#fnav">メニュー</a>
+</div></header>
+<a class="btn nav-cta hdr-cta pc-only" href="contact.html">見積を依頼する</a>
+<dialog id="menu" class="menu" aria-label="メニュー">
+<div class="menu-head"><span class="logo">KARURA LIVE<small>カルラライブ</small></span><form method="dialog"><button class="menu-close">閉じる</button></form></div>
+<nav aria-label="メニュー"><ul><li><a href="index.html#plan">プラン診断<span aria-hidden="true">›</span></a></li><li><a href="index.html#price">料金・体制・機材<span aria-hidden="true">›</span></a></li><li><a href="index.html#works">事例<span aria-hidden="true">›</span></a></li><li><a href="index.html#demo">ツールデモ<span aria-hidden="true">›</span></a></li><li><a href="index.html#public">大学・公共機関の方へ<span aria-hidden="true">›</span></a></li><li><a href="index.html#faq">よくある質問<span aria-hidden="true">›</span></a></li><li><a href="contact.html">お問い合わせ・お見積<span aria-hidden="true">›</span></a></li></ul><a class="btn full" href="index.html#plan">8問でプランを診断する</a></nav>
+</dialog>
+<main id="main">
+<p class="form-msg" style="text-align:center">これは送信完了ページの見本です。フォームの送信先がまだ設定されていないため、実際には何も送信されていません。</p>
+<div class="wrap ph-head stack s-48"><p class="t-lab">Thanks</p><h1 class="t-h1">ご依頼を受け付けました</h1>
+<p class="t-lead">1営業日以内に、宛名入りの見積書PDFをメールでお送りします。確認メールが届かない場合は、<span class="ana">［電話番号］</span>までご連絡ください。</p>
+<ol class="flow"><li class="now"><span class="a">いまここ</span><span class="b">見積のご依頼を受け付けました</span></li><li><span class="a">1営業日以内</span><span class="b">見積書PDFがメールで届きます</span></li><li><span class="a">そのあと</span><span class="b">必要に応じて30分の打ち合わせを行い、ご発注後に会場を下見します</span></li></ol></div>
+<section class="bandg sec-2" aria-labelledby="dl-title"><div class="wrap pad-band stack s-48"><h2 class="t-h2" id="dl-title">お待ちいただく間に、<br>稟議の準備にお使いください</h2>
+<p class="t-lead">上司への説明や相見積にそのまま使える書類です。どれも登録なしでダウンロードできます。</p>
+<ul class="stack s-16"><li><a class="btn line" href="thanks.html">仕様書のひな形（Word）<span class="ana">［ファイル準備中］</span></a></li><li><a class="btn line" href="thanks.html">料金表と見積書見本（PDF）<span class="ana">［ファイル準備中］</span></a></li><li><a class="btn line" href="thanks.html">当日のチェックリスト（PDF）<span class="ana">［ファイル準備中］</span></a></li></ul></div></section>
+<div class="wrap sec-3"><a class="tlink" href="index.html">トップページへ戻る</a></div>
+</main><div class="mq" aria-hidden="true"><div class="mq-t"><span>LIVE STREAMING × HYBRID EVENTS</span><span>LIVE STREAMING × HYBRID EVENTS</span><span>LIVE STREAMING × HYBRID EVENTS</span><span>LIVE STREAMING × HYBRID EVENTS</span></div></div>
+<footer class="foot">
 
-
-<div class="root">
-<header class="hdr"><div class="wrap"><a href="index.html" class="logo">［サービス名］</a><p class="hphone" style="margin: 0">お電話でも受け付けています　［電話番号］　［受付時間］</p></div></header>
-
-<main><div class="wrap" style="padding-top: var(--hero-top, 176px)">
-<div class="g57"><div class="stk"><p class="t-lab" style="color: #353637">Thanks</p></div>
-<div class="st56" style="align-items: stretch">
-<div class="st48"><h1 class="t-h2" data-rv><span class="wm"><span class="w">ご依頼を受け</span></span><span class="wm"><span class="w">付けました</span></span></h1><p class="t-lead" data-rv="fade">1営業日以内に、宛名入りの見積書PDFをメールでお送りします。<br>確認メールが届かない場合は、［電話番号］までご連絡ください。</p></div>
-<div data-rv="fade"><ol class="steps"><li><span class="n">01</span><span class="a">いまここ</span><span class="b">見積のご依頼を受け付けました</span></li><li><span class="n">02</span><span class="a">1営業日以内</span><span class="b">見積書PDFがメールで届きます</span></li><li><span class="n">03</span><span class="a">そのあと</span><span class="b">必要に応じて30分の打ち合わせを行い、ご発注後に会場を下見します</span></li></ol></div>
-<div class="boxg st24" data-rv="fade">
-<h2 class="t-h2s">お待ちいただく間に、稟議の準備にお使いください</h2>
-<p class="t-sm" style="color: #55544f">上司への説明や相見積にそのまま使える書類です。どれも登録なしでダウンロードできます。</p>
-<div class="st24" style="gap: 12px"><a href="index.html" class="btn blk"><span class="bt"><span>仕様書のひな形（Word）をダウンロードする</span><span aria-hidden="true">仕様書のひな形（Word）をダウンロードする</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a><a href="index.html" class="btn blk"><span class="bt"><span>料金表と見積書見本（PDF）を見る</span><span aria-hidden="true">料金表と見積書見本（PDF）を見る</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a><a href="index.html" class="btn blk"><span class="bt"><span>当日のチェックリスト（PDF）を見る</span><span aria-hidden="true">当日のチェックリスト（PDF）を見る</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a></div>
-</div>
-</div></div>
-<div class="mt200" style="border-top: 1px solid #d7d5d0; padding-top: 32px; display: flex; flex-wrap: wrap; gap: 8px 40px; justify-content: space-between; align-items: center"><p class="t-lab" style="color: #353637">Case Study</p><a href="index.html" class="tlink"><span>トップページへ戻る</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 8h12M9.5 3.5 14 8l-4.5 4.5"/></svg></a></div>
-<div class="hs mtl" data-rv="fade"><div class="hi" style="display: flex; flex-direction: column"><div class="zoom"><img src="img/P01.webp" alt="（ダミー）話している人のアップ" style="display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; "></div><p class="t-ct" style="margin-top: 27px">［主催機関、会の形］</p><p class="t-note" style="margin-top: 16px; color: #6c6b68">［体制、金額帯］</p></div><div class="hi" style="display: flex; flex-direction: column"><div class="zoom"><img src="img/P03.webp" alt="（ダミー）会場全体：客席とスクリーン" style="display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; "></div><p class="t-ct" style="margin-top: 27px">［主催機関、会の形］</p><p class="t-note" style="margin-top: 16px; color: #6c6b68">［体制、金額帯］</p></div><div class="hi" style="display: flex; flex-direction: column"><div class="zoom"><img src="img/P02.webp" alt="（ダミー）パネルディスカッション全体" style="display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; "></div><p class="t-ct" style="margin-top: 27px">［主催機関、会の形］</p><p class="t-note" style="margin-top: 16px; color: #6c6b68">［体制、金額帯］</p></div></div>
-</div></main>
-<div class="mt160"></div>
-</div>
-
-<script>
-(function(){
-var root=document.documentElement;
-var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-if(!reduce&&'IntersectionObserver' in window){
- root.classList.add('js-anim');
- var io=new IntersectionObserver(function(l){l.forEach(function(e){if(e.isIntersecting){e.target.classList.add('is-in');io.unobserve(e.target);}});},{rootMargin:'0px 0px -12% 0px'});
- document.querySelectorAll('[data-rv]').forEach(function(el){io.observe(el);});
-}
-var btns=[].slice.call(document.querySelectorAll('.cam[data-cam]')), slots=[].slice.call(document.querySelectorAll('.cam-slot'));
-if(!btns.length)return;
-var cam=1,timer=null;
-function show(n){cam=n;slots.forEach(function(s){s.hidden=+s.dataset.cam!==n;});btns.forEach(function(b){var on=+b.dataset.cam===n;b.setAttribute('aria-pressed',on);b.style.boxShadow=on?'inset 0 0 0 1px #fbfbfb':'none';});}
-function start(){if(reduce)return;clearInterval(timer);timer=setInterval(function(){show(cam%3+1);},5000);}
-btns.forEach(function(b){b.addEventListener('click',function(){show(+b.dataset.cam);start();});});
-show(1);start();
-})();
-</script></body>
+<nav class="" aria-label="フッターメニュー" id="fnav"><ul class="fnav"><li><a href="index.html#plan">プラン診断</a></li><li><a href="index.html#price">料金・体制・機材</a></li><li><a href="index.html#works">事例</a></li><li><a href="index.html#demo">ツールデモ</a></li><li><a href="index.html#coaching">配信コーチング</a></li><li><a href="index.html#public">大学・公共機関の方へ</a></li><li><a href="index.html#faq">よくある質問</a></li><li><a href="contact.html">お問い合わせ・お見積</a></li><li><a href="rules.html">デザインルール</a></li></ul></nav>
+<p class="copy">© 2026 KARURA LIVE　対応エリア：新宿から90分圏内　<span class="ana">［運営者名］</span></p>
+</footer>
+<nav class="spbar" aria-label="よく使う操作"><a href="index.html#plan">プラン診断</a><a href="contact.html">見積を依頼する</a></nav>
+</body>
 </html>
