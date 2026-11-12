@@ -9,6 +9,7 @@
 const $ = (s, c = document) => c.querySelector(s);
 const $$ = (s, c = document) => [...c.querySelectorAll(s)];
 const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+const pc = matchMedia('(width >= 64rem)');
 
 /* ------------------------------------------------ 1. スマホのメニュー */
 {
@@ -227,9 +228,9 @@ $$('.subnav').forEach((nav) => {
   let queued = false;
   const update = () => {
     queued = false;
-    if (!nav.offsetParent) return; // PC では隠れている
-    // ヘッダーとサブナビの下端を通り過ぎた、いちばん最後のセクションが現在地
-    const line = nav.getBoundingClientRect().bottom + 24;
+    if (!nav.getClientRects().length) return;
+    // スマホ：ヘッダーとサブナビの下端を通り過ぎた、いちばん最後のセクションが現在地。PC（左レール）：画面の上から3割の線
+    const line = pc.matches ? innerHeight * .3 : nav.getBoundingClientRect().bottom + 24;
     let hit = null;
     for (const [a, t] of pairs) if (t.getBoundingClientRect().top <= line) hit = a;
     const doc = document.documentElement;
@@ -243,14 +244,28 @@ $$('.subnav').forEach((nav) => {
     }
     if (hit) {
       const li = hit.parentElement;
-      list.scrollTo({ left: li.offsetLeft - (list.clientWidth - li.offsetWidth) / 2, behavior: reduce.matches ? 'auto' : 'smooth' });
+      const behavior = reduce.matches ? 'auto' : 'smooth';
+      if (pc.matches) list.scrollTo({ top: li.offsetTop - (list.clientHeight - li.offsetHeight) / 2, behavior });
+      else list.scrollTo({ left: li.offsetLeft - (list.clientWidth - li.offsetWidth) / 2, behavior });
     }
   };
   const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
   addEventListener('scroll', queue, { passive: true });
   addEventListener('resize', queue);
+  pc.addEventListener('change', () => { current = null; queue(); });
   update();
 });
+
+/* ------------------------------------------------ 4b. 要点のマーカー：画面に入ったら引く（CSS の transition。動きを減らす設定では最初から引いた状態） */
+{
+  const marks = $$('mark.mk');
+  if (marks.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+    }), { rootMargin: '0px 0px -15% 0px' });
+    marks.forEach((m) => io.observe(m));
+  } else marks.forEach((m) => m.classList.add('is-in'));
+}
 
 /* ------------------------------------------------ 5. フォーム */
 $$('form[data-form]').forEach((f) => {
