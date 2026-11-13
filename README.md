@@ -9,6 +9,7 @@
 | b/ | B：前のテイスト（同上） |
 | c/ | C：採用案。トップ、問い合わせ、完了、デザインルール（rules.html）の4ページ。書き出しは source/c/build_c.py、CSS と JS は c/assets/ を直接編集 |
 | source/ | 書き出しのスクリプト一式。使い方は source/README.md |
+| ticket/ | 受付用のデジタルチケット（申込・QRコードやタッチでの入場・開催報告）。Cloudflare Workers + D1 で動く別のサービス。使い方は ticket/README.md |
 
 ## ブラウザで見る
 
@@ -21,4 +22,5 @@ https://kazumanishiwaki.github.io/liveLP/ で見られます。
 
 - サイト（C案）：`python3 source/c/build_c.py` が `c/assets/karura-tokens.css` にコピーし、`site.css` が読み込みます。`c/assets/` 側は直接編集しません。
 - タイムキーパー（kazumanishiwaki/timekeeper）と FAQ（kazumanishiwaki/slide）：`npm run sync:design` でこのファイルを取り込みます（デプロイ時にも自動で実行）。
+- デジタルチケット（ticket/）：同じく `npm run sync:design` で `ticket/public/css/` に取り込みます（`npm run dev` と `npm run deploy` の前に自動で実行）。
 - 値を変えるときは `design/karura-tokens.css` だけを直し、サイトを作り直して、タイムキーパーと FAQ をデプロイし直します。

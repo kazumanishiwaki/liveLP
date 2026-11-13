@@ -1,0 +1,32 @@
+{
+  // カルラライブ 受付用デジタルチケット
+  // 静的ファイル（public/）と API（src/index.ts）を1つの Worker で配信する
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "karura-ticket",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-20",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "karura-ticket-db",
+      // wrangler d1 create karura-ticket-db で出てきた ID に書き換える
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // 毎日 03:17（日本時間）に、保存期間を過ぎた名簿を削除する
+  "triggers": { "crons": ["17 18 * * *"] },
+  "vars": {
+    // 差出人。RESEND_API_KEY（secret）があるときだけメールを送る
+    "MAIL_FROM": "カルラライブ 受付 <noreply@thisandthat.jp>",
+    "LP_URL": "https://kazumanishiwaki.github.io/liveLP/c/#ticket"
+  }
+  // secret（wrangler secret put）：ADMIN_KEY、SESSION_SECRET、RESEND_API_KEY（任意）
+}

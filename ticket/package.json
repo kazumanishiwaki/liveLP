@@ -1,0 +1,27 @@
+{
+  "name": "karura-ticket",
+  "version": "0.1.0",
+  "private": true,
+  "description": "カルラライブの受付用デジタルチケット（Cloudflare Workers + D1）",
+  "type": "module",
+  "scripts": {
+    "sync:design": "node scripts/sync-design.mjs",
+    "predev": "npm run sync:design",
+    "dev": "wrangler dev --port 8791 --persist-to .wrangler/state",
+    "predeploy": "npm run sync:design",
+    "deploy": "wrangler deploy",
+    "db:migrate:local": "wrangler d1 migrations apply karura-ticket-db --local --persist-to .wrangler/state",
+    "db:migrate:remote": "wrangler d1 migrations apply karura-ticket-db --remote",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test --test-timeout=60000 tests/*.test.mjs",
+    "vendor": "node scripts/vendor.mjs"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261110.1",
+    "esbuild": "^0.28.1",
+    "jsqr": "^1.4.0",
+    "qrcode-generator": "^1.4.4",
+    "typescript": "^5.6.3",
+    "wrangler": "^4.161.0"
+  }
+}

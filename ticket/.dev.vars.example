@@ -1,0 +1,4 @@
+# ローカルで動かすときは、このファイルを .dev.vars にコピーする（.dev.vars はコミットしない）
+ADMIN_KEY=dev-admin-key
+SESSION_SECRET=dev-session-secret-change-me
+# RESEND_API_KEY=re_xxxxxxxx
