@@ -7,6 +7,8 @@
          使えないブラウザでは見た目と操作が壊れない形に落とす。
    ===================================================================== */
 @layer reset, tokens, base, layout, components, color, enhance, utilities;
+/* 色・影・角丸・文字・動きの元は karura-tokens.css（liveLP の design/ にある1つのファイル）。値を変えるときはそちらを直す */
+@import url("karura-tokens.css");
 
 /* ---------------------------------------------------------------- reset */
 @layer reset {
@@ -25,40 +27,40 @@
 /* ---------------------------------------------------------------- tokens */
 @layer tokens {
   :root {
-    --bg: #ffffff;        /* 地は白（参考：recruit.handy.school） */
-    --paper: #fafafa;    /* 白い地に置く箱。影で浮かせる */
-    --cream: #f8f6f3;    /* クリームの面 = rgba(245,242,237,.7) を白に重ねた色 */
-    --wash: #f2fbfc;     /* ティールの淡い面 = rgba(0,180,195,.05) を白に重ねた色 */
+    --bg: var(--k-bg);        /* 地は白（参考：recruit.handy.school） */
+    --paper: var(--k-paper);    /* 白い地に置く箱。影で浮かせる */
+    --cream: var(--k-cream);    /* クリームの面 = rgba(245,242,237,.7) を白に重ねた色 */
+    --wash: var(--k-wash);     /* ティールの淡い面 = rgba(0,180,195,.05) を白に重ねた色 */
     /* 色はすべて recruit.handy.school の実測値にそろえる */
-    --ink: #4d4d4d;      /* 文字・見出し（参考の本文色） */
-    --ink-2: #333333;    /* 強めの文字 */
-    --sand: #e6e6e6;     /* 罫線 = 黒10%を白に重ねた色 */
-    --sand-d: #808080;
-    --sub: #808080;      /* 補足の文字 = rgba(0,0,0,.5) を白に重ねた色 */
+    --ink: var(--k-ink);      /* 文字・見出し（参考の本文色） */
+    --ink-2: var(--k-ink-strong);    /* 強めの文字 */
+    --sand: var(--k-line);     /* 罫線 = 黒10%を白に重ねた色 */
+    --sand-d: var(--k-sub);
+    --sub: var(--k-sub);      /* 補足の文字 = rgba(0,0,0,.5) を白に重ねた色 */
     --line-d: #666666;
-    --red: #ff555f;      /* 配信中・必須の印も珊瑚 */
-    --focus: #333333;    /* キーボードの枠は濃い文字色。黄色は使わない */
+    --red: var(--k-coral);      /* 配信中・必須の印も珊瑚 */
+    --focus: var(--k-ink-strong);    /* キーボードの枠は濃い文字色。黄色は使わない */
 
     /* 差し色：参考サイトと同じ3色。ボタンは参考どおり白い文字を乗せる */
-    --teal: #00b4c3;
-    --teal-ink: #00b4c3;
-    --teal-tint: #f2fbfc;
-    --coral: #ff555f;
-    --coral-ink: #ff555f;
-    --coral-tint: #fff0f1;
-    --yellow: #faca00;
-    --marker: #ffeb78;
+    --teal: var(--k-teal);
+    --teal-ink: var(--k-teal);
+    --teal-tint: var(--k-wash);
+    --coral: var(--k-coral);
+    --coral-ink: var(--k-coral);
+    --coral-tint: var(--k-coral-tint);
+    --yellow: var(--k-yellow);
+    --marker: var(--k-marker);
 
     /* 影は2段だけで、重ねない。ずらさずに、ふわっと広げる（参考：recruit.handy.school）。ボタンには付けない */
-    --sh-1: 0 0 30px rgb(0 0 0 / .08);   /* 置いてあるもの：カード、白い箱 */
-    --sh-3: 0 5px 40px rgb(0 0 0 / .2);  /* 物として見せるもの：見積書の見本、暗い囲み */
-    --radius-card: 10px;
+    --sh-1: var(--k-shadow-1);   /* 置いてあるもの：カード、白い箱 */
+    --sh-3: var(--k-shadow-3);  /* 物として見せるもの：見積書の見本、暗い囲み */
+    --radius-card: var(--k-radius-card);
     --ac: var(--teal);                    /* 主色はティール */
-    --ease-ui: cubic-bezier(.4, .4, 0, 1); /* 押せるものの反応 0.3s */
+    --ease-ui: var(--k-ease-ui); /* 押せるものの反応 0.3s */
 
-    --font: "Helvetica Neue", Helvetica, Arial, "Zen Kaku Gothic New", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
-    --font-en: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    --ease: cubic-bezier(.19, 1, .22, 1);
+    --font: var(--k-font);
+    --font-en: var(--k-font-en);
+    --ease: var(--k-ease-reveal);
 
     /* 文字：スマホ（390px）から PC（1200px）まで滑らかに大きくする */
     --fs-h1:   clamp(1.625rem, 0.9028rem + 2.9630vw, 3.125rem);

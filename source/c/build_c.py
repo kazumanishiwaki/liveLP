@@ -510,7 +510,8 @@ def rules():
 <li>同じ意味のボタンは同じ色：黄＝プラン診断をはじめる、珊瑚＝見積を依頼する、ティール＝そのほかの行動（次へ、相談する、ひな形を受け取る）、線だけ＝資料や補助</li>
 <li>地は白。セクションの面はクリーム（#F8F6F3）とティールの淡い色（#F2FBFC）の2つだけで、どちらも参考サイトの半透明の色を白に重ねた値です</li>
 <li>差し色は小さな面にだけ使い、大きな面は白・クリーム・淡いティールのまま。ボタンやラベルの四角は参考サイトどおり、差し色の上に白い文字を乗せます</li>
-<li>キーボードで操作しているときの枠は濃い文字色（#333333）。暗い面の上では白</li></ul></div></div></section>
+<li>キーボードで操作しているときの枠は濃い文字色（#333333）。暗い面の上では白</li>
+<li>色・影・角丸・文字・動きの値は、design/karura-tokens.css の1つのファイルが元です。このサイトと、進行管理ツール Que（紹介ページ・管理画面・閲覧画面）が同じファイルを読むので、そこを直せば全体に反映されます</li></ul></div></div></section>
 <section class="sec-3" id="marks"><div class="wrap g57"><div class="stk">{lab('Marks &amp; Shadow')}</div><div class="stack s-48"><h2 class="t-h2">目が滑らないための目印</h2>
 <p class="t-lead">長いページでも読む場所を見失わないよう、4つの目印を決まった場所にだけ置きます。</p>
 <ul class="reasons">
@@ -530,6 +531,9 @@ def rules():
 
 PAGES = {'index.html': index, 'contact.html': contact, 'thanks.html': thanks, 'rules.html': rules}
 if __name__ == '__main__':
+    # 共通デザイントークン（ただ1つの元：design/karura-tokens.css）をサイトに配る
+    import shutil
+    shutil.copyfile(OUT.parent / 'design' / 'karura-tokens.css', OUT / 'assets' / 'karura-tokens.css')
     for name, fn in PAGES.items():
         html = mark(tag_sections(fn(), getattr(fn, 'sub', [])))
         (OUT / name).write_text(html, encoding='utf-8')
