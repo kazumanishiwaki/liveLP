@@ -34,9 +34,9 @@ ICON = {
     'backup': '<rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r=".8"/><circle cx="7" cy="17" r=".8"/>',
     'doc': '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
 }
-def ico(name, tone='teal', size=''):
-    """色の角丸チップに入った線画アイコン（飾りなので読み上げない）"""
-    return (f'<span class="chipi chipi--{tone}{" chipi--" + size if size else ""}" aria-hidden="true">'
+def ico(name, size=''):
+    """ティールの角丸チップに入った線画アイコン（飾りなので読み上げない）"""
+    return (f'<span class="chipi{" chipi--" + size if size else ""}" aria-hidden="true">'
             f'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">{ICON[name]}</svg></span>')
 
 def mk(t):
@@ -76,9 +76,10 @@ def head(title, desc, home=False, extra=''):
 <meta name="description" content="{desc}">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#ffffff">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232c2c2e'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23d7281e'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2300b4c3'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23ffffff'/%3E%3C/svg%3E">
 <script>document.documentElement.classList.add('js');{intro}</script>
 <link rel="preload" href="assets/fonts/zkgn-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/karura-tokens.css">
 <link rel="stylesheet" href="assets/site.css">
 <script type="module" src="assets/site.js"></script>{extra}
 </head>
@@ -273,9 +274,9 @@ def index():
 </section>
 <div class="hero-side stack">
 <ul class="ticklist hero-text">
-<li>{ico('check', 'teal', 's')}<span>{mk('登壇者2〜6人、会場50〜300人')}の会を専門にしています</span></li>
-<li>{ico('check', 'teal', 's')}<span>見積書に、{mk('スタッフ2名の役割と機材の内訳')}をすべて明記します</span></li>
-<li>{ico('check', 'teal', 's')}<span>{mk('iPhoneで足りる会なら、そうお伝えします')}</span></li>
+<li>{ico('check', 's')}<span>{mk('登壇者2〜6人、会場50〜300人')}の会を専門にしています</span></li>
+<li>{ico('check', 's')}<span>見積書に、{mk('スタッフ2名の役割と機材の内訳')}をすべて明記します</span></li>
+<li>{ico('check', 's')}<span>{mk('iPhoneで足りる会なら、そうお伝えします')}</span></li>
 </ul>
 <p class="hero-price">カメラ3台・スタッフ2名・マイク5本。<br><span class="t-big2">25<small>万円（税別）</small></span></p>
 <div class="btns">{btn('見積を依頼する', 'contact.html', 'quote')}<a class="tlink" href="#price">25万円に含まれるもの</a></div>
@@ -347,8 +348,8 @@ def index():
                ('表情がわかるアップの映像', '客席の後ろから、話している人の表情を撮ります。来場者の視界をふさぎません。'),
                ('見やすい画面の切り替え', '発表スライド、登壇者、会場全体の映像を状況に合わせて切り替えます。スライドの隅に登壇者の顔を出すこともできます。'),
                ('万が一に備える予備機材', '録画機もインターネット回線も2系統ずつ用意します。どれか1つが止まっても、配信と記録は続きます。')]
-    marks = [('mic', 'teal'), ('face', 'coral'), ('switch', 'yellow'), ('backup', 'teal')]
-    rs = ''.join(f'<li class="reason">{ico(*marks[i - 1])}<div class="stack s-16"><h3 class="t-ct"><span class="t-num">0{i}</span>{t}</h3><p class="t-body">{b}</p></div></li>' for i, (t, b) in enumerate(reasons, 1))
+    marks = ['mic', 'face', 'switch', 'backup']
+    rs = ''.join(f'<li class="reason">{ico(marks[i - 1])}<div class="stack s-16"><h3 class="t-ct"><span class="t-num">0{i}</span>{t}</h3><p class="t-body">{b}</p></div></li>' for i, (t, b) in enumerate(reasons, 1))
     day = f'''<section id="day" class="band sec-2" aria-labelledby="day-title"><div class="wrap pad-band"><div class="g57">
 <div class="stk">{lab('On the day')}</div>
 <div class="stack s-48">
@@ -487,7 +488,12 @@ def rules():
         ('word-break: auto-phrase', 'Limited', '見出しを文節で改行', '未対応では、通常の折り返し'),
     ]
     tr = ''.join(f'<tr><th scope="row">{a}</th><td data-l="Baseline">{b}</td><td data-l="使っている場所">{c}</td><td data-l="使えないとき">{d}</td></tr>' for a, b, c, d in apis)
-    tokens = re.findall(r'--(bg|paper|cream|wash|ink|ink-2|sand|sub|teal|coral|yellow|marker): (#[0-9a-f]{6});', css)
+    # 色見本は、ただ1つの元（design/karura-tokens.css）から読む
+    kcss = (OUT.parent / 'design' / 'karura-tokens.css').read_text(encoding='utf-8')
+    kmap = {'bg': 'bg', 'paper': 'paper', 'cream': 'cream', 'wash': 'wash', 'ink': 'ink', 'ink-strong': 'ink-2', 'line': 'sand', 'sub': 'sub',
+            'teal': 'teal', 'coral': 'coral', 'yellow': 'yellow', 'marker': 'marker'}
+    tokens = [(kmap[k], v) for k, v in re.findall(r'--k-([a-z-]+): (#[0-9a-f]{6});', kcss) if k in kmap]
+    assert len(tokens) == len(kmap), '色見本のトークンが足りません'
     names = {'bg': '地：ページの背景（白）', 'paper': '紙：白い地に置く箱、フォーム', 'cream': 'クリーム：帯、囲み', 'wash': '淡いティール：帯', 'ink': '文字：見出し・本文、フッター', 'ink-2': '濃い文字：強調', 'sand': '罫線', 'sand-d': '補足の線', 'sub': '補足の文字（黒50%）', 'red': '配信中・必須の印（珊瑚）', 'teal': 'ティール（主色）：目次の現在地・ボタン・診断・アイコン', 'teal-ink': 'ティール：地の上の文字', 'coral': '珊瑚：見積に進む・Q・番号', 'coral-ink': '珊瑚：見積に進むボタン', 'yellow': '黄：プラン診断・アイコン', 'marker': 'マーカー：要点の下線'}
     sw = ''.join(f'<li class="stack s-16"><span style="display:block;block-size:4rem;border-radius:6px;background:{v};box-shadow:inset 0 0 0 1px rgb(0 0 0 / .08)"></span><span class="t-note"><b>{v.upper()}</b><br>{names[k]}</span></li>' for k, v in tokens)
     type_rows = [('大見出し', '26 → 50', 'カメラ5台はいりません。'), ('セクション見出し', '26 → 44', '事例を公開しています'), ('囲みの見出し', '18 → 28', '日程と会場だけ'),
@@ -515,10 +521,10 @@ def rules():
 <section class="sec-3" id="marks"><div class="wrap g57"><div class="stk">{lab('Marks &amp; Shadow')}</div><div class="stack s-48"><h2 class="t-h2">目が滑らないための目印</h2>
 <p class="t-lead">長いページでも読む場所を見失わないよう、4つの目印を決まった場所にだけ置きます。</p>
 <ul class="reasons">
-<li class="reason">{ico('check', 'teal')}<div class="stack s-16"><h3 class="t-ct">{mk('要点のマーカー')}</h3><p class="t-body">各セクションのリードで、いちばん伝えたい一文にだけ引きます。1つのセクションに1か所まで。文字の下半分を黄色（#FFEB78）にし、画面に入ったときに左から引かれます</p></div></li>
-<li class="reason">{ico('doc', 'teal')}<div class="stack s-16"><h3 class="t-ct">影は重ねない</h3><p class="t-body">影が付くのは、いちばん外側の面だけ。影の付いた面の中に置くものは、線で区切ります。ボタンには影を付けません。強さは2つ：置いてあるもの（カード、白い箱、左レール）は 0 0 30px 黒8%、物として見せるもの（見積書の見本、暗い囲み）は 0 5px 40px 黒20%</p></div></li>
-<li class="reason">{ico('switch', 'teal')}<div class="stack s-16"><h3 class="t-ct">見出しのタグと、章の切れ目</h3><p class="t-body">各章の頭に、目次と同じ言葉のタグ（白地にティールの線の丸い札）を付けます。スマホでは、章の頭に端から端までティールの線を引き、その線の上にタグを乗せて切れ目を示します。線画のアイコンはティールの角丸の四角（44px、角丸10px）に入れ、飾りなので読み上げからは外します</p></div></li>
-<li class="reason">{ico('backup', 'teal')}<div class="stack s-16"><h3 class="t-ct">QとA、○と—</h3><p class="t-body">よくある質問は珊瑚のQとティールのA。お引き受けする会はティールの○、ほかの方法をおすすめする会は灰色の—で、読む前に種類がわかるようにします</p></div></li>
+<li class="reason">{ico('check')}<div class="stack s-16"><h3 class="t-ct">{mk('要点のマーカー')}</h3><p class="t-body">各セクションのリードで、いちばん伝えたい一文にだけ引きます。1つのセクションに1か所まで。文字の下半分を黄色（#FFEB78）にし、画面に入ったときに左から引かれます</p></div></li>
+<li class="reason">{ico('doc')}<div class="stack s-16"><h3 class="t-ct">影は重ねない</h3><p class="t-body">影が付くのは、いちばん外側の面だけ。影の付いた面の中に置くものは、線で区切ります。ボタンには影を付けません。強さは2つ：置いてあるもの（カード、白い箱、左レール）は 0 0 30px 黒8%、物として見せるもの（見積書の見本、暗い囲み）は 0 5px 40px 黒20%</p></div></li>
+<li class="reason">{ico('switch')}<div class="stack s-16"><h3 class="t-ct">見出しのタグと、章の切れ目</h3><p class="t-body">各章の頭に、目次と同じ言葉のタグ（白地にティールの線の丸い札）を付けます。スマホでは、章の頭に端から端までティールの線を引き、その線の上にタグを乗せて切れ目を示します。線画のアイコンはティールの角丸の四角（44px、角丸10px）に入れ、飾りなので読み上げからは外します</p></div></li>
+<li class="reason">{ico('backup')}<div class="stack s-16"><h3 class="t-ct">QとA、○と—</h3><p class="t-body">よくある質問は珊瑚のQとティールのA。お引き受けする会はティールの○、ほかの方法をおすすめする会は灰色の—で、読む前に種類がわかるようにします</p></div></li>
 </ul>
 <p class="t-note t-sub">穴埋め（［ ］）はマーカーと見分けがつくよう、灰色の斜線にしています。</p></div></div></section>
 <section class="sec-3" id="motion"><div class="wrap g57"><div class="stk">{lab('Motion')}</div><div class="stack s-48"><h2 class="t-h2">動きは、減らせる</h2>

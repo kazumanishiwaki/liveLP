@@ -2,8 +2,8 @@
    標準の HTML/CSS で足りないところだけを補う。どれも無くても、内容は読めて、リンクとフォームは使える。
    1. スマホのメニュー（dialog.showModal と背景クリックで閉じる）
    2. カメラ切り替えの自動送り（切り替え自体はラジオと :has で動く）
-   3. プラン診断（1問ずつ表示と判定）
-   4. サブナビの現在地（スクロール位置から計算）
+   3. プラン診断（1問ずつ表示と判定。スマホでは全画面のモーダルで開く）
+   4. サブナビの現在地（スクロール位置から計算）と、要点のマーカー
    5. フォームの送信（送信先が決まるまでは完了ページの見本へ）と、診断結果の引き継ぎ */
 
 const $ = (s, c = document) => c.querySelector(s);
@@ -18,13 +18,12 @@ const pc = matchMedia('(width >= 64rem)');
   if (dlg && open) {
     open.addEventListener('click', () => dlg.showModal());
     // 背景（dialog 自身）を押したら閉じる。closedby="any" は Baseline 未満なので自前で
-    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
-    // メニュー内のページ内リンクは、閉じてから移動する
+    // メニュー内のページ内リンクも、閉じてから移動する
     dlg.addEventListener('click', (e) => {
-      const a = e.target.closest('a[href^="#"]');
-      if (a) dlg.close();
+      if (e.target === dlg || e.target.closest('a[href^="#"]')) dlg.close();
     });
-    dlg.addEventListener('close', () => open.focus());
+    // 診断のモーダルを続けて開くときは、そちらにフォーカスを渡す
+    dlg.addEventListener('close', () => { if (!$('#diag-modal')?.open) open.focus(); });
   }
 }
 
@@ -100,7 +99,7 @@ function judge(a) {
       lead: '機材と接続を一度整理すれば、ご自身で配信できる可能性が高い会です。オンライン60分で、接続の図と当日のチェックリストを作成します。' };
   }
   const maru = opts.length >= 2;
-  const mics = ({ '2-3': 3, '4-6': 6 })[a.spk] + (a.qa === 'y' ? 1 : 0);
+  const mics = ({ '1': 1, '2-3': 3, '4-6': 6 })[a.spk] + (a.qa === 'y' ? 1 : 0);
   const addStaff = a.rmt === 'y' || mics > 5;
   if (addStaff) adds.push(['スタッフを1名追加', a.rmt === 'y' ? 'オンラインから登壇する人がいるため' : `マイクが${mics}本必要になるため`]);
   if (a.time === '3+') adds.push(['配信時間の延長', '3時間を超える分']);
@@ -218,12 +217,35 @@ $$('[data-dg]').forEach((dg) => {
   show(0, false);
 });
 
+/* ------------------------------------------------ 3b. スマホではプラン診断を全画面のモーダルで開く（PCはその場で答える） */
+{
+  const modal = $('#diag-modal');
+  if (modal && typeof modal.showModal === 'function') {
+    const menu = $('#menu');
+    let opener = null;
+    document.addEventListener('click', (e) => {
+      const t = e.target.closest('[data-open-diag], a[href$="#plan"]');
+      if (!t || pc.matches || modal.open) return;
+      e.preventDefault();
+      // メニューの中から開いたときは、閉じたあとの戻り先をメニューのボタンにする（リンクはメニューと一緒に隠れるため）
+      opener = menu?.contains(t) ? $('[data-open-menu]') : t;
+      if (menu?.open) menu.close();
+      modal.showModal();
+    });
+    // モーダルの中のページ内リンク（料金の内訳を見る など）は、閉じてから移動する
+    modal.addEventListener('click', (e) => { if (e.target.closest('a[href^="#"]')) { opener = null; modal.close(); } });
+    modal.addEventListener('close', () => { opener?.focus(); opener = null; });
+    pc.addEventListener('change', () => { if (pc.matches && modal.open) modal.close(); });
+  } else if (modal) { modal.classList.add('is-inline'); $('.dg-launch')?.remove(); }
+}
+
 /* ------------------------------------------------ 4. サブナビの現在地 */
 $$('.subnav').forEach((nav) => {
   const links = $$('a[href^="#"]', nav);
   const list = $('ol', nav);
   const meter = $('.subnav-meter', nav);
   const pairs = links.map((a) => [a, document.getElementById(a.hash.slice(1))]).filter(([, t]) => t);
+  if (!pairs.length) return;
   let current = null;
   let queued = false;
   const update = () => {
@@ -256,27 +278,6 @@ $$('.subnav').forEach((nav) => {
   update();
 });
 
-/* ------------------------------------------------ 3b. スマホではプラン診断を全画面のモーダルで開く（PCはその場で答える） */
-{
-  const modal = $('#diag-modal');
-  if (modal && typeof modal.showModal === 'function') {
-    let opener = null;
-    const open = (from) => {
-      if (pc.matches || modal.open) return false;
-      opener = from; modal.showModal();
-      return true;
-    };
-    document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-open-diag], a[href$="#plan"]');
-      if (!t || pc.matches) return;
-      if (t.closest('#menu')) $('#menu').close();
-      if (open(t)) e.preventDefault();
-    });
-    modal.addEventListener('close', () => { opener?.focus(); opener = null; });
-    pc.addEventListener('change', () => { if (pc.matches && modal.open) modal.close(); });
-  } else if (modal) { modal.classList.add('is-inline'); $('.dg-launch')?.remove(); }
-}
-
 /* ------------------------------------------------ 4b. 要点のマーカー：画面に入ったら引く（CSS の transition。動きを減らす設定では最初から引いた状態） */
 {
   const marks = $$('mark.mk');
@@ -298,16 +299,20 @@ $$('form[data-form]').forEach((f) => {
       // 送信先が未設定のあいだは何も送らず、完了ページの見本へ
       if (f.dataset.form === 'quote') location.href = 'thanks.html';
       else {
-        const m = $('.form-msg', f);
+        const m = $('.form-msg:not(.prefill)', f);
         m.hidden = false;
         m.textContent = 'この見本サイトでは、まだ何も送信されません。公開時に送信先を設定すると、入力したアドレスにひな形が届きます。';
       }
       return;
     }
+    const submit = $('button[type="submit"]', f);
+    if (submit.disabled) return; // 送信中の二重送信を防ぐ
+    submit.disabled = true;
     fetch(endpoint, { method: 'POST', body: new FormData(f), headers: { Accept: 'application/json' } })
       .then((r) => { if (!r.ok) throw new Error(r.status); location.href = 'thanks.html'; })
       .catch(() => {
-        const m = $('.form-msg', f);
+        submit.disabled = false;
+        const m = $('.form-msg:not(.prefill)', f);
         m.hidden = false;
         m.textContent = '送信できませんでした。時間をおいてもう一度お試しいただくか、お電話でご連絡ください。';
       });
