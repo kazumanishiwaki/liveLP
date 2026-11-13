@@ -20,5 +20,5 @@ https://kazumanishiwaki.github.io/liveLP/ で見られます。
 色・影・角丸・文字・動きの値は `design/karura-tokens.css` にまとめています。
 
 - サイト（C案）：`python3 source/c/build_c.py` が `c/assets/karura-tokens.css` にコピーし、`site.css` が読み込みます。`c/assets/` 側は直接編集しません。
-- 進行管理ツール Que（kazumanishiwaki/timekeeper）：`npm run sync:design`（`npm run build` の前にも自動で実行）でこのファイルを取り込みます。
-- 値を変えるときは `design/karura-tokens.css` だけを直し、サイトを作り直して、Que を作り直します。
+- タイムキーパー（kazumanishiwaki/timekeeper）と FAQ（kazumanishiwaki/slide）：`npm run sync:design` でこのファイルを取り込みます（デプロイ時にも自動で実行）。
+- 値を変えるときは `design/karura-tokens.css` だけを直し、サイトを作り直して、タイムキーパーと FAQ をデプロイし直します。

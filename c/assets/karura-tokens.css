@@ -6,7 +6,7 @@
 
    使っている場所
    - カルラライブのサイト（liveLP の c/）：build_c.py が c/assets/ にコピーし、site.css が読み込む
-   - 進行管理ツール Que（timekeeper）：npm run sync:design でコピーし、tayuta-tokens.css が --tyt-* に対応づける
+   - タイムキーパー（timekeeper）と FAQ（slide）：npm run sync:design でコピーし、--tyt-* に対応づける
 
    色の役割（デザインルールのページと同じ）
    - ティール：主色。現在地、選んだもの、そのほかの行動／ツールでは「残りわずか」も
