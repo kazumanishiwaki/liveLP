@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
-"""C案（採用案）の書き出し： python3 build_c.py
-   ../../c/ に index.html、contact.html、thanks.html、rules.html を書き出す。
-   文言はすべてこのファイルの中。CSS と JS は c/assets/ を直接編集する。"""
+"""カルラライブのサイトを書き出す： python3 src/build.py
+   ../docs/ に、公開するサイト一式を作る（GitHub Pages は main の /docs を配信する）。
+   - 文言はすべてこのファイルの中
+   - CSS と JS は src/site.css・src/site.js、写真は src/img/
+   - 色・影・角丸・文字・動きの値は ../design/karura-tokens.css（ツールと共通）
+   - 書体は、ページで使っている文字だけを src/fonts/ の元ファイルから切り出す
+   docs/ の中は生成物なので、直接編集しない。"""
+import shutil
 import re
 from pathlib import Path
 from PIL import Image
 
 HERE = Path(__file__).resolve().parent
-OUT = HERE.parent.parent / 'c'
+ROOT = HERE.parent
+OUT = ROOT / 'docs'
+TOKENS = ROOT / 'design' / 'karura-tokens.css'
+FONT_SRC = HERE / 'fonts' / 'zen-kaku-gothic-new-japanese-500-normal.woff2'
 NAME, NAME_EN = 'カルラライブ', 'KARURA LIVE'
-SIZES = {f.stem: Image.open(f).size for f in (OUT / 'img').glob('*.webp')}
+SIZES = {f.stem: Image.open(f).size for f in (HERE / 'img').glob('*.webp')}
 
 ANA = re.compile(r'［[^］]*］')
 def mark(h):
@@ -471,7 +479,7 @@ def thanks():
 
 def rules():
     sub = rules.sub = [('rules-top', 'このページについて'), ('layout', '画面の組み方'), ('type', '文字の大きさと字間'), ('color', '色の役割'), ('marks', '目印と影'), ('motion', '動きの決まり'), ('platform', '使っているWeb標準')]
-    css = (OUT / 'assets/site.css').read_text(encoding='utf-8')
+    css = (HERE / 'site.css').read_text(encoding='utf-8')
     apis = [
         ('&lt;dialog&gt;（showModal）', 'Widely', 'スマホのメニュー。フォーカスを閉じ込め、Esc で閉じる', '— （JS が動かないときは、ヘッダーの「メニュー」がフッターのメニューへ移動）'),
         ('&lt;details&gt; / &lt;summary&gt;', 'Widely', 'よくある質問の開閉', '—'),
@@ -489,7 +497,7 @@ def rules():
     ]
     tr = ''.join(f'<tr><th scope="row">{a}</th><td data-l="Baseline">{b}</td><td data-l="使っている場所">{c}</td><td data-l="使えないとき">{d}</td></tr>' for a, b, c, d in apis)
     # 色見本は、ただ1つの元（design/karura-tokens.css）から読む
-    kcss = (OUT.parent / 'design' / 'karura-tokens.css').read_text(encoding='utf-8')
+    kcss = TOKENS.read_text(encoding='utf-8')
     kmap = {'bg': 'bg', 'paper': 'paper', 'cream': 'cream', 'wash': 'wash', 'ink': 'ink', 'ink-strong': 'ink-2', 'line': 'sand', 'sub': 'sub',
             'teal': 'teal', 'coral': 'coral', 'yellow': 'yellow', 'marker': 'marker'}
     tokens = [(kmap[k], v) for k, v in re.findall(r'--k-([a-z-]+): (#[0-9a-f]{6});', kcss) if k in kmap]
@@ -536,11 +544,33 @@ def rules():
 </main>''' + footer(False, form=False))
 
 PAGES = {'index.html': index, 'contact.html': contact, 'thanks.html': thanks, 'rules.html': rules}
+def subset_font(text):
+    """ページで使っている文字だけの書体ファイルを作る（元の書体は約1MB、切り出すと数十KB）"""
+    from fontTools import subset
+    chars = ''.join(sorted(set(text) | {chr(i) for i in range(0x20, 0x7f)}))
+    options = subset.Options(flavor='woff2', layout_features=['*'])
+    font = subset.load_font(str(FONT_SRC), options)
+    subsetter = subset.Subsetter(options)
+    subsetter.populate(text=chars)
+    subsetter.subset(font)
+    subset.save_font(font, str(OUT / 'assets' / 'fonts' / 'zkgn-500.woff2'), options)
+
+
 if __name__ == '__main__':
-    # 共通デザイントークン（ただ1つの元：design/karura-tokens.css）をサイトに配る
-    import shutil
-    shutil.copyfile(OUT.parent / 'design' / 'karura-tokens.css', OUT / 'assets' / 'karura-tokens.css')
+    # docs/ を作り直す（生成物だけを置く）
+    if OUT.exists():
+        shutil.rmtree(OUT)
+    (OUT / 'assets' / 'fonts').mkdir(parents=True)
+    shutil.copytree(HERE / 'img', OUT / 'img')
+    for name in ('site.css', 'site.js'):
+        shutil.copyfile(HERE / name, OUT / 'assets' / name)
+    shutil.copyfile(TOKENS, OUT / 'assets' / 'karura-tokens.css')
+    (OUT / '.nojekyll').write_text('', encoding='utf-8')
+
+    used = (HERE / 'site.css').read_text(encoding='utf-8') + (HERE / 'site.js').read_text(encoding='utf-8')
     for name, fn in PAGES.items():
         html = mark(tag_sections(fn(), getattr(fn, 'sub', [])))
         (OUT / name).write_text(html, encoding='utf-8')
+        used += html
         print(name, len(html), 'holes', len(ANA.findall(re.sub(r'<[^>]+>', ' ', html))))
+    subset_font(used)

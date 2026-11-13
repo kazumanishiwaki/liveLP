@@ -1,9 +1,14 @@
-import subprocess, sys, time
+"""サイトの動作確認： python3 tests/site_test.py（先に python3 src/build.py で docs/ を作る）
+   スマホ幅で、診断・メニュー・フォームの入力確認・JSなしの表示を通しで確かめる。
+   画面の写しは tests/shots/ に残す（Git には入れない）。"""
+import pathlib, subprocess, sys, time
 from playwright.sync_api import sync_playwright
 port=8813
-srv = subprocess.Popen([sys.executable,'-m','http.server',str(port),'-d','/home/claude/livelp'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL); time.sleep(.8)
-U=f'http://localhost:{port}/c/'
-S='/home/claude/karura/shots/'
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+(ROOT / 'tests' / 'shots').mkdir(exist_ok=True)
+srv = subprocess.Popen([sys.executable,'-m','http.server',str(port),'-d',str(ROOT / 'docs')],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL); time.sleep(.8)
+U=f'http://localhost:{port}/'
+S=str(ROOT / 'tests' / 'shots') + '/'
 with sync_playwright() as p:
     b=p.chromium.launch(executable_path='/usr/bin/google-chrome',args=['--no-sandbox'])
     ctx=b.new_context(viewport={'width':390,'height':844},is_mobile=True,has_touch=True,reduced_motion='reduce'); pg=ctx.new_page(); errs=[]
