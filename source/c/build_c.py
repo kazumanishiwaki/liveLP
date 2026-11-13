@@ -33,6 +33,10 @@ ICON = {
     'switch': '<rect x="3" y="4" width="12" height="9" rx="1"/><rect x="9" y="11" width="12" height="9" rx="1"/>',
     'backup': '<rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><circle cx="7" cy="7" r=".8"/><circle cx="7" cy="17" r=".8"/>',
     'doc': '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
+    'qr': '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2.5v2.5H14zM17.5 17.5H20V20h-2.5z"/>',
+    'touch': '<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M10.5 17.5h3M3.5 9.5a4 4 0 0 0 0 5M20.5 9.5a4 4 0 0 1 0 5"/>',
+    'list': '<rect x="5" y="4" width="14" height="17" rx="1.5"/><path d="M9 3h6v3H9zM8.5 11h7M8.5 15h7"/>',
+    'report': '<path d="M4 20h16M7 20v-6M12 20V6M17 20v-9"/>',
 }
 def ico(name, size=''):
     """ティールの角丸チップに入った線画アイコン（飾りなので読み上げない）"""
@@ -126,7 +130,7 @@ def footer(home, form=True):
 <p class="t-note" id="tel">お電話でも受け付けています　［電話番号］　［受付時間］</p></div>
 {quote_form('f')}
 </div></section>'''
-    links = [(pre + '#plan', 'プラン診断'), (pre + '#price', '料金・体制・機材'), (pre + '#works', '事例'), (pre + '#demo', 'ツールデモ'),
+    links = [(pre + '#plan', 'プラン診断'), (pre + '#price', '料金・体制・機材'), (pre + '#works', '事例'), (pre + '#ticket', '受付とチケット'), (pre + '#demo', 'ツールデモ'),
              (pre + '#coaching', '配信コーチング'), (pre + '#public', '大学・公共機関の方へ'), (pre + '#faq', 'よくある質問'),
              ('contact.html', 'お問い合わせ・お見積'), ('rules.html', 'デザインルール')]
     nav = ''.join(f'<li><a href="{h}">{t}</a></li>' for h, t in links)
@@ -247,6 +251,9 @@ FAQ = [
     ('会場にインターネット回線がありません', '配信用の回線を持ち込みます（［金額］）。事前に会場で電波状況を確認します。'),
     ('配信が止まった場合、料金はどうなりますか', '［返金・減額の規定］'),
     ('対応エリアはどこまでですか', '新宿駅からおおむね90分以内で伺える会場が対応エリアです。エリア内は、会場の下見も交通費も25万円に含まれます。エリア外の会場は、交通費と宿泊費の実費で伺います。'),
+    ('参加者の受付や名簿の管理もお願いできますか', '対応できます。スタンダードとまるごとには、受付用のデジタルチケットが含まれます。申込の受付、当日の入場、終了後の来場者数の報告までを引き受けます。詳しくは<a href="#ticket">受付とチケット</a>をご覧ください。'),
+    ('有料の会のチケット販売はできますか', '販売と決済は行っていません。参加費がある会は、お使いのチケット販売サービスや請求書で集金いただき、申込者の名簿（CSV）をお預かりして、当日の入場だけを引き受けます。'),
+    ('参加者の個人情報は、どう扱いますか', '名簿は受付と報告のためだけに使い、会の終了から30日で自動的に削除します。委託契約書や情報セキュリティのチェックシートが必要な場合は、ご相談ください。'),
     ('iPhoneで足りる会かどうか、先に知りたい', '<a href="#plan">8問のプラン診断</a>でご確認いただけます。iPhoneで足りる会なら、そうお伝えします。'),
     ('相見積のための見積依頼でもかまいませんか', '歓迎します。<a href="#spec">仕様書のひな形</a>と見積書の見本もお送りしますので、他社への依頼にもそのままお使いください。'),
     ('支払い方法を教えてください', '請求書払い（後払い）に対応しています。見積書・納品書・請求書の3点を発行します。'),
@@ -254,7 +261,7 @@ FAQ = [
 
 def index():
     sub = [('plan', '8問でプラン診断'), ('switching', '配信画面の切り替え'), ('scope', 'お引き受けする会'), ('price', '25万円に含まれるもの'),
-           ('team', '当日の体制と機材'), ('day', '当日の流れ'), ('demo', '現場の道具を試す'), ('works', '事例と金額'),
+           ('team', '当日の体制と機材'), ('day', '当日の流れ'), ('ticket', '受付とチケット'), ('demo', '現場の道具を試す'), ('works', '事例と金額'),
            ('option', '写真・映像の追加'), ('coaching', '自分たちで配信する'), ('public', '大学・公共機関の発注'), ('faq', 'よくある質問'),
            ('contact', '見積を依頼する')]
     intro = '<div class="intro" aria-hidden="true"><p>' + ''.join(f'<span style="--i:{i}">{c}</span>' for i, c in enumerate(NAME_EN)) + '</p></div>'
@@ -316,7 +323,8 @@ def index():
              f'マイク5本までの持ち込み{tip("tip-mic", "マイクが5本の理由", "登壇者4人分と、会場の質問用1本です。6本以上必要な会は、スタッフを1名追加します。")}',
              '会場設備のマイク音声も直接取り込みます', '予備の録画機と、予備のインターネット回線',
              f'配信3時間まで、会場での作業6時間まで{tip("tip-time", "作業時間の内訳", "設営2時間、配信3時間、撤収1時間が目安です。")}',
-             '事前の打ち合わせと会場の下見', '録画データの納品']
+             '事前の打ち合わせと会場の下見', '録画データの納品',
+             f'受付用のデジタルチケット（来場300人まで）{tip("tip-ticket", "デジタルチケットでできること", "申込の受付、当日のQRコード・タッチでの入場、終了後の来場者数の報告までを引き受けます。チケットの販売と決済は行いません。")}']
     price = f'''<div class="mq sec-2" aria-hidden="true"><div class="mq-t">{''.join('<span>LIVE STREAMING × HYBRID EVENTS</span>' for _ in range(4))}</div></div>
 <section id="price" class="bandg" aria-labelledby="price-title"><div class="wrap pad-band"><div class="g57">
 <div class="stk stack s-56"><div class="stack s-48">{lab('Price')}<h2 class="t-h2" id="price-title" data-rv>25万円に<br>含まれるもの<br>すべて</h2>
@@ -359,6 +367,23 @@ def index():
 <div class="boxg stack" style="color:var(--ink)"><h3 class="t-h2s">止まらないとは言いません。止まったときにどう戻すかを、事前にお渡しします</h3>
 <p class="t-note">事前に「復旧手順書」を1枚お渡しします。何が止まったら、誰が、何分で、どう復旧するかを明記しています。</p>
 <div class="ph" style="background:var(--paper)">［画像：復旧手順書の実物　穴埋め08］</div></div>
+</div></div></div></section>'''
+
+    ways = [('qr', 'QRコードで入場', '参加者のスマホに表示されたQRコードを、受付のスマホで読み取ります。専用の読み取り機はいりません。'),
+            ('touch', 'タッチで入場', '受付に置いたタグにスマホをかざすか、受付でお伝えする4桁のコードを入れると、入場済みになります。受付に立つ人を減らせます。'),
+            ('list', '紙の名簿も用意します', '同じ名簿を紙でもお持ちします。スマホを持っていない方や、会場の通信が不安定なときも、受付は止まりません。'),
+            ('report', '終了後の報告を1枚で', '申込数、来場者数、オンライン視聴者数を1枚にまとめてお渡しします。上司や助成元への報告にそのまま使えます。')]
+    ws = ''.join(f'<li class="reason">{ico(k)}<div class="stack s-16"><h3 class="t-ct"><span class="t-num">0{i}</span>{t}</h3><p class="t-body">{b}</p></div></li>' for i, (k, t, b) in enumerate(ways, 1))
+    ticket = f'''<section id="ticket" class="sec" aria-labelledby="ticket-title"><div class="wrap"><div class="g57"><div class="stk">{lab('Reception')}</div>
+<div class="stack s-56">
+<div class="stack s-48"><h2 class="t-h2" id="ticket-title" data-rv>受付の名簿も、<br>配信と一緒に引き受けます</h2>
+<p class="t-lead">申込の受付、当日の入場、終了後の報告まで。<br>{mk('来場者とオンライン視聴者が、1つの名簿にまとまります。')}</p></div>
+<ul class="reasons">{ws}</ul>
+<div class="stack"><h3 class="sub">あらかじめ決めていること</h3><ul class="rows"><li>スタンダードとまるごとに含まれます。追加料金はかかりません（単体でご提供する場合の参考価格：［金額］）</li><li>チケットだけのご利用は、お受けしていません。配信をお任せいただく会でお使いいただけます</li><li>参加無料・招待制の会が対象です。チケットの販売と決済は行いません</li><li>来場300人までの会が対象です</li><li>参加者の名簿は受付と報告のためだけに使い、会の終了から30日で自動的に削除します</li></ul></div>
+<div class="boxg stack" style="color:var(--ink)"><h3 class="t-h2s">オプション：参加者を、LINE公式アカウントの友だちに</h3>
+<p class="t-note">申込をLINEログインにすると、申込と同時に、主催者のLINE公式アカウントを友だちに追加できます。次回の会の案内を、メールよりも届きやすい形で送れます。LINE側の設定は私たちが代行します。</p>
+<p class="t-note">追加料金（税別）：［金額］</p></div>
+<p class="t-note t-sub">［QR］　読み取ると、デモのチケットが開きます　［デモ環境］</p>
 </div></div></div></section>'''
 
     tools = [('S01', 'FAQ の画面', '質疑応答：FAQ', '会場とオンラインからの質問を1か所に集め、選んだ質問だけを登壇者の画面に表示します。', 'コード ［000］　質問を送ると、上の画面に表示されます'),
@@ -426,7 +451,7 @@ def index():
 
     body = (head(f'シンポジウム・講演会のハイブリッド配信代行｜3カメ・2名・25万円〜｜{NAME}',
                  '大学や公共機関のシンポジウム、公開講座をハイブリッドで配信します。3カメラ・スタッフ2名・マイク5本までで25万円（税別）から。8問のプラン診断で、合うプランと費用がわかります。', home=True)
-            + intro + header(True, sub) + '<main id="main">' + hero + switching + clients + scope + price + team + day + demo + works + option + coaching + public + faq + '</main>'
+            + intro + header(True, sub) + '<main id="main">' + hero + switching + clients + scope + price + team + day + ticket + demo + works + option + coaching + public + faq + '</main>'
             + footer(True))
     return tag_sections(body, sub)
 
@@ -438,6 +463,7 @@ def contact():
 <tr><th>ハイブリッド配信 スタンダード<br><small>配信3時間まで、会場での作業6時間まで</small></th><td class="r">250,000</td></tr>
 <tr><th>映像担当 1名／音声・配信担当 1名</th><td class="r">含む</td></tr><tr><th>カメラ3台／マイク5本まで</th><td class="r">含む</td></tr>
 <tr><th>予備の録画機・予備の回線</th><td class="r">含む</td></tr><tr><th>打ち合わせ・会場の下見・録画データの納品</th><td class="r">含む</td></tr>
+<tr><th>受付用のデジタルチケット（来場300人まで）</th><td class="r">含む</td></tr>
 <tr><th>消費税（10%）</th><td class="r">25,000</td></tr><tr><th>合計</th><td class="r">275,000</td></tr></table></div>'''
     return (head(f'お問い合わせ・お見積｜ハイブリッド配信のご相談｜{NAME}', '日程と会場、登壇者の人数がわかれば見積書をお出しします。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。')
             + header(False, sub) + f'''<main id="main">
