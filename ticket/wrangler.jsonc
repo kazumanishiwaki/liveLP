@@ -26,7 +26,7 @@
   "vars": {
     // 差出人。RESEND_API_KEY（secret）があるときだけメールを送る
     "MAIL_FROM": "カルラライブ 受付 <noreply@thisandthat.jp>",
-    "LP_URL": "https://kazumanishiwaki.github.io/liveLP/c/#ticket"
+    "LP_URL": "https://kazumanishiwaki.github.io/liveLP/#ticket"
   }
   // secret（wrangler secret put）：ADMIN_KEY、SESSION_SECRET、RESEND_API_KEY（任意）
 }
