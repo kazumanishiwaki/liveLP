@@ -1,0 +1,44 @@
+name: Deploy site
+
+# docs/（書き出したサイト）か配信の設定が main に入ったら、https://thisandthat.jp/live/ へ配信する
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "cloudflare/**"
+      - "scripts/smoke.mjs"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: site-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cloudflare の鍵があるか確かめる
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::このリポジトリに CLOUDFLARE_API_TOKEN がありません。Settings → Secrets and variables → Actions に、タイムキーパー・FAQ と同じ Cloudflare の API トークンを登録してください。"
+            exit 1
+          fi
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: cd3a3c60fe27542500ea6d020648715d
+          wranglerVersion: "4.106.0"
+          command: deploy --config cloudflare/wrangler.toml
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # デプロイの「成功」は、本番が開けることまでは言っていない。読むだけの確認をして、落ちたら赤くする（巻き戻さない）
+      - run: node scripts/smoke.mjs

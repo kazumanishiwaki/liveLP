@@ -28,8 +28,14 @@ python3 tests/site_test.py  # スマホ幅で通しの確認。画面の写し�
 
 ## 公開
 
-GitHub の Settings → Pages で、Source を「Deploy from a branch」、Branch を `main` の `/docs` にすると、
-https://kazumanishiwaki.github.io/liveLP/ で見られます。
+https://thisandthat.jp/live/ で公開しています（検索には出さない設定：`noindex`）。
+
+- `docs/` か `cloudflare/` の変更が main に入ると、GitHub Actions が Cloudflare へ配信します（`.github/workflows/deploy.yml`）。
+  配信のあと `scripts/smoke.mjs` が本番を読みにいき、開けなければ赤くなります（巻き戻しはしません）。
+- 配るのは Cloudflare の Worker 1つ（`cloudflare/worker.js`）。`/live` を外して `docs/` のファイルを返すだけです。
+  サイトの中のリンクはすべて相対パスなので、置き場所を変えても HTML は書き換えずに済みます。
+- 配信には、リポジトリの Secrets に `CLOUDFLARE_API_TOKEN`（タイムキーパー・FAQ と同じもの）が要ります。
+- 手元で確かめる：`npx wrangler dev --config cloudflare/wrangler.toml` → http://127.0.0.1:8787/live/
 
 公開前に残っていること：
 

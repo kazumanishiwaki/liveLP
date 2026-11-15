@@ -1,0 +1,15 @@
+# カルラライブのサイト → https://thisandthat.jp/live/
+# 配信は .github/workflows/deploy.yml（main に docs/ の変更が入ると自動）
+name = "site-tnt-live"
+main = "worker.js"
+compatibility_date = "2026-07-01"
+workers_dev = false
+routes = [
+  { pattern = "thisandthat.jp/live", zone_name = "thisandthat.jp" },
+  { pattern = "thisandthat.jp/live/*", zone_name = "thisandthat.jp" }
+]
+
+[assets]
+directory = "../docs"
+binding = "ASSETS"
+run_worker_first = true
