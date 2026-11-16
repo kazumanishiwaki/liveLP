@@ -211,7 +211,7 @@
     }
     &.line { background: transparent; color: var(--ink); border-color: var(--ink); &:hover { background: var(--ink); color: #fff; } }
     &.full { display: flex; inline-size: 100%; }
-    &.xl { display: flex; inline-size: 100%; min-block-size: clamp(3.375rem, 2.75rem + 2.5vw, 5.75rem); font-size: clamp(.875rem, .7rem + .7vw, 1.25rem); }
+    &.lg { min-block-size: clamp(3.25rem, 2.9rem + 1.4vw, 4.25rem); min-inline-size: min(19rem, 100%); font-size: clamp(.875rem, .8rem + .3vw, 1.0625rem); }
   }
   .btn:disabled { opacity: .5; cursor: progress; }
   /* ボタンの色は意味で決める：黄＝プラン診断をはじめる／珊瑚＝見積を依頼する／ティール＝そのほかの行動／線＝資料・補助 */
@@ -221,10 +221,12 @@
 
   .btns { display: flex; flex-wrap: wrap; gap: .75rem 1rem; align-items: center; }
   @media (width < 40rem) { .btns > .btn { inline-size: 100%; } }
+  /* 文字だけのリンク：下線ではなく、右にティールの丸い矢印（.go） */
   .tlink {
-    display: inline-flex; align-items: center; gap: 8px; padding: 14px 0 6px;
-    font-size: var(--fs-note); line-height: 1.4; letter-spacing: .08em; text-decoration: none;
-    background: linear-gradient(currentColor, currentColor) left bottom / 100% 1px no-repeat;
+    display: inline-flex; align-items: center; gap: .625rem; padding-block: .5rem;
+    font-size: var(--fs-note); line-height: 1.4; letter-spacing: .08em; text-decoration: none; color: var(--ink);
+    & .go { inline-size: 1.5rem; block-size: 1.5rem; }
+    &:hover { color: var(--ink); & .go { translate: .25rem 0; } }
   }
 
   /* ---------- 囲み ---------- */
@@ -393,7 +395,7 @@
   }
 
   /* ---------- メインビジュアル：本文の幅いっぱいの写真に、文と2つの行動を重ねる ---------- */
-  .mv { position: relative; isolation: isolate; display: grid; align-items: end; min-block-size: min(88svh, 50rem); overflow: hidden; color: #fff; background: var(--ink); }
+  .mv { position: relative; isolation: isolate; display: grid; align-items: end; min-block-size: min(72svh, 42rem); overflow: hidden; color: #fff; background: var(--ink); }
   .mv-bg { position: absolute; inset: 0; z-index: -1;
     & img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: 50% 20%; }
     /* 文が読めるよう、左下に向けて暗くする */
@@ -401,28 +403,109 @@
   .mv-in { inline-size: 100%; padding-block: clamp(3rem, 2rem + 5vw, 6rem); }
   .mv-copy { max-inline-size: 46rem;
     & .t-h1 { margin-block: .25rem; font-size: clamp(1.75rem, 1.1rem + 2vw, 2.75rem); word-break: auto-phrase; }
-    & .t-lead { color: rgb(255 255 255 / .9); }
-    & a:not(.btn) { color: inherit; text-decoration: underline; text-decoration-color: rgb(255 255 255 / .5); text-underline-offset: .3em; &:hover { text-decoration-color: currentColor; } } }
+    & .t-lead { color: rgb(255 255 255 / .9); } }
   .mv .hero-kind { color: rgb(255 255 255 / .85); }
   .mv-note { position: absolute; inset-block-end: .75rem; inset-inline-end: var(--pad); font-size: .6875rem; line-height: 1.5; max-inline-size: 22rem; text-align: end; }
   .mv .ana { background: repeating-linear-gradient(135deg, #4d4d50 0 4px, #5a5a5d 4px 8px); color: #f0f0f0; box-shadow: inset 0 0 0 1px #77777a; }
-  /* 2つの行動は、スマホでも横に並べる */
-  .mv-acts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; max-inline-size: 34rem; margin-block-start: .5rem;
+  /* 写真の下：対象・体制・費用（それぞれの節への矢印つきリンク）と、2つの行動。行動はスマホでも横に並べる */
+  .mv-after { display: grid; gap: 1.5rem; padding-block-start: clamp(1.5rem, 1rem + 2vw, 2.5rem); }
+  @media (width >= 64rem) { .mv-after { grid-template-columns: minmax(0, 1fr) auto; gap: 3rem; align-items: center; } }
+  .mv-acts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; max-inline-size: 34rem;
     & .btn { min-inline-size: 0; gap: .5rem; padding-inline: .875rem; white-space: nowrap; } }
+  @media (width >= 64rem) { .mv-acts { grid-template-columns: 1fr; min-inline-size: 17rem; } }
   @media (width < 30rem) { .mv-acts .btn { padding-inline: .75rem; font-size: .8125rem; letter-spacing: .02em; &::after { display: none; } } }
   .mv-cmp + .mv-cmp { margin-block-start: var(--sec-3); }
   .mv-cmp > .wrap { padding-block-end: 1rem; }
   .hero-kind { font-size: var(--fs-note); color: var(--sub); letter-spacing: .04em;
     &::before { content: ""; display: inline-block; inline-size: 2rem; block-size: 4px; margin-inline-end: .75rem; vertical-align: .3em; border-radius: 4px; background: var(--teal); } }
-  /* 対象・体制・費用：左に小さな札、右に中身 */
-  .mv-facts { display: grid; border-block: 1px solid rgb(255 255 255 / .3);
-    & > div { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 1rem; align-items: baseline; padding-block: .875rem; }
-    & > div + div { border-block-start: 1px solid rgb(255 255 255 / .3); }
+  /* 対象・体制・費用：左に小さな札、右に中身。行ごとに、その中身が書いてある節へ移るリンク（右端に矢印） */
+  .mv-facts { display: grid; border-block: 1px solid var(--sand);
+    & > :is(div, li) { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 1rem; align-items: center; }
+    & > li { grid-template-columns: minmax(0, 1fr); }
+    & > :is(div, li) + :is(div, li) { border-block-start: 1px solid var(--sand); }
     & dt { justify-self: start; padding: .125rem .625rem; border-radius: 20px; background: var(--teal); color: #fff; font-size: .75rem; letter-spacing: .08em; }
-    & dd { line-height: 1.8; } }
-  .ticklist { display: grid; gap: .75rem;
-    & li { display: flex; gap: .75rem; align-items: flex-start; line-height: 1.8; }
-    & .chipi { margin-block-start: .2em; } }
+    & a { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .875rem; line-height: 1.7; text-decoration: none; }
+    & a:hover { color: var(--ink); & .go { translate: .25rem 0; } } }
+  .go { display: inline-grid; place-items: center; flex: none; inline-size: 1.75rem; block-size: 1.75rem; border-radius: 50%; background: var(--teal); color: #fff;
+    & .bico { inline-size: 1rem; block-size: 1rem; } }
+
+  /* ---------- プラン診断：どのページのどこからでも、ボタンでモーダルを開く（スマホは全画面、PCは中央）。JSなしではページの下に置く ---------- */
+  .diag-host { display: block; padding: var(--sec-3) var(--pad) 0; }
+  .js .diag-host { display: contents; }
+  .dg-modal { display: block; position: static; inline-size: auto; max-inline-size: 48rem; block-size: auto; max-block-size: none; margin: 0; padding: 0; border: 0; background: none; color: inherit; overflow: visible; }
+  .dg-modal-head { display: none; }
+  .dg-modal-head .menu-close { min-block-size: 2.75rem; padding: 0 .25rem; border: 0; background: none; font-size: .875rem; letter-spacing: .1em; white-space: nowrap; text-decoration: underline; text-underline-offset: .3em; }
+  .js .dg-modal:not([open], .is-inline) { display: none; }
+  .js .dg-modal[open] {
+    position: fixed; inset: 0; inline-size: 100%; max-inline-size: none; block-size: 100dvh; overflow: auto; overscroll-behavior: contain;
+    background: var(--bg); padding: 0 var(--pad) calc(2rem + env(safe-area-inset-bottom));
+    &::backdrop { background: rgb(0 0 0 / .4); }
+    & .dg-modal-head { position: sticky; inset-block-start: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; block-size: var(--head); margin-inline: calc(var(--pad) * -1); padding-inline: var(--pad); background: var(--bg); box-shadow: 0 1px 0 var(--sand); }
+    & .dg { margin-block-start: 1rem; }
+  }
+  @media (width >= 64rem) {
+    .js .dg-modal[open] {
+      inline-size: min(44rem, calc(100vw - 4rem)); block-size: fit-content; max-block-size: calc(100dvh - 4rem); margin: auto;
+      padding: 0 2rem 2rem; border-radius: var(--radius-card); box-shadow: var(--sh-3);
+      & .dg-modal-head { block-size: 4rem; margin-inline: -2rem; padding-inline: 2rem; }
+      & .dg { box-shadow: none; }
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .js .dg-modal[open] { animation: dg-up .35s var(--ease-ui); }
+  }
+  @keyframes dg-up { from { opacity: 0; translate: 0 1.5rem; } }
+  :root:has(.dg-modal[open]) { overflow: hidden; }
+
+  /* ---------- 現在地つきの目次：スマホは横並びのサブナビ、PCは左レールの縦並び ---------- */
+  .subnav {
+    position: relative; block-size: var(--subh);
+    background: var(--bg); border-block-end: 1px solid var(--sand);
+    & ol { display: flex; gap: .25rem; align-items: center; block-size: 100%; overflow-x: auto; scrollbar-width: none; padding-inline: .75rem; scroll-padding-inline: 3rem; overscroll-behavior-x: contain;
+      &::-webkit-scrollbar { display: none; } }
+    & li { flex: none; }
+    & a { display: block; padding: .3125rem .875rem; border-radius: 30px; font-size: .8125rem; line-height: 1.4; letter-spacing: .04em; text-decoration: none; color: var(--sub); white-space: nowrap; }
+    & a[aria-current] { background: var(--teal); color: #fff; }
+    & .subnav-meter { position: absolute; inset-inline-start: 0; inset-block-end: -1px; block-size: 3px; inline-size: 100%; background: var(--teal); transform-origin: 0 50%; scale: var(--p, 0) 1; }
+  }
+  @media (width >= 64rem) {
+    .subnav, .railnav {
+      flex: 1; min-block-size: 0; block-size: auto; background: none; border: 0;
+      & ol { display: grid; gap: .125rem; align-content: start; block-size: 100%; overflow: hidden auto; padding-inline: .75rem; scrollbar-width: thin; }
+      & a { display: block; text-decoration: none; position: relative; padding: .4375rem .75rem .4375rem 1.25rem; border-radius: 8px; font-size: .8125rem; line-height: 1.5; white-space: normal; word-break: auto-phrase; color: var(--ink-2); }
+      & a::before { content: ""; position: absolute; inset-inline-start: .5rem; inset-block-start: 50%; inline-size: 4px; block-size: 4px; margin-block-start: -2px; border-radius: 50%; background: var(--sand); }
+      & a:hover { background: var(--wash); }
+      & a[aria-current] { background: var(--wash); color: var(--ink); }
+      & a[aria-current]::before { background: var(--teal); inline-size: 6px; block-size: 6px; margin-block-start: -3px; inset-inline-start: .4375rem; }
+    }
+    /* 進み具合はレールの右端に縦で */
+    .subnav .subnav-meter { inset-block: 0; inset-inline: auto 0; inline-size: 3px; block-size: 100%; position: fixed; inset-inline-start: calc(var(--rail) - 3px); transform-origin: 50% 0; scale: 1 var(--p, 0); }
+  }
+
+  /* ---------- メインビジュアル：本文の幅いっぱいの写真に、文と2つの行動を重ねる ---------- */
+  .mv { position: relative; isolation: isolate; display: grid; align-items: end; min-block-size: min(72svh, 42rem); overflow: hidden; color: #fff; background: var(--ink); }
+  .mv-bg { position: absolute; inset: 0; z-index: -1;
+    & img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: 50% 20%; }
+    /* 文が読めるよう、左下に向けて暗くする */
+    &::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(0 0 0 / .72) 0%, rgb(0 0 0 / .5) 55%, rgb(0 0 0 / .15) 100%), linear-gradient(0deg, rgb(0 0 0 / .45), transparent 50%); } }
+  .mv-in { inline-size: 100%; padding-block: clamp(3rem, 2rem + 5vw, 6rem); }
+  .mv-copy { max-inline-size: 46rem;
+    & .t-h1 { margin-block: .25rem; font-size: clamp(1.75rem, 1.1rem + 2vw, 2.75rem); word-break: auto-phrase; }
+    & .t-lead { color: rgb(255 255 255 / .9); } }
+  .mv .hero-kind { color: rgb(255 255 255 / .85); }
+  .mv-note { position: absolute; inset-block-end: .75rem; inset-inline-end: var(--pad); font-size: .6875rem; line-height: 1.5; max-inline-size: 22rem; text-align: end; }
+  .mv .ana { background: repeating-linear-gradient(135deg, #4d4d50 0 4px, #5a5a5d 4px 8px); color: #f0f0f0; box-shadow: inset 0 0 0 1px #77777a; }
+  /* 写真の下：対象・体制・費用（それぞれの節への矢印つきリンク）と、2つの行動。行動はスマホでも横に並べる */
+  .mv-after { display: grid; gap: 1.5rem; padding-block-start: clamp(1.5rem, 1rem + 2vw, 2.5rem); }
+  @media (width >= 64rem) { .mv-after { grid-template-columns: minmax(0, 1fr) auto; gap: 3rem; align-items: center; } }
+  .mv-acts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; max-inline-size: 34rem;
+    & .btn { min-inline-size: 0; gap: .5rem; padding-inline: .875rem; white-space: nowrap; } }
+  @media (width >= 64rem) { .mv-acts { grid-template-columns: 1fr; min-inline-size: 17rem; } }
+  @media (width < 30rem) { .mv-acts .btn { padding-inline: .75rem; font-size: .8125rem; letter-spacing: .02em; &::after { display: none; } } }
+  .mv-cmp + .mv-cmp { margin-block-start: var(--sec-3); }
+  .mv-cmp > .wrap { padding-block-end: 1rem; }
+  .hero-kind { font-size: var(--fs-note); color: var(--sub); letter-spacing: .04em;
+    &::before { content: ""; display: inline-block; inline-size: 2rem; block-size: 4px; margin-inline-end: .75rem; vertical-align: .3em; border-radius: 4px; background: var(--teal); } }
 
   /* ---------- プラン診断 ---------- */
   .dg { container: dg / inline-size; overflow: hidden; background: var(--paper); border: 1px solid rgb(255 255 255 / .6); border-block-start: 4px solid var(--teal); border-radius: var(--radius-card); color: var(--ink); box-shadow: var(--sh-1); }
@@ -553,7 +636,15 @@
     & thead .is-main { background: var(--teal); color: #fff; border-start-start-radius: 0; }
     & .is-ask { color: var(--sub); }
     & .yes { color: var(--teal); font-size: 1.125rem; }
+    & .no { color: #b3b3b3; }
     & .cmp-price { font-family: var(--font-en); font-weight: 400; font-size: 1.75rem; line-height: 1; & small { font-family: var(--font); font-size: .5em; } } }
+
+  /* ---------- どのプランにも含まれるもの ---------- */
+  .incl { display: grid; gap: .75rem 2rem;
+    & li { display: flex; gap: .75rem; align-items: flex-start; line-height: 1.8; }
+    & .chipi { margin-block-start: .2em; } }
+  @media (width >= 48rem) { .incl { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (width >= 80rem) { .incl { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
   /* ---------- 費用を決める3つ（PCは3列） ---------- */
   @media (width >= 64rem) { .reasons--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
@@ -711,7 +802,7 @@
   @media (prefers-reduced-motion: no-preference) {
     .btn::after { transition: translate .65s var(--ease); }
     .btn:hover::after { translate: 3px 0; }
-    .tlink:hover { animation: ul .7s var(--ease); }
+    .go { transition: translate .3s var(--ease-ui); }
     .zoom img { transition: scale .42s var(--ease); }
     :is(.hi, .case-card):hover .zoom img { scale: 1.04; }
     .onair i { animation: blink 1.6s ease-in-out infinite; }
@@ -761,7 +852,6 @@
   @keyframes slidein { from { opacity: 0; translate: 12px 0; } to { opacity: 1; translate: 0 0; } }
   @keyframes rise { to { translate: 0 0; } }
   @keyframes wipe { to { clip-path: inset(0 0 100% 0); visibility: hidden; } }
-  @keyframes ul { 0% { background-position: right bottom; background-size: 100% 1px; } 50% { background-position: right bottom; background-size: 0 1px; } 51% { background-position: left bottom; background-size: 0 1px; } 100% { background-position: left bottom; background-size: 100% 1px; } }
   @keyframes blink { 50% { opacity: .35; } }
 }
 

@@ -89,11 +89,16 @@ def menu_items(page, cls_a=''):
 BICON = {
     'diag': '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9zM8.5 13.5l2.5 2.5 4.5-5"/>',
     'mail': '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/>',
+    'arrow': '<path d="M5 12h13M13 6.5 18.5 12 13 17.5"/>',
 }
 def bico(name):
     """ボタンの頭に付ける線画アイコン（飾りなので読み上げない）"""
     return (f'<svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" '
             f'stroke-linejoin="round" aria-hidden="true" focusable="false">{BICON[name]}</svg>')
+
+def go():
+    """ページ内や別の節へ移るリンクの印（下線の代わりの、ティールの丸い矢印）"""
+    return f'<span class="go">{bico("arrow")}</span>'
 
 def diag_btn(text='プラン診断をはじめる', cls=''):
     """どこからでもプラン診断のモーダルを開くボタン。JS が動かないときは、ページ下に置いた診断へ移動するリンク"""
@@ -116,7 +121,7 @@ def page_head(crumb, title, lead):
 
 def cta_box(title='日程と会場だけで、見積書をお送りします', note='1営業日以内に、スタッフの役割と機材の内訳が入った見積書PDFをメールでお送りします。'):
     return (f'<section class="sec-3 cta-end" aria-label="見積の依頼"><div class="wrap"><div class="boxd cta-in"><div class="stack"><p class="t-h2s">{title}</p>'
-            f'<p class="t-note">{note}</p></div><div class="stack s-16">{quote_btn("見積書を受け取る", "xl")}{diag_btn("プラン診断をする", "xl")}</div></div></div></section>')
+            f'<p class="t-note">{note}</p></div><div class="btns">{quote_btn("見積書を受け取る", "lg")}{diag_btn("プラン診断をする", "lg")}</div></div></div></section>')
 
 def head(title, desc, home=False, extra=''):
     intro = ("try{if(!sessionStorage.getItem('karura-intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)"
@@ -290,22 +295,24 @@ def tbl_option():
     return f'<table class="tbl tbl--opt"><caption class="vh">オプションの一覧</caption><thead><tr><th scope="col">オプション</th><th scope="col">内容</th><th scope="col" class="r">料金（税別）</th></tr></thead>{body}</table>'
 
 def tbl_plans():
-    """プランごとの比較表（何が含まれるか）。スマホでは横にスクロール"""
+    """プランの違いだけを並べる表。どのプランにも含まれるものは、表の下に1回だけ書く（COMMON）。スマホでは横にスクロール"""
     Y = '<span class="yes" role="img" aria-label="含む">○</span>'
+    N = '<span class="no" role="img" aria-label="含まない">—</span>'
     rows = [('料金（税別）', '<b class="cmp-price">25<small>万円</small></b>', '<b class="cmp-price">35<small>万円</small></b>', '<b class="cmp-price">ASK</b>'),
+            ('向いている会', '登壇者2〜6人<br>会場50〜300人', '登壇者7人以上<br>会場300人を超える', '会場の外からの中継<br>複数の会場・複数日'),
             ('スタッフ', '2名', '3名', '内容に合わせて'),
             ('カメラ', '3台', '5台', '内容に合わせて'),
             ('マイクの持ち込み', f'5本まで{tip("tip-mic", "マイクが5本の理由", "登壇者4人分と、会場の質問用1本です。6本以上必要な会は、スタッフを1名追加します。")}', '［本数］まで', '内容に合わせて'),
             ('配信の時間／会場での作業', f'3時間／6時間まで{tip("tip-time", "作業時間の内訳", "設営2時間、配信3時間、撤収1時間が目安です。")}', '［時間］', '内容に合わせて'),
-            ('発表スライドの映像の取り込み', Y, Y, Y),
-            ('会場設備のマイク音声の取り込み', Y, Y, Y),
-            ('予備の録画機と、予備の回線', Y, Y, Y),
-            ('事前の打ち合わせと会場の下見', Y, Y, Y),
-            ('録画データの納品', Y, Y, Y),
-            (f'受付用のデジタルチケット（来場300人まで）{tip("tip-ticket", "デジタルチケットでできること", "申込の受付、当日のQRコード・タッチでの入場、終了後の来場者数の報告までを引き受けます。チケットの販売と決済は行いません。")}', Y, Y, Y)]
+            ('オンラインからの登壇', 'スタッフ1名の追加で対応', Y, Y),
+            ('ロケ配信（会場の外からの中継）', N, N, Y),
+            ('進行台本の制作', N, N, Y)]
     tr = ''.join(f'<tr><th scope="row">{a}</th><td class="is-main">{b}</td><td>{c}</td><td class="is-ask">{d}</td></tr>' for a, b, c, d in rows)
-    return (f'<div class="cmp-wrap" tabindex="0" role="region" aria-label="プランごとの比較表（横にスクロールできます）"><table class="cmp"><caption class="vh">プランごとに含まれるもの</caption>'
+    return (f'<div class="cmp-wrap" tabindex="0" role="region" aria-label="プランの違い（横にスクロールできます）"><table class="cmp"><caption class="vh">プランの違い</caption>'
             f'<thead><tr><td></td><th scope="col" class="is-main">スタンダード</th><th scope="col">ワイド</th><th scope="col" class="is-ask">オーダー</th></tr></thead><tbody>{tr}</tbody></table></div>')
+
+COMMON = ['発表スライドの映像の取り込み', '会場設備のマイク音声の取り込み', '予備の録画機と、予備のインターネット回線', '事前の打ち合わせと会場の下見', '録画データの納品',
+          '受付用のデジタルチケット（来場300人まで）', '対応エリア（新宿から90分圏内）の交通費']
 
 def tip(tid, label, body):
     """「?」で開く補足。popover 未対応では、本文の下に注記として出る"""
@@ -365,27 +372,27 @@ MV = {
 MV_USE = 'C'
 
 def mv(key, page='index.html', tag='h1', hid='mv-title'):
-    """横いっぱいの写真に文を重ねる。写真はまだ穴埋め（ダミーの会場写真を暗くして敷いている）"""
+    """写真の上には、種類・見出し・リードだけを重ねる。箇条書き（それぞれの節への矢印つきリンク）と2つの行動は、写真の下の白い面に置く。
+       写真はまだ穴埋め（ダミーの会場写真を暗くして敷いている）"""
     v = MV[key]
     at = lambda h: h if (page == 'index.html' or not h.startswith('#')) else 'index.html' + h
     if v['kind'] == 'facts':
-        body = '<dl class="mv-facts">' + ''.join(f'<div><dt>{a}</dt><dd><a href="{at(h)}">{b}</a></dd></div>' for a, b, h in v['items']) + '</dl>'
+        body = '<dl class="mv-facts">' + ''.join(f'<div><dt>{a}</dt><dd><a href="{at(h)}"><span>{b}</span>{go()}</a></dd></div>' for a, b, h in v['items']) + '</dl>'
     else:
-        body = '<ul class="ticklist">' + ''.join(f'<li>{ico("check", "s")}<a href="{at(h)}">{t}</a></li>' for t, h in v['items']) + '</ul>'
-    return f'''<div class="mv-bg">{img('P03', '', lazy=False, eager_high=True)}</div>
+        body = '<ul class="mv-facts mv-facts--list">' + ''.join(f'<li><a href="{at(h)}"><span>{t}</span>{go()}</a></li>' for t, h in v['items']) + '</ul>'
+    return f'''<section class="mv" aria-labelledby="{hid}"><div class="mv-bg">{img('P03', '', lazy=False, eager_high=True)}</div>
 <div class="wrap mv-in"><div class="mv-copy stack">
 <p class="hero-kind">{MV_KIND}</p>
 <{tag} class="t-h1" id="{hid}">{v['h1']}</{tag}>
 <p class="t-lead">{v['lead']}</p>
-{body}
-<div class="mv-acts">{diag_btn('プラン診断')}{quote_btn()}</div>
 </div></div>
-<p class="mv-note">［写真：配信中の会場。客席の後ろから、登壇者とスクリーン、配信の機材が一緒に写るもの］</p>'''
+<p class="mv-note">［写真：配信中の会場。客席の後ろから、登壇者とスクリーン、配信の機材が一緒に写るもの］</p></section>
+<div class="wrap mv-after">{body}<div class="mv-acts">{diag_btn('プラン診断')}{quote_btn()}</div></div>'''
 
 # ------------------------------------------------------------------ トップ
 def index():
     intro = '<div class="intro" aria-hidden="true"><p>' + ''.join(f'<span style="--i:{i}">{c}</span>' for i, c in enumerate(NAME_EN)) + '</p></div>'
-    hero = f'<section class="mv" aria-labelledby="mv-title">{mv(MV_USE)}</section>'
+    hero = mv(MV_USE)
 
     work = [('準備', '打ち合わせと下見', 'オンラインで30分の打ち合わせ、会場の下見、配信先（Zoom・YouTubeなど）の設定'),
             ('設営', '約2時間', 'カメラ・マイク・回線を置いて、音と映像を確かめます'),
@@ -413,9 +420,10 @@ def index():
 <p class="plan-spec">{sp}</p><dl class="plan-fit"><dt>向いている会</dt><dd>{f}</dd></dl></li>''' for k, n, p, u, sp, f in plans)
     price = sec('price', '料金プラン', '料金は3つです', f'''<ul class="plans">{pl}</ul>
 <p class="t-note t-sub">定期的に配信する会（毎月の公開講座など）は、回数に応じて割引があります。</p>
-<div class="stack"><h3 class="sub">プランごとに含まれるもの</h3>{tbl_plans()}</div>
-<div class="btns">{quote_btn('見積を依頼する', 'xl')}</div>
-<p class="t-note t-sub"><a href="contact.html#sample">見積書の見本</a>は、上司への説明や相見積にそのまま使えます。</p>''',
+<div class="stack"><h3 class="sub">プランの違い</h3>{tbl_plans()}</div>
+<div class="stack"><h3 class="sub">どのプランにも含まれるもの</h3><ul class="incl">{''.join(f'<li>{ico("check", "s")}<span>{t}</span></li>' for t in COMMON)}</ul></div>
+<div class="btns">{quote_btn('見積を依頼する', 'lg')}</div>
+<p class="t-note t-sub">見積書の見本は、上司への説明や相見積にそのまま使えます。　<a class="tlink" href="contact.html#sample">見積書の見本を見る{go()}</a></p>''',
                 lead=f'どのプランにも、事前の打ち合わせ、会場の下見、録画データの納品、受付用のデジタルチケットが含まれます。{mk("見積書にも同じ内容を書きます。")}', tone='bandg')
 
     option = sec('option', 'オプション', '必要なときだけ、足せるもの', f'''{tbl_option()}
@@ -552,7 +560,7 @@ def public():
 # ------------------------------------------------------------------ メインビジュアルの比較（持ち主の確認用。メニューには出さない）
 def mvs():
     blocks = ''.join(f'<div class="mv-cmp"><div class="wrap"><p class="t-lab" id="mv-{k}">{v["name"]}{"（いま使っている案）" if k == MV_USE else ""}</p></div>'
-                     f'<section class="mv" aria-labelledby="mv-{k}">{mv(k, "mvs.html", "p", f"mv-{k}-h")}</section></div>' for k, v in MV.items())
+                     f'{mv(k, "mvs.html", "p", f"mv-{k}-h")}</div>' for k, v in MV.items())
     return (head(f'メインビジュアルの比較｜{NAME}', 'トップのリード文と箇条書きの案を並べて比べるページです。')
             + header('mvs.html') + '<main id="main">'
             + page_head('メインビジュアルの比較', 'リード文と箇条書きを比べる', f'トップの最初の画面に置く文の案です。src/build.py の MV_USE を変えると、トップの文が入れ替わります。いまは「{MV[MV_USE]["name"]}」を使っています。')
@@ -595,7 +603,7 @@ def thanks():
 <section class="bandg sec-2" aria-labelledby="dl-title"><div class="wrap pad-band stack s-48"><h2 class="t-h2" id="dl-title">お待ちいただく間に、<br>稟議の準備にお使いください</h2>
 <p class="t-lead">上司への説明や相見積にそのまま使える書類です。どれも登録なしでダウンロードできます。</p>
 <ul class="stack s-16"><li>{btn('仕様書のひな形（Word）［ファイル準備中］', 'thanks.html', 'line')}</li><li>{btn('料金表と見積書見本（PDF）［ファイル準備中］', 'thanks.html', 'line')}</li><li>{btn('当日のチェックリスト（PDF）［ファイル準備中］', 'thanks.html', 'line')}</li></ul></div></section>
-<div class="wrap sec-3"><a class="tlink" href="index.html">トップページへ戻る</a></div>
+<div class="wrap sec-3"><a class="tlink" href="index.html">トップページへ戻る{go()}</a></div>
 </main>''' + footer('thanks.html'))
 
 def rules():
