@@ -1,9 +1,9 @@
-/* カルラライブ C案 site.js
+/* カルラライブ site.js
    標準の HTML/CSS で足りないところだけを補う。どれも無くても、内容は読めて、リンクとフォームは使える。
    1. スマホのメニュー（dialog.showModal と背景クリックで閉じる）
    2. カメラ切り替えの自動送り（切り替え自体はラジオと :has で動く）
-   3. プラン診断（1問ずつ表示と判定。スマホでは全画面のモーダルで開く）
-   4. サブナビの現在地（スクロール位置から計算）と、要点のマーカー
+   3. プラン診断（1問ずつ表示と判定。どのページからでもモーダルで開く）
+   4. メニューの現在地（トップの中の項目だけ、スクロール位置から計算）と、要点のマーカー
    5. フォームの送信（送信先が決まるまでは完了ページの見本へ）と、診断結果の引き継ぎ */
 
 const $ = (s, c = document) => c.querySelector(s);
@@ -85,34 +85,29 @@ function judge(a) {
   if (a.pub === 'y') why.push('録画の公開や学外の視聴者がある会は、やり直しがききません。予備の録画と回線を用意します');
   if (a.time !== '-2') why.push(`配信が${LABEL.time[a.time]}と長いので、機材と回線を見張り続ける人が必要です`);
 
-  if (big) {
-    return { key: 'big', plan: '大手の制作会社をおすすめします', price: null, adds, why, cta: 'consult',
-      lead: `${a.spk === '7+' ? '登壇者が7人以上' : '会場が300人以上'}の会は、カメラ3台・スタッフ2名の私たちの体制より大きな会です。無理にお引き受けするより、大手の制作会社に頼んだほうが安心です。` };
-  }
-  if (need <= 1 && a.aud !== '100-300') {
+  const mics = ({ '1': 1, '2-3': 3, '4-6': 6, '7+': 8 })[a.spk] + (a.qa === 'y' ? 1 : 0);
+  if (!big && need <= 1 && a.aud !== '100-300') {
     return { key: 'self', plan: 'iPhoneで足ります', price: ['0', '円'], adds, cta: 'self',
       why: ['登壇者が1人で、質疑を配信に乗せない会は、カメラ1台で十分に伝わります'],
       lead: 'この条件なら、ご自身で配信できます。業者に頼む必要はありません。iPhoneと外付けマイク1本で始められます。' };
   }
-  if (need <= 3) {
+  if (!big && need <= 3) {
     return { key: 'consult', plan: '配信コーチング：相談', price: ['［3］', '万円（税別）'], adds, why, cta: 'quote',
       lead: '機材と接続を一度整理すれば、ご自身で配信できる可能性が高い会です。オンライン60分で、接続の図と当日のチェックリストを作成します。' };
   }
-  const maru = opts.length >= 2;
-  const mics = ({ '1': 1, '2-3': 3, '4-6': 6 })[a.spk] + (a.qa === 'y' ? 1 : 0);
-  const addStaff = a.rmt === 'y' || mics > 5;
+  if (big) why.unshift(`${a.spk === '7+' ? '登壇者が7人以上' : '会場が300人を超える'}ので、カメラ5台で登壇者と会場を撮り分けます`);
+  const addStaff = !big && (a.rmt === 'y' || mics > 5);
   if (addStaff) adds.push(['スタッフを1名追加', a.rmt === 'y' ? 'オンラインから登壇する人がいるため' : `マイクが${mics}本必要になるため`]);
   if (a.time === '3+') adds.push(['配信時間の延長', '3時間を超える分']);
-  if (!maru && opts.length === 1) adds.push([LABEL.opt[opts[0]], '同じ日にまとめて依頼']);
+  opts.forEach((o) => adds.push([LABEL.opt[o], 'オプション：同じ日にまとめて依頼']));
   if (a.self === 'y') adds.push(['コーチング：同行', '私たちの配信を横で見て、次の会から自分たちで回せるように']);
-  return {
-    key: maru ? 'marugoto' : 'standard', plan: maru ? 'まるごと' : 'スタンダード',
-    price: maru ? ['［40］', '万円（税別）'] : ['25', '万円（税別）'],
-    lead: maru
-      ? 'スタンダードに、記録写真・記録映像の編集・ダイジェスト・文字起こしを加えて、スタッフ3名で伺います。一回の現場で、報告書の素材まで揃います。'
-      : 'カメラ3台・スタッフ2名・マイク5本の基本プランが合う会です。事前の打ち合わせ、会場の下見、録画データの納品まで含みます。',
-    staff: (maru ? 3 : 2) + (addStaff ? 1 : 0), mics: Math.min(mics, addStaff ? 8 : 5), adds, why, cta: 'quote',
-  };
+  return big
+    ? { key: 'wide', plan: 'ワイド', price: ['35', '万円（税別）'], adds, why, cta: 'quote',
+        lead: 'カメラ5台・スタッフ3名のプランが合う会です。登壇者が多い会や、広い会場の様子も届けたい会に向いています。',
+        staff: 3, cams: 5, mics: ['［本数］'] }
+    : { key: 'standard', plan: 'スタンダード', price: ['25', '万円（税別）'], adds, why, cta: 'quote',
+        lead: 'カメラ3台・スタッフ2名・マイク5本の基本プランが合う会です。事前の打ち合わせ、会場の下見、録画データの納品まで含みます。',
+        staff: 2 + (addStaff ? 1 : 0), cams: 3, mics: [String(Math.min(mics, addStaff ? 8 : 5)), '本'] };
 }
 
 /* 結果は DOM を組み立てて入れる（innerHTML に利用者の入力は入れない） */
@@ -121,6 +116,18 @@ function el(tag, attrs = {}, ...kids) {
   for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
   for (const k of kids.flat()) if (k != null) n.append(k);
   return n;
+}
+/* 見積ボタンの封筒アイコン（ページのボタンと同じ形） */
+function mailIcon() {
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg');
+  for (const [k, v] of Object.entries({ class: 'bico', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '1.8', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' })) svg.setAttribute(k, v);
+  const rect = document.createElementNS(ns, 'rect');
+  for (const [k, v] of Object.entries({ x: '3', y: '5', width: '18', height: '14', rx: '2' })) rect.setAttribute(k, v);
+  const path = document.createElementNS(ns, 'path');
+  path.setAttribute('d', 'M3.5 6.5 12 13l8.5-6.5');
+  svg.append(rect, path);
+  return svg;
 }
 function priceNode(p, hasAdds) {
   const isHole = p[0].includes('［');
@@ -137,13 +144,14 @@ function renderResult(box, r) {
     el('p', { class: 't-body' }, r.lead),
   ];
   if (r.staff) {
-    const dl = el('dl', { class: 'dg-sum' }, el('div', {}, el('dt', {}, '当日の体制'), el('dd', {}, `スタッフ${r.staff}名・カメラ3台・マイク${r.mics}本`)));
+    const micText = r.mics[1] ? `${r.mics[0]}${r.mics[1]}` : r.mics[0];
+    const dl = el('dl', { class: 'dg-sum' }, el('div', {}, el('dt', {}, '当日の体制'), el('dd', {}, `スタッフ${r.staff}名・カメラ${r.cams}台・マイク${micText}`)));
     r.adds.forEach(([t, d]) => dl.append(el('div', {}, el('dt', {}, '追加'), el('dd', {}, t, '　', el('span', { class: 'ana' }, '［金額］'), el('small', {}, d)))));
     parts.push(dl);
   }
   if (r.why.length) parts.push(el('p', { class: 't-note' }, 'こう判断した理由'), el('ul', { class: 'dg-why' }, r.why.map((w) => el('li', {}, w))));
   const btns = el('div', { class: 'btns' });
-  if (r.cta === 'quote') btns.append(el('a', { class: 'btn quote', href: 'contact.html' }, 'この内容で見積書を受け取る'), el('a', { class: 'btn line', href: '#price' }, '料金の内訳を見る'));
+  if (r.cta === 'quote') btns.append(el('a', { class: 'btn quote', href: 'contact.html' }, mailIcon(), el('span', {}, 'この内容で見積書を受け取る')), el('a', { class: 'btn line', href: 'index.html#price' }, '料金プランを見る'));
   else if (r.cta === 'self') btns.append(el('a', { class: 'btn', href: 'contact.html#consult' }, '念のため相談する'));
   else btns.append(el('a', { class: 'btn', href: 'contact.html#consult' }, '15分のオンライン相談で確かめる'));
   parts.push(btns, el('button', { type: 'button', class: 'dg-again' }, '最初から診断しなおす'));
@@ -217,26 +225,27 @@ $$('[data-dg]').forEach((dg) => {
   show(0, false);
 });
 
-/* ------------------------------------------------ 3b. スマホではプラン診断を全画面のモーダルで開く（PCはその場で答える） */
+/* ------------------------------------------------ 3b. プラン診断は、どのページのどこからでもモーダルで開く（スマホは全画面、PCは中央） */
 {
-  const modal = $('#diag-modal');
+  const modal = $('#diag');
   if (modal && typeof modal.showModal === 'function') {
     const menu = $('#menu');
     let opener = null;
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-open-diag], a[href$="#plan"]');
-      if (!t || pc.matches || modal.open) return;
+      const t = e.target.closest('[data-open-diag]');
+      if (!t || modal.open) return;
       e.preventDefault();
       // メニューの中から開いたときは、閉じたあとの戻り先をメニューのボタンにする（リンクはメニューと一緒に隠れるため）
       opener = menu?.contains(t) ? $('[data-open-menu]') : t;
       if (menu?.open) menu.close();
       modal.showModal();
     });
-    // モーダルの中のページ内リンク（料金の内訳を見る など）は、閉じてから移動する
-    modal.addEventListener('click', (e) => { if (e.target.closest('a[href^="#"]')) { opener = null; modal.close(); } });
+    // 背景を押したら閉じる。モーダルの中のリンク（料金プランを見る など）も、閉じてから移動する
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal || e.target.closest('a[href]')) { if (e.target !== modal) opener = null; modal.close(); }
+    });
     modal.addEventListener('close', () => { opener?.focus(); opener = null; });
-    pc.addEventListener('change', () => { if (pc.matches && modal.open) modal.close(); });
-  } else if (modal) { modal.classList.add('is-inline'); $('.dg-launch')?.remove(); }
+  } else if (modal) modal.classList.add('is-inline');
 }
 
 /* ------------------------------------------------ 4. サブナビの現在地 */
@@ -245,8 +254,7 @@ $$('.subnav').forEach((nav) => {
   const list = $('ol', nav);
   const meter = $('.subnav-meter', nav);
   const pairs = links.map((a) => [a, document.getElementById(a.hash.slice(1))]).filter(([, t]) => t);
-  if (!pairs.length) return;
-  let current = null;
+  let current; // 最初の1回は必ず描く（下層ページでは、いまのページの項目を見える位置へ送る）
   let queued = false;
   const update = () => {
     queued = false;
@@ -256,16 +264,16 @@ $$('.subnav').forEach((nav) => {
     let hit = null;
     for (const [a, t] of pairs) if (t.getBoundingClientRect().top <= line) hit = a;
     const doc = document.documentElement;
-    if (innerHeight + scrollY >= doc.scrollHeight - 4) hit = pairs.at(-1)[0];
-    hit ??= pairs[0][0]; // ページの一番上では最初の項目
     meter.style.setProperty('--p', Math.min(1, scrollY / Math.max(1, doc.scrollHeight - innerHeight)));
+    // メニューにない節（オプション・よくある質問）にいる間は、その前の項目を現在地のままにする。最初の項目より上では、どれも付けない
     if (hit === current) return;
     current = hit;
     for (const [a] of pairs) {
       if (a === hit) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
     }
-    if (hit) {
-      const li = hit.parentElement;
+    const focus = hit || $('a[aria-current="page"]', nav);
+    if (focus) {
+      const li = focus.parentElement;
       const behavior = reduce.matches ? 'auto' : 'smooth';
       if (pc.matches) list.scrollTo({ top: li.offsetTop - (list.clientHeight - li.offsetHeight) / 2, behavior });
       else list.scrollTo({ left: li.offsetLeft - (list.clientWidth - li.offsetWidth) / 2, behavior });
@@ -274,7 +282,7 @@ $$('.subnav').forEach((nav) => {
   const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
   addEventListener('scroll', queue, { passive: true });
   addEventListener('resize', queue);
-  pc.addEventListener('change', () => { current = null; queue(); });
+  pc.addEventListener('change', () => { current = undefined; queue(); });
   update();
 });
 
@@ -327,7 +335,7 @@ $$('form[data-form]').forEach((f) => {
   if (f && m) {
     const ta = $('textarea', f);
     ta.value = `【プラン診断の結果】おすすめ：${m.plan}\n${m.lines.join('\n')}`;
-    const map = { standard: 'スタンダード', marugoto: 'まるごと', consult: 'コーチング', self: 'まだわからない', big: 'まだわからない' };
+    const map = { standard: 'スタンダード', wide: 'ワイド', consult: 'コーチング', self: 'まだわからない' };
     $$('input[type="checkbox"]', f).forEach((c) => { if (c.value.startsWith(map[m.key])) c.checked = true; });
     const note = $('.prefill', f);
     note.textContent = `プラン診断の結果（${m.plan}）を、下の「気になっていること」欄に入れておきました。必須の4項目だけ入力すれば送信できます。`;

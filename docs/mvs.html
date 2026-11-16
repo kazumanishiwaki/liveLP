@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>メインビジュアルの比較｜カルラライブ</title>
+<meta name="description" content="トップのリード文と箇条書きの案を並べて比べるページです。">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2300b4c3'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23ffffff'/%3E%3C/svg%3E">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preload" href="assets/fonts/zkgn-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/karura-tokens.css">
+<link rel="stylesheet" href="assets/site.css">
+<script type="module" src="assets/site.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">本文へ移動</a>
+<header class="hdr">
+<div class="hdr-bar">
+<a class="logo" href="index.html" aria-label="カルラライブ トップページ">KARURA LIVE<small>カルラライブ</small></a>
+<button type="button" class="menu-btn" data-open-menu aria-haspopup="dialog" aria-controls="menu"><span class="vh">メニューを開く</span><i></i><i></i></button>
+<a class="menu-fallback t-note" href="#fnav">メニュー</a>
+</div>
+<nav class="subnav" aria-label="メニュー"><ol><li><a href="index.html#cost">費用の内訳</a></li><li><a href="index.html#price">料金プラン</a></li><li><a href="index.html#works">対応事例</a></li><li><a href="service.html">当日の体制と流れ</a></li><li><a href="reception.html">受付と現場の道具</a></li><li><a href="coaching.html">自分たちで配信する</a></li><li><a href="public.html">大学・公共機関の方へ</a></li></ol><span class="subnav-meter" aria-hidden="true"></span></nav>
+<div class="rail-foot">
+<a class="tile tile--plan" href="#diag" data-open-diag aria-haspopup="dialog"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9zM8.5 13.5l2.5 2.5 4.5-5"/></svg>8問で<br>プラン診断</a>
+<a class="tile tile--quote" href="contact.html"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>見積を<br>依頼する</a>
+<nav aria-label="ページ"><ul class="rail-pages"><li><a href="index.html">トップ</a></li><li><a href="contact.html">お問い合わせ</a></li><li><a href="rules.html">デザインルール</a></li></ul></nav>
+</div>
+</header>
+<dialog id="menu" class="menu" aria-label="メニュー">
+<div class="menu-head"><span class="logo">KARURA LIVE<small>カルラライブ</small></span><form method="dialog"><button class="menu-close">閉じる</button></form></div>
+<nav aria-label="メニュー"><ul><li><a href="index.html#cost">費用の内訳<span aria-hidden="true">›</span></a></li><li><a href="index.html#price">料金プラン<span aria-hidden="true">›</span></a></li><li><a href="index.html#works">対応事例<span aria-hidden="true">›</span></a></li><li><a href="service.html">当日の体制と流れ<span aria-hidden="true">›</span></a></li><li><a href="reception.html">受付と現場の道具<span aria-hidden="true">›</span></a></li><li><a href="coaching.html">自分たちで配信する<span aria-hidden="true">›</span></a></li><li><a href="public.html">大学・公共機関の方へ<span aria-hidden="true">›</span></a></li><li><a href="index.html#faq">よくある質問<span aria-hidden="true">›</span></a></li><li><a href="contact.html">お問い合わせ・お見積<span aria-hidden="true">›</span></a></li></ul>
+<div class="stack s-16 menu-acts"><a class="btn plan full" href="#diag" data-open-diag aria-haspopup="dialog"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9zM8.5 13.5l2.5 2.5 4.5-5"/></svg><span>8問でプランを診断する</span></a><a class="btn quote full" href="contact.html"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg><span>見積を依頼する</span></a></div></nav>
+</dialog>
+<main id="main"><div class="wrap ph-head stack s-48" id="top"><nav aria-label="パンくず"><ol class="crumb"><li><a href="index.html">トップ</a></li><li aria-current="page">メインビジュアルの比較</li></ol></nav><h1 class="t-h1">リード文と箇条書きを比べる</h1><p class="t-lead">トップの最初の画面に置く文の案です。src/build.py の MV_USE を変えると、トップの文が入れ替わります。いまは「案C：いまの見出し＋対象・体制・費用」を使っています。</p></div><section class="mv mv-cmp" aria-labelledby="mv-A"><div class="wrap stack s-48"><p class="t-lab" id="mv-A">案A：必要なぶんだけ</p><div class="mv-grid">
+<div class="mv-copy stack">
+<p class="hero-kind">シンポジウム・講演会・公開講座のライブ配信／ハイブリッド配信（会場＋オンライン）</p>
+<p class="t-h1" id="mv-A-h">必要なぶんの機材と人で、<br>会場とオンラインに届けます。</p>
+<p class="t-lead">大学・公共機関のシンポジウムと講演会を、ハイブリッドで配信します。</p>
+<ul class="ticklist"><li><span class="chipi chipi--s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4L19 7"/></svg></span><span>カメラ3台・スタッフ2名・マイク5本で、25万円（税別）から</span></li><li><span class="chipi chipi--s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4L19 7"/></svg></span><span>見積書に、スタッフの役割と機材の内訳をすべて書きます</span></li><li><span class="chipi chipi--s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4L19 7"/></svg></span><span>カメラ1台で足りる会なら、そうお伝えします</span></li></ul>
+<div class="btns"><a class="btn plan " href="#diag" data-open-diag aria-haspopup="dialog"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9zM8.5 13.5l2.5 2.5 4.5-5"/></svg><span>プラン診断をはじめる</span></a><a class="btn quote " href="contact.html"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg><span>見積を依頼する</span></a></div>
+</div>
+<figure class="mv-photo"><div class="ph"><span class="ana">［写真：配信中の会場。客席の後ろから、登壇者とスクリーン、配信の機材が一緒に写るもの］</span></div></figure>
+</div></div></section><section class="mv mv-cmp" aria-labelledby="mv-B"><div class="wrap stack s-48"><p class="t-lab" id="mv-B">案B：見積の中身から</p><div class="mv-grid">
+<div class="mv-copy stack">
+<p class="hero-kind">シンポジウム・講演会・公開講座のライブ配信／ハイブリッド配信（会場＋オンライン）</p>
+<p class="t-h1" id="mv-B-h">配信の見積を、<br>中身から読めるものに。</p>
+<p class="t-lead">誰が来て、何を持ち込み、何時間いるか。見積書にすべて書きます。</p>
+<ul class="ticklist"><li><span class="chipi chipi--s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4L19 7"/></svg></span><span>スタンダード 25万円：カメラ3台・スタッフ2名</span></li><li><span class="chipi chipi--s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4L19 7"/></svg></span><span>ワイド 35万円：カメラ5台・スタッフ3名</span></li><li><span class="chipi chipi--s" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4L19 7"/></svg></span><span>追加料金がかかる条件は5つだけ。表で公開しています</span></li></ul>
+<div class="btns"><a class="btn plan " href="#diag" data-open-diag aria-haspopup="dialog"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9zM8.5 13.5l2.5 2.5 4.5-5"/></svg><span>プラン診断をはじめる</span></a><a class="btn quote " href="contact.html"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg><span>見積を依頼する</span></a></div>
+</div>
+<figure class="mv-photo"><div class="ph"><span class="ana">［写真：配信中の会場。客席の後ろから、登壇者とスクリーン、配信の機材が一緒に写るもの］</span></div></figure>
+</div></div></section><section class="mv mv-cmp" aria-labelledby="mv-C"><div class="wrap stack s-48"><p class="t-lab" id="mv-C">案C：いまの見出し＋対象・体制・費用（いま使っている案）</p><div class="mv-grid">
+<div class="mv-copy stack">
+<p class="hero-kind">シンポジウム・講演会・公開講座のライブ配信／ハイブリッド配信（会場＋オンライン）</p>
+<p class="t-h1" id="mv-C-h">カメラ5台はいりません。<br>でも1台では、パネルディスカッションは撮れません。</p>
+<p class="t-lead">会の大きさに合った体制で、会場の様子をそのままオンラインに届けます。</p>
+<dl class="mv-facts"><div><dt>対象</dt><dd>登壇者2〜6人、会場50〜300人のシンポジウム・講演会</dd></div><div><dt>体制</dt><dd>カメラ3台、スタッフ2名、マイク5本まで</dd></div><div><dt>費用</dt><dd>25万円（税別）から。内訳はすべて見積書に書きます</dd></div></dl>
+<div class="btns"><a class="btn plan " href="#diag" data-open-diag aria-haspopup="dialog"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9zM8.5 13.5l2.5 2.5 4.5-5"/></svg><span>プラン診断をはじめる</span></a><a class="btn quote " href="contact.html"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg><span>見積を依頼する</span></a></div>
+</div>
+<figure class="mv-photo"><div class="ph"><span class="ana">［写真：配信中の会場。客席の後ろから、登壇者とスクリーン、配信の機材が一緒に写るもの］</span></div></figure>
+</div></div></section></main><div class="diag-host"><dialog id="diag" class="dg-modal" aria-labelledby="diag-title">
+<div class="dg-modal-head"><p class="t-ct" id="diag-title">8問でプラン診断</p><form method="dialog"><button class="menu-close">閉じる</button></form></div>
+<div class="dg" data-dg>
+<div class="dg-head"><p class="dg-count"><b class="dg-i">1</b> / 8</p><div class="dg-prog" aria-hidden="true"><i></i></div><button type="button" class="dg-back" hidden>戻る</button></div>
+<p class="vh dg-live" aria-live="polite"></p>
+<form class="dg-form" action="contact.html" method="get" aria-label="プラン診断">
+<fieldset class="dg-q" data-key="spk" aria-describedby="dg-h1"><legend><span class="dg-n">Q1 / 8</span>登壇者は何人ですか</legend><p class="dg-hint" id="dg-h1">司会は含めません。パネルディスカッションの方も数えます</p><div class="dg-opts"><label class="dg-opt"><input type="radio" name="spk" value="1">1人</label><label class="dg-opt"><input type="radio" name="spk" value="2-3">2〜3人</label><label class="dg-opt"><input type="radio" name="spk" value="4-6">4〜6人</label><label class="dg-opt"><input type="radio" name="spk" value="7+">7人以上</label></div></fieldset><fieldset class="dg-q" data-key="aud" aria-describedby="dg-h2"><legend><span class="dg-n">Q2 / 8</span>会場に来る人は、何人くらいですか</legend><p class="dg-hint" id="dg-h2">おおよそでかまいません</p><div class="dg-opts"><label class="dg-opt"><input type="radio" name="aud" value="-30">30人まで</label><label class="dg-opt"><input type="radio" name="aud" value="30-100">30〜100人</label><label class="dg-opt"><input type="radio" name="aud" value="100-300">100〜300人</label><label class="dg-opt"><input type="radio" name="aud" value="300+">300人以上</label></div></fieldset><fieldset class="dg-q" data-key="rmt" aria-describedby="dg-h3"><legend><span class="dg-n">Q3 / 8</span>オンラインから登壇する人はいますか</legend><p class="dg-hint" id="dg-h3">遠隔地の講師がZoomなどで話す場合です</p><div class="dg-opts"><label class="dg-opt"><input type="radio" name="rmt" value="n">いない</label><label class="dg-opt"><input type="radio" name="rmt" value="y">いる</label></div></fieldset><fieldset class="dg-q" data-key="qa" aria-describedby="dg-h4"><legend><span class="dg-n">Q4 / 8</span>会場の質問を、オンラインの視聴者にも届けたいですか</legend><p class="dg-hint" id="dg-h4">会場の声は、マイクを通さないと配信に入りません</p><div class="dg-opts"><label class="dg-opt"><input type="radio" name="qa" value="y">届けたい</label><label class="dg-opt"><input type="radio" name="qa" value="n">会場だけでいい</label></div></fieldset><fieldset class="dg-q" data-key="time" aria-describedby="dg-h5"><legend><span class="dg-n">Q5 / 8</span>配信する時間は、どのくらいですか</legend><p class="dg-hint" id="dg-h5">休憩を含めた、配信の開始から終了まで</p><div class="dg-opts"><label class="dg-opt"><input type="radio" name="time" value="-2">2時間まで</label><label class="dg-opt"><input type="radio" name="time" value="2-3">2〜3時間</label><label class="dg-opt"><input type="radio" name="time" value="3+">3時間を超える</label></div></fieldset><fieldset class="dg-q" data-key="pub" aria-describedby="dg-h6"><legend><span class="dg-n">Q6 / 8</span>録画を公開する予定や、学外の視聴者・来賓はありますか</legend><p class="dg-hint" id="dg-h6">どちらかに当てはまれば「ある」</p><div class="dg-opts"><label class="dg-opt"><input type="radio" name="pub" value="y">ある</label><label class="dg-opt"><input type="radio" name="pub" value="n">ない</label></div></fieldset><fieldset class="dg-q" data-key="opt" data-multi aria-describedby="dg-h7"><legend><span class="dg-n">Q7 / 8</span>同じ日に頼みたいものはありますか</legend><p class="dg-hint" id="dg-h7">いくつでも選べます。なければ、そのまま「次へ」</p><div class="dg-opts"><label class="dg-opt"><input type="checkbox" name="opt" value="photo">記録写真</label><label class="dg-opt"><input type="checkbox" name="opt" value="edit">記録映像の編集</label><label class="dg-opt"><input type="checkbox" name="opt" value="digest">2分のダイジェスト映像</label><label class="dg-opt"><input type="checkbox" name="opt" value="text">文字起こし</label></div></fieldset><fieldset class="dg-q" data-key="self" aria-describedby="dg-h8"><legend><span class="dg-n">Q8 / 8</span>来年度からは、自分たちで配信したいですか</legend><p class="dg-hint" id="dg-h8">小さい会だけでも自分たちで、という場合も「はい」</p><div class="dg-opts"><label class="dg-opt"><input type="radio" name="self" value="y">はい</label><label class="dg-opt"><input type="radio" name="self" value="n">いいえ、毎回任せたい</label></div></fieldset>
+<div class="dg-ctl"><button class="btn dg-next" type="submit">次へ</button></div>
+<p class="dg-nojs t-note t-sub">お使いの環境では、結果をその場で表示できません。「次へ」を押すと、回答を持って見積のご依頼に進みます。</p>
+</form>
+<section class="dg-res" tabindex="-1" aria-labelledby="dg-result-title" aria-live="polite"></section>
+</div>
+</dialog></div>
+<footer class="foot">
+
+<nav class="" aria-label="フッターメニュー" id="fnav"><ul class="fnav"><li><a href="index.html#cost">費用の内訳</a></li><li><a href="index.html#price">料金プラン</a></li><li><a href="index.html#works">対応事例</a></li><li><a href="service.html">当日の体制と流れ</a></li><li><a href="reception.html">受付と現場の道具</a></li><li><a href="coaching.html">自分たちで配信する</a></li><li><a href="public.html">大学・公共機関の方へ</a></li><li><a href="index.html#option">オプション</a></li><li><a href="index.html#faq">よくある質問</a></li><li><a href="contact.html">お問い合わせ・お見積</a></li><li><a href="rules.html">デザインルール</a></li></ul></nav>
+<p class="copy">© 2026 KARURA LIVE　対応エリア：新宿から90分圏内　<span class="ana">［運営者名］</span></p>
+</footer>
+<nav class="spbar" aria-label="よく使う操作"><a href="#diag" data-open-diag aria-haspopup="dialog"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9zM8.5 13.5l2.5 2.5 4.5-5"/></svg>プラン診断</a><a href="contact.html"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>見積を依頼する</a></nav>
+</body>
+</html>

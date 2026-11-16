@@ -69,12 +69,54 @@ def tag_sections(body, items):
     return body
 
 # ------------------------------------------------------------------ 共通
-def subnav_html(items):
-    """現在地つきの目次。スマホではヘッダー下の横並び、PCでは左レールの縦並び。items = [(セクションのid, 短い名前)]"""
-    li = ''.join(f'<li><a href="#{i}">{t}</a></li>' for i, t in items)
-    return f'<nav class="subnav" aria-label="このページの目次"><ol>{li}</ol><span class="subnav-meter" aria-hidden="true"></span></nav>'
+# メニューは7項目まで（2026-11-16 決定）。ほかに「プラン診断」と「見積を依頼する」を、どのページにも置く。
+# トップの中の項目は、トップではページ内リンク（現在地つき）、ほかのページからは index.html# へ。
+MENU = [('index.html#cost', '費用の内訳'), ('index.html#price', '料金プラン'), ('index.html#works', '対応事例'),
+        ('service.html', '当日の体制と流れ'), ('reception.html', '受付と現場の道具'), ('coaching.html', '自分たちで配信する'),
+        ('public.html', '大学・公共機関の方へ')]
 
-NAV = [('#plan', 'プラン診断'), ('#price', '料金・体制・機材'), ('#works', '事例'), ('#demo', 'ツールデモ'), ('#public', '大学・公共機関の方へ'), ('#faq', 'よくある質問')]
+def menu_href(h, page):
+    """トップにいるときは #cost のようなページ内リンクにする（現在地の計算に使う）"""
+    return h[len('index.html'):] if page == 'index.html' and h.startswith('index.html#') else h
+
+def menu_items(page, cls_a=''):
+    out = ''
+    for h, t in MENU:
+        cur = ' aria-current="page"' if h == page else ''
+        out += f'<li><a href="{menu_href(h, page)}"{cur}>{t}</a></li>'
+    return out
+
+BICON = {
+    'diag': '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9zM8.5 13.5l2.5 2.5 4.5-5"/>',
+    'mail': '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/>',
+}
+def bico(name):
+    """ボタンの頭に付ける線画アイコン（飾りなので読み上げない）"""
+    return (f'<svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" '
+            f'stroke-linejoin="round" aria-hidden="true" focusable="false">{BICON[name]}</svg>')
+
+def diag_btn(text='プラン診断をはじめる', cls=''):
+    """どこからでもプラン診断のモーダルを開くボタン。JS が動かないときは、ページ下に置いた診断へ移動するリンク"""
+    return f'<a class="btn plan {cls}" href="#diag" data-open-diag aria-haspopup="dialog">{bico("diag")}<span>{text}</span></a>'
+
+def quote_btn(text='見積を依頼する', cls=''):
+    return f'<a class="btn quote {cls}" href="contact.html">{bico("mail")}<span>{text}</span></a>'
+
+def sec(sid, tag, title, body, lead='', tone=''):
+    """1段のセクション。上にタグ・見出し・リード、その下に中身。tone：''＝白、'band'＝淡いティール、'bandg'＝クリーム"""
+    cls, inner = (f'{tone} sec-2', 'wrap pad-band') if tone else ('sec', 'wrap')
+    ld = f'<p class="t-lead">{lead}</p>' if lead else ''
+    return (f'<section id="{sid}" class="{cls}" aria-labelledby="{sid}-title"><div class="{inner} stack s-56">'
+            f'<div class="sec-head stack">{lab(tag)}<h2 class="t-h2" id="{sid}-title" data-rv>{title}</h2>{ld}</div>\n{body}\n</div></section>')
+
+def page_head(crumb, title, lead):
+    """下層ページの頭：パンくず・見出し・リード"""
+    return (f'<div class="wrap ph-head stack s-48" id="top"><nav aria-label="パンくず"><ol class="crumb"><li><a href="index.html">トップ</a></li>'
+            f'<li aria-current="page">{crumb}</li></ol></nav><h1 class="t-h1">{title}</h1><p class="t-lead">{lead}</p></div>')
+
+def cta_box(title='日程と会場だけで、見積書をお送りします', note='1営業日以内に、スタッフの役割と機材の内訳が入った見積書PDFをメールでお送りします。'):
+    return (f'<section class="sec-3 cta-end" aria-label="見積の依頼"><div class="wrap"><div class="boxd cta-in"><div class="stack"><p class="t-h2s">{title}</p>'
+            f'<p class="t-note">{note}</p></div><div class="stack s-16">{quote_btn("見積書を受け取る", "xl")}{diag_btn("プラン診断をする", "xl")}</div></div></div></section>')
 
 def head(title, desc, home=False, extra=''):
     intro = ("try{if(!sessionStorage.getItem('karura-intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)"
@@ -98,14 +140,11 @@ def head(title, desc, home=False, extra=''):
 <body>
 '''
 
-def header(home, sub=None):
-    """スマホ：上のバー＋現在地のサブナビ（いっしょに追従）。PC：左の固定レール（ロゴ・目次・2つの行動）"""
-    pre = '' if home else 'index.html'
-    items = ''.join(f'<li><a href="{pre}{h}">{t}<span aria-hidden="true">›</span></a></li>' for h, t in NAV)
-    toc = subnav_html(sub) if sub else ('<nav class="railnav" aria-label="メインメニュー"><ol>'
-            + ''.join(f'<li><a href="{pre}{h}">{t}</a></li>' for h, t in NAV) + '</ol></nav>')
+def header(page):
+    """スマホ：上のバー＋メニューの横並び（いっしょに追従）。PC：左の固定レール（ロゴ・メニュー・2つの行動）"""
     pages = [('index.html', 'トップ'), ('contact.html', 'お問い合わせ'), ('rules.html', 'デザインルール')]
     pg = ''.join(f'<li><a href="{h}">{t}</a></li>' for h, t in pages)
+    items = ''.join(f'<li><a href="{menu_href(h, page)}">{t}<span aria-hidden="true">›</span></a></li>' for h, t in MENU)
     return f'''<a class="skip" href="#main">本文へ移動</a>
 <header class="hdr">
 <div class="hdr-bar">
@@ -113,43 +152,43 @@ def header(home, sub=None):
 <button type="button" class="menu-btn" data-open-menu aria-haspopup="dialog" aria-controls="menu"><span class="vh">メニューを開く</span><i></i><i></i></button>
 <a class="menu-fallback t-note" href="#fnav">メニュー</a>
 </div>
-{toc}
+<nav class="subnav" aria-label="メニュー"><ol>{menu_items(page)}</ol><span class="subnav-meter" aria-hidden="true"></span></nav>
 <div class="rail-foot">
-<a class="tile tile--plan" href="{pre}#plan">8問で<br>プラン診断<span aria-hidden="true">↓</span></a>
-<a class="tile tile--quote" href="contact.html">見積を<br>依頼する<span aria-hidden="true">→</span></a>
+<a class="tile tile--plan" href="#diag" data-open-diag aria-haspopup="dialog">{bico("diag")}8問で<br>プラン診断</a>
+<a class="tile tile--quote" href="contact.html">{bico("mail")}見積を<br>依頼する</a>
 <nav aria-label="ページ"><ul class="rail-pages">{pg}</ul></nav>
 </div>
 </header>
 <dialog id="menu" class="menu" aria-label="メニュー">
 <div class="menu-head"><span class="logo">{NAME_EN}<small>{NAME}</small></span><form method="dialog"><button class="menu-close">閉じる</button></form></div>
-<nav aria-label="メニュー"><ul>{items}<li><a href="contact.html">お問い合わせ・お見積<span aria-hidden="true">›</span></a></li></ul>{btn('8問でプランを診断する', pre + '#plan', 'full plan')}</nav>
+<nav aria-label="メニュー"><ul>{items}<li><a href="index.html#faq">よくある質問<span aria-hidden="true">›</span></a></li><li><a href="contact.html">お問い合わせ・お見積<span aria-hidden="true">›</span></a></li></ul>
+<div class="stack s-16 menu-acts">{diag_btn("8問でプランを診断する", "full")}{quote_btn("見積を依頼する", "full")}</div></nav>
 </dialog>
 '''
 
-def footer(home, form=True):
-    pre = '' if home else 'index.html'
+def footer(page, form=False):
     contact = ''
     if form:
         contact = f'''<section id="contact" class="boxg stack s-48" aria-labelledby="contact-title" style="color:var(--ink)">
 <div class="g57">
-<div class="stack">{lab('Contact')}<h2 id="contact-title" class="t-h2">日程と会場だけ、<br>教えてください</h2>
+<div class="stack">{lab('見積を依頼する')}<h2 id="contact-title" class="t-h2">日程と会場だけ、<br>教えてください</h2>
 <p class="t-lead">{mk('1営業日以内に、宛名入りの見積書PDF')}をメールでお送りします。詳しい内容は、その後のやりとりで詰めていきます。</p>
 <p class="t-note">［年度末（2〜3月）の空き日程：残り〇日］</p>
 <p class="t-note" id="tel">お電話でも受け付けています　［電話番号］　［受付時間］</p></div>
 {quote_form('f')}
 </div></section>'''
-    links = [(pre + '#plan', 'プラン診断'), (pre + '#price', '料金・体制・機材'), (pre + '#works', '事例'), (pre + '#ticket', '受付とチケット'), (pre + '#demo', 'ツールデモ'),
-             (pre + '#coaching', '配信コーチング'), (pre + '#public', '大学・公共機関の方へ'), (pre + '#faq', 'よくある質問'),
-             ('contact.html', 'お問い合わせ・お見積'), ('rules.html', 'デザインルール')]
-    nav = ''.join(f'<li><a href="{h}">{t}</a></li>' for h, t in links)
-    mq = ''.join('<span>LIVE STREAMING × HYBRID EVENTS</span>' for _ in range(4))
-    return f'''<div class="mq" aria-hidden="true"><div class="mq-t">{mq}</div></div>
+    links = MENU + [('index.html#option', 'オプション'), ('index.html#faq', 'よくある質問'), ('contact.html', 'お問い合わせ・お見積'), ('rules.html', 'デザインルール')]
+    nav = ''.join(f'<li><a href="{menu_href(h, page)}">{t}</a></li>' for h, t in links)
+    return f'''<div class="diag-host"><dialog id="diag" class="dg-modal" aria-labelledby="diag-title">
+<div class="dg-modal-head"><p class="t-ct" id="diag-title">8問でプラン診断</p><form method="dialog"><button class="menu-close">閉じる</button></form></div>
+{diag()}
+</dialog></div>
 <footer class="foot">
 {contact}
 <nav class="{"mtl" if form else ""}" aria-label="フッターメニュー" id="fnav"><ul class="fnav">{nav}</ul></nav>
 <p class="copy">© 2026 {NAME_EN}　対応エリア：新宿から90分圏内　［運営者名］</p>
 </footer>
-<nav class="spbar" aria-label="よく使う操作"><a href="{pre}#plan">プラン診断</a><a href="contact.html">見積を依頼する</a></nav>
+<nav class="spbar" aria-label="よく使う操作"><a href="#diag" data-open-diag aria-haspopup="dialog">{bico("diag")}プラン診断</a><a href="contact.html">{bico("mail")}見積を依頼する</a></nav>
 </body>
 </html>
 '''
@@ -170,7 +209,7 @@ def quote_form(p, prefill=False, full=False, fid=''):
            + fld('email', 'メールアドレス', 'name@example.ac.jp', 'email', err='メールアドレスの形で入力してください（例：name@example.ac.jp）'))
     opt = ''
     if full:
-        plans = ''.join(f'<label><input type="checkbox" name="plan" value="{v}">{v}</label>' for v in ['スタンダード（25万円）', 'まるごと（写真・編集つき）', 'コーチング', 'まだわからない'])
+        plans = ''.join(f'<label><input type="checkbox" name="plan" value="{v}">{v}</label>' for v in ['スタンダード（25万円）', 'ワイド（35万円）', 'オーダー（ロケ配信・台本制作など）', 'コーチング', 'まだわからない'])
         opt = f'''<h3 class="t-ct">わかる範囲でご記入ください（任意）</h3>
 <div class="f2">{fld('name', 'お名前', '', req=False)}{fld('org', 'ご所属（見積書の宛名になります）', '', req=False)}</div>
 <fieldset class="fld"><legend>気になっているプラン</legend><div class="checks">{plans}</div></fieldset>
@@ -184,7 +223,7 @@ def quote_form(p, prefill=False, full=False, fid=''):
 {note}{head_}
 <div class="f2">{req}</div>
 {opt}
-<button class="btn full quote" type="submit">見積書を受け取る</button>
+<button class="btn full quote" type="submit">{bico("mail")}<span>見積書を受け取る</span></button>
 <p class="t-note t-sub">送信いただいても、こちらから電話での営業はいたしません。相見積のためのご依頼も歓迎します。</p>
 <p class="form-msg" role="status" hidden></p>
 </form>'''
@@ -220,7 +259,7 @@ def diag():
 <section class="dg-res" tabindex="-1" aria-labelledby="dg-result-title" aria-live="polite"></section>
 </div>'''
 
-# ------------------------------------------------------------------ トップ
+# ------------------------------------------------------------------ 表
 def tbl_gear():
     rows = [('カメラ', '［機種名］', '3台', '話している人のアップ、登壇者全体、会場全体'),
             ('マイク', '［機種名］', '5本', '登壇者4人分と、会場の質問用1本'),
@@ -228,13 +267,22 @@ def tbl_gear():
             ('録画機', '［機種名］', '2系統', '片方が止まっても、もう片方で記録を残します'),
             ('回線', '［機種名・回線種別］', '2系統', '会場の回線が切れても、予備回線で配信を続けます')]
     tr = ''.join(f'<tr><td class="k">{a}</td><td class="m" data-l="機種">{b}</td><td class="k" data-l="数">{c}</td><td data-l="用途">{d}</td></tr>' for a, b, c, d in rows)
-    return f'<table class="tbl"><caption class="vh">持ち込む機材の内訳</caption><thead><tr><th scope="col">種類</th><th scope="col">機種</th><th scope="col">数</th><th scope="col">用途</th></tr></thead><tbody>{tr}</tbody></table>'
+    return f'<table class="tbl"><caption class="vh">持ち込む機材の内訳（スタンダード）</caption><thead><tr><th scope="col">種類</th><th scope="col">機種</th><th scope="col">数</th><th scope="col">用途</th></tr></thead><tbody>{tr}</tbody></table>'
 
 def tbl_extra():
     rows = [('配信時間を1時間延長する', '［金額］'), ('スタッフを1名追加する（オンライン登壇者がいる場合、マイク6本以上の場合）', '［金額］'),
             ('カメラを1台追加する', '［金額］'), ('会場に使えるインターネット回線がない', '［金額］'), ('対応エリア（新宿から90分圏内）外の交通費・宿泊費', '実費')]
     tr = ''.join(f'<tr><td>{a}</td><td class="r" data-l="追加料金（税別）">{b}</td></tr>' for a, b in rows)
     return f'<table class="tbl"><caption class="vh">追加料金がかかる条件</caption><thead><tr><th scope="col">条件</th><th scope="col" class="r">追加料金（税別）</th></tr></thead><tbody>{tr}</tbody></table>'
+
+def tbl_option():
+    rows = [('記録写真', '専任のカメラマン1名が、報告書や広報に使える写真を撮ります', '［金額］'),
+            ('記録映像の編集', '3台のカメラの映像から、話している人に合わせて切り替えた記録映像を、字幕つきで作ります', '［金額］'),
+            ('2分のダイジェスト映像', '次回の告知や成果報告に使える、短いまとめの映像を作ります', '［金額］'),
+            ('文字起こし', '報告書の下書きにそのまま使えるテキストを作ります', '［金額］'),
+            ('LINEで申し込む受付', '申込をLINEログインにして、主催者のLINE公式アカウントの友だちを増やします。LINE側の設定も代行します', '［金額］')]
+    tr = ''.join(f'<tr><th scope="row">{a}</th><td data-l="内容">{b}</td><td class="r" data-l="料金（税別）">{c}</td></tr>' for a, b, c in rows)
+    return f'<table class="tbl tbl--opt"><caption class="vh">オプションの一覧</caption><thead><tr><th scope="col">オプション</th><th scope="col">内容</th><th scope="col" class="r">料金（税別）</th></tr></thead><tbody>{tr}</tbody></table>'
 
 def tip(tid, label, body):
     """「?」で開く補足。popover 未対応では、本文の下に注記として出る"""
@@ -244,7 +292,7 @@ def tip(tid, label, body):
 def case(n, org, bg, imgs, extra_size):
     gallery = ''.join(img(c, a) for c, a in imgs)
     return f'''<article class="case" aria-labelledby="case{n}-t"><div class="case-l">{img(bg, '', 'case-bg')}
-<p class="t-note">Case #0{n}　|　［主催機関名］</p>
+<p class="t-note">事例 {n}　|　［主催機関名］</p>
 <div class="case-tags"><span class="pill">［大学］</span><span class="pill">［シンポジウム］</span></div>
 <h3 class="t-ct" id="case{n}-t">［会の名称：課題と成果を一文で］</h3>
 <p class="t-body">［当日起きたことと、どう戻したか。2〜3行］</p>
@@ -258,51 +306,143 @@ FAQ = [
     ('登壇者の一部がオンラインから参加します', '対応できます。スタッフを1名追加します（［金額］）。'),
     ('会場にインターネット回線がありません', '配信用の回線を持ち込みます（［金額］）。事前に会場で電波状況を確認します。'),
     ('配信が止まった場合、料金はどうなりますか', '［返金・減額の規定］'),
-    ('対応エリアはどこまでですか', '新宿駅からおおむね90分以内で伺える会場が対応エリアです。エリア内は、会場の下見も交通費も25万円に含まれます。エリア外の会場は、交通費と宿泊費の実費で伺います。'),
-    ('参加者の受付や名簿の管理もお願いできますか', '対応できます。スタンダードとまるごとには、受付用のデジタルチケットが含まれます。申込の受付、当日の入場、終了後の来場者数の報告までを引き受けます。詳しくは<a href="#ticket">受付とチケット</a>をご覧ください。'),
+    ('対応エリアはどこまでですか', '新宿駅からおおむね90分以内で伺える会場が対応エリアです。エリア内は、会場の下見も交通費も料金に含まれます。エリア外の会場は、交通費と宿泊費の実費で伺います。'),
+    ('登壇者が1人の講演や、30人ほどの勉強会でも頼めますか', 'お受けします。ただ、カメラ1台とお手持ちのiPhoneやPCで十分に伝わる会でもあります。<a href="#diag" data-open-diag>8問のプラン診断</a>で、ご自身で配信できるかどうかを確かめられます。'),
+    ('屋外や複数の会場からの中継、同時通訳はできますか', 'オーダーでお見積りします。会場の下見をしてから、必要な人と機材をご提案します。'),
+    ('毎月の公開講座など、定期的な配信の割引はありますか', 'あります。回数に応じて割引します。年間の予定がわかれば、まとめてお見積りします。'),
+    ('参加者の受付や名簿の管理もお願いできますか', '対応できます。どのプランにも受付用のデジタルチケットが含まれます。申込の受付、当日の入場、終了後の来場者数の報告までを引き受けます。詳しくは<a href="reception.html">受付と現場の道具</a>をご覧ください。'),
     ('有料の会のチケット販売はできますか', '販売と決済は行っていません。参加費がある会は、お使いのチケット販売サービスや請求書で集金いただき、申込者の名簿（CSV）をお預かりして、当日の入場だけを引き受けます。'),
     ('参加者の個人情報は、どう扱いますか', '名簿は受付と報告のためだけに使い、会の終了から30日で自動的に削除します。委託契約書や情報セキュリティのチェックシートが必要な場合は、ご相談ください。'),
-    ('iPhoneで足りる会かどうか、先に知りたい', '<a href="#plan">8問のプラン診断</a>でご確認いただけます。iPhoneで足りる会なら、そうお伝えします。'),
-    ('相見積のための見積依頼でもかまいませんか', '歓迎します。<a href="#spec">仕様書のひな形</a>と見積書の見本もお送りしますので、他社への依頼にもそのままお使いください。'),
+    ('相見積のための見積依頼でもかまいませんか', '歓迎します。<a href="public.html#spec">仕様書のひな形</a>と見積書の見本もお送りしますので、他社への依頼にもそのままお使いください。'),
     ('支払い方法を教えてください', '請求書払い（後払い）に対応しています。見積書・納品書・請求書の3点を発行します。'),
 ]
 
-def index():
-    sub = [('plan', '8問でプラン診断'), ('switching', '配信画面の切り替え'), ('scope', 'お引き受けする会'), ('price', '25万円に含まれるもの'),
-           ('team', '当日の体制と機材'), ('day', '当日の流れ'), ('ticket', '受付とチケット'), ('demo', '現場の道具を試す'), ('works', '事例と金額'),
-           ('option', '写真・映像の追加'), ('coaching', '自分たちで配信する'), ('public', '大学・公共機関の発注'), ('faq', 'よくある質問'),
-           ('contact', '見積を依頼する')]
-    intro = '<div class="intro" aria-hidden="true"><p>' + ''.join(f'<span style="--i:{i}">{c}</span>' for i, c in enumerate(NAME_EN)) + '</p></div>'
+# ------------------------------------------------------------------ メインビジュアル（リードと箇条書きは3案を比べる。採用中は MV_USE）
+MV_KIND = 'シンポジウム・講演会・公開講座のライブ配信／ハイブリッド配信（会場＋オンライン）'
+MV = {
+    'A': {'name': '案A：必要なぶんだけ',
+          'h1': '必要なぶんの機材と人で、<br>会場とオンラインに届けます。',
+          'lead': '大学・公共機関のシンポジウムと講演会を、ハイブリッドで配信します。',
+          'kind': 'list',
+          'items': ['カメラ3台・スタッフ2名・マイク5本で、25万円（税別）から', '見積書に、スタッフの役割と機材の内訳をすべて書きます', 'カメラ1台で足りる会なら、そうお伝えします']},
+    'B': {'name': '案B：見積の中身から',
+          'h1': '配信の見積を、<br>中身から読めるものに。',
+          'lead': '誰が来て、何を持ち込み、何時間いるか。見積書にすべて書きます。',
+          'kind': 'list',
+          'items': ['スタンダード 25万円：カメラ3台・スタッフ2名', 'ワイド 35万円：カメラ5台・スタッフ3名', '追加料金がかかる条件は5つだけ。表で公開しています']},
+    'C': {'name': '案C：いまの見出し＋対象・体制・費用',
+          'h1': 'カメラ5台はいりません。<br>でも1台では、パネルディスカッションは撮れません。',
+          'lead': '会の大きさに合った体制で、会場の様子をそのままオンラインに届けます。',
+          'kind': 'facts',
+          'items': [('対象', '登壇者2〜6人、会場50〜300人のシンポジウム・講演会'), ('体制', 'カメラ3台、スタッフ2名、マイク5本まで'), ('費用', '25万円（税別）から。内訳はすべて見積書に書きます')]},
+}
+MV_USE = 'C'
 
-    hero = f'''<section class="hero" aria-labelledby="hero-title"><div class="wrap">
-<p class="hero-kind">シンポジウム・講演会・公開講座のライブ配信／ハイブリッド配信（会場＋オンライン）</p>
-<h1 class="t-h1" id="hero-title">カメラ5台はいりません。<br>でも1台では、パネルディスカッションは撮れません。</h1>
-<div class="g75 hero-grid">
-<section id="plan" class="hero-plan stack s-16" aria-labelledby="plan-title">
-<div class="dg-top">{lab('Plan check')}<p class="t-note t-sub">1分ほどで終わります</p></div>
-<h2 class="t-ct" id="plan-title">8問で、あなたの会に合うプランと費用がわかります</h2>
-<button type="button" class="dg-launch" data-open-diag aria-haspopup="dialog" aria-controls="diag-modal"><span class="dg-launch-t">プラン診断をはじめる</span><span class="dg-launch-s">8問・1分ほど。答えると、プランと費用が出ます</span><span class="dg-launch-a" aria-hidden="true">→</span></button>
-<dialog id="diag-modal" class="dg-modal" aria-label="プラン診断">
-<div class="dg-modal-head"><p class="t-ct">プラン診断</p><form method="dialog"><button class="menu-close">閉じる</button></form></div>
-{diag()}
-</dialog>
-</section>
-<div class="hero-side stack">
-<ul class="ticklist hero-text">
-<li>{ico('check', 's')}<span>{mk('登壇者2〜6人、会場50〜300人')}の会を専門にしています</span></li>
-<li>{ico('check', 's')}<span>見積書に、{mk('スタッフ2名の役割と機材の内訳')}をすべて明記します</span></li>
-<li>{ico('check', 's')}<span>{mk('iPhoneで足りる会なら、そうお伝えします')}</span></li>
-</ul>
-<p class="hero-price">カメラ3台・スタッフ2名・マイク5本。<br><span class="t-big2">25<small>万円（税別）</small></span></p>
-<div class="btns">{btn('見積を依頼する', 'contact.html', 'quote')}<a class="tlink" href="#price">25万円に含まれるもの</a></div>
+def mv(key, tag='h1', hid='mv-title'):
+    v = MV[key]
+    if v['kind'] == 'facts':
+        body = '<dl class="mv-facts">' + ''.join(f'<div><dt>{a}</dt><dd>{b}</dd></div>' for a, b in v['items']) + '</dl>'
+    else:
+        body = '<ul class="ticklist">' + ''.join(f'<li>{ico("check", "s")}<span>{t}</span></li>' for t in v['items']) + '</ul>'
+    return f'''<div class="mv-grid">
+<div class="mv-copy stack">
+<p class="hero-kind">{MV_KIND}</p>
+<{tag} class="t-h1" id="{hid}">{v['h1']}</{tag}>
+<p class="t-lead">{v['lead']}</p>
+{body}
+<div class="btns">{diag_btn()}{quote_btn()}</div>
 </div>
-</div></div>
-<div class="sd" aria-hidden="true"><span>Scroll Down</span><i></i></div>
+<figure class="mv-photo"><div class="ph">［写真：配信中の会場。客席の後ろから、登壇者とスクリーン、配信の機材が一緒に写るもの］</div></figure>
+</div>'''
+
+# ------------------------------------------------------------------ トップ
+def index():
+    intro = '<div class="intro" aria-hidden="true"><p>' + ''.join(f'<span style="--i:{i}">{c}</span>' for i, c in enumerate(NAME_EN)) + '</p></div>'
+    hero = f'<section class="mv" aria-labelledby="mv-title"><div class="wrap">{mv(MV_USE)}</div></section>'
+
+    work = [('準備', '打ち合わせと下見', 'オンラインで30分の打ち合わせ、会場の下見、配信先（Zoom・YouTubeなど）の設定'),
+            ('設営', '約2時間', 'カメラ・マイク・回線を置いて、音と映像を確かめます'),
+            ('本番', '配信3時間まで', '撮影、音声の調整、画面の切り替え、配信の見守り'),
+            ('撤収と納品', '約1時間', '機材を片づけ、録画データを納品します')]
+    wk = ''.join(f'<li><span class="n">0{i}</span><span class="a">{a} <small>{t}</small></span><span class="b">{b}</span></li>' for i, (a, t, b) in enumerate(work, 1))
+    factors = [('face', '人', 'スタッフの人数。映像と、音声・配信に1人ずつの2名が基本です。オンライン登壇やマイク6本以上の会では1名増えます。'),
+               ('switch', '機材', 'カメラとマイクの数、予備の機材。カメラの台数は、登壇者の人数と会場の広さで決まります。'),
+               ('report', '時間', '会場にいる時間。設営から撤収まで6時間（うち配信3時間）が基本です。')]
+    fc = ''.join(f'<li class="reason">{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p></div></li>' for k, t, b in factors)
+    lean = [('全員に持ち場があります', 'スタッフは、映像と、音声・配信の2つの持ち場に1人ずつ。持ち場のない人の費用はいただきません。'),
+            ('機材は、会に合わせて選びます', '登壇者2〜6人の会にはカメラ3台。5台を持ち込むのは、登壇者が多い会や会場が広い会だけです。'),
+            ('予備は、止まると取り返しがつかないものだけ', '録画機と回線は2系統。どちらかが止まっても、配信と記録は続きます。'),
+            ('見積書にすべて書きます', '人・機材・時間の内訳を明記します。あとから増えるのは、追加料金の表にある5つだけです。')]
+    ln = ''.join(f'<li><span class="a">{a}</span><span class="b">{b}</span></li>' for a, b in lean)
+    cost = sec('cost', '費用の内訳', '配信の費用は、<br>人と機材と時間で決まります', f'''<div class="stack"><h3 class="sub">配信の仕事の内訳</h3><ol class="steps">{wk}</ol></div>
+<div class="stack"><h3 class="sub">費用を決める3つ</h3><ul class="reasons reasons--3">{fc}</ul></div>
+<div class="boxg stack s-48" style="color:var(--ink)"><h3 class="t-h2s">無駄のない配信とは</h3><ul class="lean">{ln}</ul></div>''',
+               lead='配信代行の見積は、会場に来る人の数、持ち込む機材、会場にいる時間の3つで、ほぼ決まります。カルラライブは、会の大きさに必要なぶんだけを組み合わせます。')
+
+    plans = [('スタンダード', '25', '万円（税別）', 'カメラ3台・スタッフ2名・マイク5本まで', '登壇者2〜6人、会場50〜300人のシンポジウム・講演会', True),
+             ('ワイド', '35', '万円（税別）', 'カメラ5台・スタッフ3名・マイク［本数］まで', '登壇者が7人以上の会、会場が300人を超える会、客席の様子も届けたい会', True),
+             ('オーダー', 'ASK', '', 'ロケ配信、進行台本の制作など。内容に合わせてお見積りします', '屋外や会場の外からの中継、複数の会場や複数日にわたる会、進行台本から一緒につくる会', False)]
+    pl = ''.join(f'''<li class="plan-card stack s-16"><h3 class="plan-name">{n}</h3><p class="t-big2">{p}{f"<small>{u}</small>" if u else ""}</p>
+<p class="plan-spec">{s}</p><dl class="plan-fit"><dt>向いている会</dt><dd>{f}</dd></dl>{quote_btn("見積を依頼する" if q else "内容を相談する", "full")}</li>''' for n, p, u, s, f, q in plans)
+    tiles = ['スタッフ2名', 'カメラ3台と、発表スライドの映像取り込み',
+             f'マイク5本までの持ち込み{tip("tip-mic", "マイクが5本の理由", "登壇者4人分と、会場の質問用1本です。6本以上必要な会は、スタッフを1名追加します。")}',
+             '会場設備のマイク音声も直接取り込みます', '予備の録画機と、予備のインターネット回線',
+             f'配信3時間まで、会場での作業6時間まで{tip("tip-time", "作業時間の内訳", "設営2時間、配信3時間、撤収1時間が目安です。")}',
+             '事前の打ち合わせと会場の下見', '録画データの納品',
+             f'受付用のデジタルチケット（来場300人まで）{tip("tip-ticket", "デジタルチケットでできること", "申込の受付、当日のQRコード・タッチでの入場、終了後の来場者数の報告までを引き受けます。チケットの販売と決済は行いません。")}']
+    price = sec('price', '料金プラン', '料金は3つです', f'''<ul class="plans">{pl}</ul>
+<p class="t-note t-sub">定期的に配信する会（毎月の公開講座など）は、回数に応じて割引があります。</p>
+<div class="stack"><h3 class="sub">スタンダードに含まれるもの</h3><ul class="tiles">{''.join(f'<li><span>{t}</span></li>' for t in tiles)}</ul></div>
+<div class="stack"><h3 class="t-h3">追加料金がかかるのは、この5つだけです</h3>{tbl_extra()}</div>
+<div class="btns">{quote_btn()}<a class="tlink" href="contact.html#sample">見積書の見本を見る</a><span class="t-note t-sub">上司への説明や、相見積にそのまま使えます</span></div>''',
+                lead=f'どのプランにも、事前の打ち合わせ、会場の下見、録画データの納品、受付用のデジタルチケットが含まれます。{mk("見積書にも同じ内容を書きます。")}', tone='bandg')
+
+    option = sec('option', 'オプション', '同じ日に頼めるもの', f'''{tbl_option()}
+<p class="t-note t-sub">オプションは、どのプランにも付けられます。プラン診断で選ぶと、見積のご依頼にそのまま入ります。</p>''',
+                 lead='記録写真と記録映像も、配信と同じ日にお受けします。見積・打ち合わせ・請求は、配信とまとめて1回です。')
+
+    kinds = [('face', 'パネルディスカッションのあるシンポジウム', '登壇者2〜6人。話す人が替わるたびに、カメラを切り替えます'),
+             ('mic', '公開講座・講演会', '会場に50〜300人。会場の質問も、オンラインの視聴者に届けます'),
+             ('backup', '来賓や助成元、学外の方が見る会', 'やり直しのきかない配信。予備の録画と回線を用意します'),
+             ('switch', '遠隔地の講師が登壇する会', '会場とオンラインの登壇者が、同じ画面で話せるようにします')]
+    kd = ''.join(f'<li class="reason">{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p></div></li>' for k, t, b in kinds)
+    works = f'''<section id="works" class="sec" aria-labelledby="works-title"><div class="wrap stack s-56">
+<div class="sec-head stack">{lab('対応事例')}<h2 class="t-h2" id="works-title" data-rv>これまでに配信した会</h2>
+<p class="t-lead">{mk('すべての事例を、人数・体制・機材・金額の同じ項目で載せています。')}ご自身の会に近いものを探してください。</p></div>
+<div class="stack"><h3 class="sub">よくご依頼いただく会</h3><ul class="reasons">{kd}</ul></div>
+<div class="stack"><h3 class="sub">これまでに配信・記録を担当した機関</h3><p class="t-note">［配信した会の件数、継続して依頼いただいている機関の数］</p>
+<ul class="logos">{''.join('<li><div class="ph">［ロゴ］</div></li>' for _ in range(6))}</ul></div>
+</div>
+<div class="mtl">
+{case(1, '', 'P02', [('P02', '（ダミー）パネルディスカッション全体'), ('P06', '（ダミー）客席後方のカメラ'), ('P07', '（ダミー）ミキサーとマイク'), ('P08', '（ダミー）配信卓とモニター'), ('P10', '（ダミー）会場からの質問'), ('P11', '（ダミー）受付と案内表示'), ('P12', '（ダミー）開場前の設営')], '（映像1名、音声・配信1名）')}
+{case(2, '', 'P03', [('P03', '（ダミー）会場全体'), ('P01', '（ダミー）話している人のアップ'), ('P09', '（ダミー）オンライン登壇者の映る画面'), ('P07', '（ダミー）ミキサーとマイク'), ('P06', '（ダミー）客席後方のカメラ'), ('P12', '（ダミー）開場前の設営'), ('P10', '（ダミー）会場からの質問')], '')}
+{case(3, '', 'P10', [('P10', '（ダミー）会場からの質問'), ('P02', '（ダミー）パネルディスカッション全体'), ('P08', '（ダミー）配信卓とモニター'), ('P11', '（ダミー）受付と案内表示'), ('P01', '（ダミー）話している人のアップ'), ('P06', '（ダミー）客席後方のカメラ'), ('P03', '（ダミー）会場全体')], '')}
+</div>
+<div class="wrap mtl"><blockquote class="boxw stack" style="max-width:48rem"><p class="t-lead">［頼む前に不安だったこと、当日どうだったか。2〜3行］</p><footer class="t-note t-sub">［所属・役職・氏名（掲載できる範囲）］</footer></blockquote></div>
 </section>'''
 
-    switching = f'''<section id="switching" class="band sec-2" aria-labelledby="sw-title"><div class="wrap pad-band"><div class="g57 sw" data-sw>
-<div class="stack s-48"><div class="stack">{lab('Switching')}<h2 class="t-h3" id="sw-title" data-rv>カメラを選ぶと、<br>配信中の画面が切り替わります</h2>
-<p class="t-body">3台あると、話す人が替わるたびに映像を切り替えられます。</p></div>
+    fq = ''.join(f'<details name="faq"><summary><span class="qa-mk qa-mk--q" aria-hidden="true">Q</span>{q}</summary><div class="ans"><span class="qa-mk qa-mk--a" aria-hidden="true">A</span><p class="t-body">{a}</p></div></details>' for q, a in FAQ)
+    faq = sec('faq', 'よくある質問', 'よくある質問', f'<div class="faq">{fq}</div>', tone='band')
+
+    return (head(f'シンポジウム・講演会のハイブリッド配信代行｜3カメ・2名・25万円〜｜{NAME}',
+                 '大学や公共機関のシンポジウム、公開講座をハイブリッドで配信します。カメラ3台・スタッフ2名・マイク5本までで25万円（税別）から。8問のプラン診断で、合うプランと費用がわかります。', home=True)
+            + intro + header('index.html') + '<main id="main">' + hero + cost + price + option + works + faq + '</main>'
+            + footer('index.html', form=True))
+
+# ------------------------------------------------------------------ 当日の体制と流れ
+def service():
+    team = sec('team', '当日の体制', 'スタッフ2名、<br>それぞれに持ち場があります', f'''<ul class="staff">
+<li class="staff-card"><div class="zoom">{img('P04', '（ダミー）映像担当のスタッフ')}</div><div class="stack s-16"><h3 class="t-ct">映像担当</h3><p class="t-body">カメラ3台の操作と、配信画面の切り替え</p><p class="t-note t-sub">［氏名・経歴一行］</p></div></li>
+<li class="staff-card"><div class="zoom">{img('P05', '（ダミー）音声・配信担当のスタッフ')}</div><div class="stack s-16"><h3 class="t-ct">音声・配信担当</h3><p class="t-body">マイクと音量の調整、配信の見守り、登壇者のPCの接続</p><p class="t-note t-sub">［氏名・経歴一行］</p></div></li></ul>
+<p class="t-note">ワイド（35万円）では、3人目が［3人目の役割］を受け持ちます。</p>
+<figure data-rv="media"><div class="ph" style="aspect-ratio:16/9">［図：会場の見取り図に、カメラ3台・スタッフ2名・マイクの位置を置いた配置図］</div></figure>
+<div class="stack"><h3 class="t-h3">持ち込む機材（スタンダード）</h3>{tbl_gear()}</div>''',
+               lead='映像と、音声・配信。2つの持ち場に1人ずつで伺います。どちらも本番中ずっと手を動かす仕事です。人数を増やして見積を大きくすることはしません。')
+
+    switching = f'''<section id="switching" class="band sec-2" aria-labelledby="sw-title"><div class="wrap pad-band stack s-56">
+<div class="sec-head stack">{lab('カメラ3台の切り替え')}<h2 class="t-h2" id="sw-title" data-rv>カメラを選ぶと、<br>配信中の画面が切り替わります</h2>
+<p class="t-lead">3台あると、話す人が替わるたびに映像を切り替えられます。</p></div>
+<div class="g57 sw" data-sw><div class="stack s-48">
 <fieldset class="cams"><legend class="vh">映すカメラを選ぶ</legend>
 <label class="cam"><input type="radio" name="cam" id="cam-1" value="1" checked><b>カメラ1</b><span>話している人</span></label>
 <label class="cam"><input type="radio" name="cam" id="cam-2" value="2"><b>カメラ2</b><span>登壇者全体</span></label>
@@ -312,53 +452,7 @@ def index():
 {img('P01', '（ダミー）カメラ1：話している人のアップ', 'shot shot-1')}{img('P02', '（ダミー）カメラ2：パネルディスカッション全体', 'shot shot-2')}{img('P03', '（ダミー）カメラ3：会場全体、客席とスクリーン', 'shot shot-3')}
 <p class="onair"><i></i>配信中の画面</p>
 <button type="button" class="sw-pause" aria-pressed="false" hidden>切り替えを止める</button>
-</div>
-</div></div></section>'''
-
-    clients = f'''<section class="sec" aria-labelledby="clients-title"><div class="wrap stack s-48">
-<div class="stack s-16"><h2 class="t-note" id="clients-title">これまでに配信・記録を担当した機関　［配信した会の件数、継続して依頼いただいている機関の数］</h2></div>
-<ul class="logos">{''.join('<li><div class="ph">［ロゴ］</div></li>' for _ in range(6))}</ul>
-</div></section>'''
-
-    scope = f'''<section id="scope" class="sec" aria-labelledby="scope-title"><div class="wrap"><div class="g57"><div class="stk">{lab('Scope')}</div>
-<div class="stack s-56">
-<h2 class="t-h2" id="scope-title" data-rv>このような会を<br>お引き受けしています</h2>
-<div class="stack"><h3 class="sub">お引き受けする会</h3><ul class="rows rows--ok"><li>登壇者が2〜6人で、パネルディスカッションや対談がある会</li><li>会場に50〜300人が集まり、オンラインにも同時に配信したい会</li><li>配信は3時間まで、半日で終わる会</li><li>来賓や助成元、学外の視聴者がいて、配信を止められない会</li></ul></div>
-<div class="stack"><h3 class="sub">ほかの方法をおすすめする会</h3><ul class="rows rows--ng"><li>登壇者が1人の講演：スタッフ1名で来る業者で十分です</li><li>30人以下の勉強会：お手持ちのiPhoneやPCで足ります</li><li>複数会場や同時通訳：大手の制作会社が向いています</li><li>迷った方は、<a href="#plan">8問のプラン診断</a>でご確認いただけます</li></ul></div>
 </div></div></div></section>'''
-
-    tiles = ['スタッフ2名', 'カメラ3台と、発表スライドの映像取り込み',
-             f'マイク5本までの持ち込み{tip("tip-mic", "マイクが5本の理由", "登壇者4人分と、会場の質問用1本です。6本以上必要な会は、スタッフを1名追加します。")}',
-             '会場設備のマイク音声も直接取り込みます', '予備の録画機と、予備のインターネット回線',
-             f'配信3時間まで、会場での作業6時間まで{tip("tip-time", "作業時間の内訳", "設営2時間、配信3時間、撤収1時間が目安です。")}',
-             '事前の打ち合わせと会場の下見', '録画データの納品',
-             f'受付用のデジタルチケット（来場300人まで）{tip("tip-ticket", "デジタルチケットでできること", "申込の受付、当日のQRコード・タッチでの入場、終了後の来場者数の報告までを引き受けます。チケットの販売と決済は行いません。")}']
-    price = f'''<div class="mq sec-2" aria-hidden="true"><div class="mq-t">{''.join('<span>LIVE STREAMING × HYBRID EVENTS</span>' for _ in range(4))}</div></div>
-<section id="price" class="bandg" aria-labelledby="price-title"><div class="wrap pad-band"><div class="g57">
-<div class="stk stack s-56"><div class="stack s-48">{lab('Price')}<h2 class="t-h2" id="price-title" data-rv>25万円に<br>含まれるもの<br>すべて</h2>
-<p class="t-lead">誰が来て、何を持ち込み、何をするか。<br>{mk('見積書にも同じ内容を記載します。')}</p></div>
-<div class="pc-only">{btn('この内容で見積書を受け取る', 'contact.html', 'quote')}</div></div>
-<div class="stack s-48">
-<h3 class="t-bar">スタンダード</h3>
-<p class="t-big">25<small>万円（税別）</small></p>
-<div class="stack"><p class="sub">含まれるもの</p><ul class="tiles">{''.join(f'<li><span>{t}</span></li>' for t in tiles)}</ul></div>
-<div class="sp-only">{btn('この内容で見積書を受け取る', 'contact.html', 'full quote')}</div>
-</div></div></div></section>'''
-
-    team = f'''<section id="team" class="sec" aria-labelledby="team-title"><div class="wrap"><div class="g57"><div class="stk">{lab('Team &amp; Equipment')}</div>
-<div class="stack s-64">
-<h2 class="t-h2" id="team-title" data-rv>当日の体制：<br>立っているだけのスタッフは<br>連れていきません</h2>
-<div class="staff-wrap"><ul class="staff">
-<li class="staff-card"><div class="zoom">{img('P04', '（ダミー）映像担当のスタッフ')}</div><div><h3 class="t-ct">1人目：映像担当</h3><p class="t-body">カメラ3台の操作と、配信画面の切り替え</p><p class="t-note t-sub">［氏名・経歴一行］</p></div></li>
-<li class="staff-card"><div class="zoom">{img('P05', '（ダミー）音声・配信担当のスタッフ')}</div><div><h3 class="t-ct">2人目：音声・配信担当</h3><p class="t-body">マイクと音量の調整、配信の監視、登壇者PCの接続</p><p class="t-note t-sub">［氏名・経歴一行］</p></div></li></ul></div>
-<figure data-rv="media"><div class="ph" style="aspect-ratio:16/9">［図：会場の見取り図に、カメラ3台・スタッフ2名・マイクの位置を置いた配置図］</div></figure>
-<div class="stack"><h3 class="t-h3">持ち込む機材の内訳</h3>{tbl_gear()}</div>
-<div class="stack"><h3 class="t-h3">追加料金がかかるのは、<br>この5つだけです</h3>{tbl_extra()}</div>
-<div class="btns">{btn('見積を依頼する', 'contact.html', 'quote')}<a class="tlink" href="contact.html">料金表と見積書見本（PDF）を見る</a><span class="t-note t-sub">上司への説明や、相見積にそのまま使えます</span></div>
-</div></div></div></section>
-<section class="sec-3" aria-label="見積の依頼"><div class="wrap"><div class="boxd cta-in"><div class="stack"><p class="t-h2s">この体制で、見積書を受け取る</p>
-<p class="t-note">日程と会場だけで、2名の役割と機材の内訳が入った見積書をお送りします。1営業日以内に、宛名入りのPDFでお届けします。</p></div>
-<div>{btn('見積書を受け取る', 'contact.html', 'xl quote')}</div></div></div></section>'''
 
     reasons = [('聞き取りやすい音', '会場のマイク音声を配信機材に直接取り込みます。会場にマイクがなければ5本まで持ち込みます。音が悪いと、研究まで低く見られます（<a href="https://researchportalplus.anu.edu.au/en/publications/good-sound-good-research-how-audio-quality-influences-perceptions/">Newman &amp; Schwarz 2018</a>）。'),
                ('表情がわかるアップの映像', '客席の後ろから、話している人の表情を撮ります。来場者の視界をふさぎません。'),
@@ -366,102 +460,81 @@ def index():
                ('万が一に備える予備機材', '録画機もインターネット回線も2系統ずつ用意します。どれか1つが止まっても、配信と記録は続きます。')]
     marks = ['mic', 'face', 'switch', 'backup']
     rs = ''.join(f'<li class="reason">{ico(marks[i - 1])}<div class="stack s-16"><h3 class="t-ct"><span class="t-num">0{i}</span>{t}</h3><p class="t-body">{b}</p></div></li>' for i, (t, b) in enumerate(reasons, 1))
-    day = f'''<section id="day" class="band sec-2" aria-labelledby="day-title"><div class="wrap pad-band"><div class="g57">
-<div class="stk">{lab('On the day')}</div>
-<div class="stack s-48">
-<h2 class="t-h2" id="day-title" data-rv>当日、ご担当者は配信に<br>かかりきりにならずに済みます</h2>
-<p class="t-lead">登壇者を迎え、進行を見守り、来賓に挨拶する。<br>{mk('配信の実務はスタッフ2名にお任せください。')}</p>
-<ul class="reasons">{rs}</ul>
+    day = sec('day', '当日の流れ', '当日、ご担当者は配信に<br>かかりきりにならずに済みます', f'''<ul class="reasons">{rs}</ul>
 <div class="boxg stack" style="color:var(--ink)"><h3 class="t-h2s">止まらないとは言いません。止まったときにどう戻すかを、事前にお渡しします</h3>
 <p class="t-note">事前に「復旧手順書」を1枚お渡しします。何が止まったら、誰が、何分で、どう復旧するかを明記しています。</p>
-<div class="ph" style="background:var(--paper)">［画像：復旧手順書の実物　穴埋め08］</div></div>
-</div></div></div></section>'''
+<div class="ph" style="background:var(--paper)">［画像：復旧手順書の実物　穴埋め08］</div></div>''',
+              lead=f'登壇者を迎え、進行を見守り、来賓に挨拶する。<br>{mk("配信の実務はスタッフにお任せください。")}')
+    return (head(f'当日の体制と流れ｜{NAME}', 'スタッフ2名の持ち場、持ち込む機材、当日の流れと、止まったときの戻し方です。')
+            + header('service.html') + '<main id="main">'
+            + page_head('当日の体制と流れ', '当日の体制と流れ', '誰が来て、何を持ち込み、当日どう動くか。見積書にも同じ内容を書きます。')
+            + team + switching + day + cta_box() + '</main>' + footer('service.html'))
 
+# ------------------------------------------------------------------ 受付と現場の道具
+def reception():
     ways = [('qr', 'QRコードで入場', '参加者のスマホに表示されたQRコードを、受付のスマホで読み取ります。専用の読み取り機はいりません。'),
             ('touch', 'タッチで入場', '受付に置いたタグにスマホをかざすか、受付でお伝えする4桁のコードを入れると、入場済みになります。受付に立つ人を減らせます。'),
             ('list', '紙の名簿も用意します', '同じ名簿を紙でもお持ちします。スマホを持っていない方や、会場の通信が不安定なときも、受付は止まりません。'),
             ('report', '終了後の報告を1枚で', '申込数、来場者数、オンライン視聴者数を1枚にまとめてお渡しします。上司や助成元への報告にそのまま使えます。')]
     ws = ''.join(f'<li class="reason">{ico(k)}<div class="stack s-16"><h3 class="t-ct"><span class="t-num">0{i}</span>{t}</h3><p class="t-body">{b}</p></div></li>' for i, (k, t, b) in enumerate(ways, 1))
-    ticket = f'''<section id="ticket" class="sec" aria-labelledby="ticket-title"><div class="wrap"><div class="g57"><div class="stk">{lab('Reception')}</div>
-<div class="stack s-56">
-<div class="stack s-48"><h2 class="t-h2" id="ticket-title" data-rv>受付の名簿も、<br>配信と一緒に引き受けます</h2>
-<p class="t-lead">申込の受付、当日の入場、終了後の報告まで。<br>{mk('来場者とオンライン視聴者が、1つの名簿にまとまります。')}</p></div>
-<ul class="reasons">{ws}</ul>
-<div class="stack"><h3 class="sub">あらかじめ決めていること</h3><ul class="rows"><li>スタンダードとまるごとに含まれます。追加料金はかかりません（単体でご提供する場合の参考価格：［金額］）</li><li>チケットだけのご利用は、お受けしていません。配信をお任せいただく会でお使いいただけます</li><li>参加無料・招待制の会が対象です。チケットの販売と決済は行いません</li><li>来場300人までの会が対象です</li><li>参加者の名簿は受付と報告のためだけに使い、会の終了から30日で自動的に削除します</li></ul></div>
-<div class="boxg stack" style="color:var(--ink)"><h3 class="t-h2s">オプション：参加者を、LINE公式アカウントの友だちに</h3>
-<p class="t-note">申込をLINEログインにすると、申込と同時に、主催者のLINE公式アカウントを友だちに追加できます。次回の会の案内を、メールよりも届きやすい形で送れます。LINE側の設定は私たちが代行します。</p>
-<p class="t-note">追加料金（税別）：［金額］</p></div>
-<p class="t-note t-sub">［QR］　読み取ると、デモのチケットが開きます　［デモ環境］</p>
-</div></div></div></section>'''
-
+    ticket = sec('ticket', '受付とチケット', '受付の名簿も、<br>配信と一緒に引き受けます', f'''<ul class="reasons">{ws}</ul>
+<div class="stack"><h3 class="sub">あらかじめ決めていること</h3><ul class="rows"><li>どのプランにも含まれます。追加料金はかかりません（単体でご提供する場合の参考価格：［金額］）</li><li>チケットだけのご利用は、お受けしていません。配信をお任せいただく会でお使いいただけます</li><li>参加無料・招待制の会が対象です。チケットの販売と決済は行いません</li><li>来場300人までの会が対象です</li><li>参加者の名簿は受付と報告のためだけに使い、会の終了から30日で自動的に削除します</li></ul></div>
+<p class="t-note">申込をLINEログインにして、主催者のLINE公式アカウントの友だちを増やすこともできます（<a href="index.html#option">オプション</a>）。</p>
+<p class="t-note t-sub">［QR］　読み取ると、デモのチケットが開きます　［デモ環境］</p>''',
+                 lead=f'申込の受付、当日の入場、終了後の報告まで。<br>{mk("来場者とオンライン視聴者が、1つの名簿にまとまります。")}')
     tools = [('S01', 'FAQ の画面', '質疑応答：FAQ', '会場とオンラインからの質問を1か所に集め、選んだ質問だけを登壇者の画面に表示します。', 'コード ［000］　質問を送ると、上の画面に表示されます'),
              ('S02', 'タイムキーパー の画面', '進行管理：タイムキーパー', '残り時間と合図を、登壇者とスタッフのスマホに表示します。進行の遅れを防ぎます。', '読み取ると、デモの進行表が開きます'),
              ('S03', 'Movie Switcher の画面', '記録映像の作成：Movie Switcher', '3台のカメラの映像から、話している人に合わせて切り替えた記録映像と字幕を作ります。', '')]
     tl = ''.join(f'<li class="hi stack s-16"><div class="zoom">{img(c, "（ダミー）" + a)}</div><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p>'
                  + (f'<p class="t-note t-sub">［QR］　{n}</p>' if n else '') + '</li>' for c, a, t, b, n in tools)
-    demo = f'''<section id="demo" class="sec" aria-labelledby="demo-title"><div class="wrap"><div class="g57"><div class="stk">{lab('Demo')}</div>
-<div class="stack s-48"><h2 class="t-h2" id="demo-title" data-rv>現場で使っている道具を、<br>いま試せます</h2><p class="t-lead">お手元のスマホでお試しください。<br>当日の質疑応答と進行がどう進むかを確認できます。</p></div></div>
-<ul class="hs mtl" aria-label="道具の一覧">{tl}</ul>
-<p class="t-note t-sub mtl">これらの道具は、当日私たちが用意して操作します。ご自身で使えるようになりたい方には、<a href="#coaching">コーチング</a>をご用意しています。　［穴埋め09：デモ環境］</p>
-</div></section>'''
+    demo = sec('demo', '現場の道具', '現場で使っている道具を、<br>いま試せます', f'''<ul class="tools" aria-label="道具の一覧">{tl}</ul>
+<p class="t-note t-sub">これらの道具は、当日私たちが用意して操作します。ご自身で使えるようになりたい方には、<a href="coaching.html">コーチング</a>をご用意しています。　［穴埋め09：デモ環境］</p>''',
+               lead='お手元のスマホでお試しください。当日の質疑応答と進行がどう進むかを確認できます。', tone='band')
+    return (head(f'受付と現場の道具｜{NAME}', '受付用のデジタルチケットと、当日使う質疑応答・進行管理の道具です。')
+            + header('reception.html') + '<main id="main">'
+            + page_head('受付と現場の道具', '受付と現場の道具', '受付の名簿と、当日の質疑応答・進行も、配信と一緒に引き受けます。')
+            + ticket + demo + cta_box() + '</main>' + footer('reception.html'))
 
-    works = f'''<section id="works" class="sec" aria-labelledby="works-title"><div class="wrap"><div class="g57"><div class="stk">{lab('Case Study')}</div>
-<div class="stack s-48"><h2 class="t-h2" id="works-title" data-rv>事例：人数も、機材も、<br>金額も公開しています</h2><p class="t-lead">{mk('すべての事例を同じ項目で掲載しています。')}<br>ご自身の会に近いものを探してみてください。</p></div></div></div>
-<div class="mtl">
-{case(1, '', 'P02', [('P02', '（ダミー）パネルディスカッション全体'), ('P06', '（ダミー）客席後方のカメラ'), ('P07', '（ダミー）ミキサーとマイク'), ('P08', '（ダミー）配信卓とモニター'), ('P10', '（ダミー）会場からの質問'), ('P11', '（ダミー）受付と案内表示'), ('P12', '（ダミー）開場前の設営')], '（映像1名、音声・配信1名）')}
-{case(2, '', 'P03', [('P03', '（ダミー）会場全体'), ('P01', '（ダミー）話している人のアップ'), ('P09', '（ダミー）オンライン登壇者の映る画面'), ('P07', '（ダミー）ミキサーとマイク'), ('P06', '（ダミー）客席後方のカメラ'), ('P12', '（ダミー）開場前の設営'), ('P10', '（ダミー）会場からの質問')], '')}
-{case(3, '', 'P10', [('P10', '（ダミー）会場からの質問'), ('P02', '（ダミー）パネルディスカッション全体'), ('P08', '（ダミー）配信卓とモニター'), ('P11', '（ダミー）受付と案内表示'), ('P01', '（ダミー）話している人のアップ'), ('P06', '（ダミー）客席後方のカメラ'), ('P03', '（ダミー）会場全体')], '')}
-</div>
-<div class="wrap mtl"><blockquote class="boxw stack" style="max-width:48rem"><p class="t-lead">［頼む前に不安だったこと、当日どうだったか。2〜3行］</p><footer class="t-note t-sub">［所属・役職・氏名（掲載できる範囲）］</footer></blockquote></div>
-</section>'''
-
-    opts = [('P13', '記録写真の撮影', '記録写真', '報告書や広報に使える写真を、専任カメラマン1名が撮影します'),
-            ('P14', '記録映像の編集', '記録映像の編集（アーカイブ編集）', '話している人に合わせて画面を切り替えた記録映像を、字幕つきで作成します'),
-            ('P15', 'ダイジェスト映像', '2分のダイジェスト映像', '次回の告知や、成果報告に使える短いまとめ映像を作ります'),
-            ('P16', '文字起こしと報告書', '文字起こし', '報告書の下書きにそのまま使えるテキストデータを作成します')]
-    ol = ''.join(f'<li class="hi stack s-16"><p class="t-num">0{i}</p><h3 class="t-ct">{t}</h3><div class="zoom">{img(c, "（ダミー）" + a)}</div><p class="t-body">{b}</p></li>' for i, (c, a, t, b) in enumerate(opts, 1))
-    option = f'''<section id="option" class="bandg sec-2" aria-labelledby="option-title"><div class="wrap pad-band"><div class="g57"><div class="stk">{lab('Option')}</div>
-<div class="stack s-48"><h2 class="t-h2" id="option-title" data-rv>カメラマンは、<br>すでに会場にいます</h2><p class="t-lead">記録写真も、記録映像も、同じ日にまとめてご依頼いただけます。<br>見積も請求も打ち合わせも1回で済みます。</p></div></div>
-<ul class="hs w40 mtl" aria-label="同じ日に頼めること">{ol}</ul>
-<div class="g57 mtl"><div class="stack s-48"><h3 class="t-bar">まるごと</h3><p class="t-big2">［40<small>万円］（税別）</small></p></div>
-<div class="stack s-56"><p class="t-lead">スタンダードに上の4つを加えて、スタッフ3名で伺います。<br>一回の現場で、報告書の素材まで揃います。</p>{btn('まるごとプランで見積書を受け取る', 'contact.html', 'quote')}</div></div>
-</div></section>'''
-
+# ------------------------------------------------------------------ 自分たちで配信する
+def coaching():
     steps = [('相談', '［3万円］', 'オンライン60分。機材と接続の図、当日のチェックリストを作成します'), ('同行', '［代行＋3万円］', '私たちの配信現場に入り、実際の動きを横で見て覚えます'),
              ('伴走', '［12万円］', 'ご自身で配信を操作し、私たちは横で待機します'), ('卒業', '［5万円］', '事前の機材点検と、当日のオンライン待機だけで見守ります')]
     st = ''.join(f'<li><span class="n">0{i}</span><span class="a">{a} <small>{f}</small></span><span class="b">{b}</span></li>' for i, (a, f, b) in enumerate(steps, 1))
-    coaching = f'''<section id="coaching" class="sec" aria-labelledby="coaching-title"><div class="wrap"><div class="g57"><div class="stk">{lab('Coaching')}</div>
-<div class="stack s-48"><h2 class="t-h2" id="coaching-title" data-rv>来年度からは<br>自分たちで配信する</h2><p class="t-lead">小さい会はご自身で、大きい会だけ私たちにお任せください。<br>{mk('手順書とチェックリストが残る')}ので、担当者が替わっても引き継げます。</p>
-<ol class="steps">{st}</ol>
-<div class="btns">{btn('コーチングについて相談する', 'contact.html')}</div></div></div></div></section>
-<section class="sec-3" aria-label="オンライン相談"><div class="wrap"><div class="boxd cta-in"><div class="stack"><p class="t-h2s">まだ何も決まっていない方へ</p>
-<p class="t-note">15分のオンライン相談で、iPhoneで足りるかどうかから一緒にお話しします。決まっているのが日程だけでもかまいません。</p></div>
-<div>{btn('相談の日時を選ぶ', 'contact.html#consult', 'xl')}</div></div></div></section>'''
+    body = sec('coaching', '自分たちで配信する', '4つの段階で、<br>自分たちで回せるようにします', f'''<ol class="steps">{st}</ol>
+<div class="btns"><a class="btn" href="contact.html#consult">コーチングについて相談する</a></div>''',
+               lead=f'小さい会はご自身で、大きい会だけ私たちにお任せください。{mk("手順書とチェックリストが残る")}ので、担当者が替わっても引き継げます。')
+    return (head(f'自分たちで配信する（コーチング）｜{NAME}', '来年度から自分たちで配信したい方へ。相談・同行・伴走・卒業の4段階で、手順書とチェックリストを残します。')
+            + header('coaching.html') + '<main id="main">'
+            + page_head('自分たちで配信する', '来年度からは、<br>自分たちで配信する', '小さな会なら、お手持ちの機材で配信できます。何から揃えればよいかから、一緒に整理します。')
+            + body + cta_box('まだ何も決まっていない方へ', '15分のオンライン相談で、iPhoneで足りるかどうかから一緒にお話しします。決まっているのが日程だけでもかまいません。') + '</main>' + footer('coaching.html'))
 
+# ------------------------------------------------------------------ 大学・公共機関の方へ
+def public():
     flow = [('問い合わせ', '決まっているのは日程と会場だけでかまいません'), ('見積書', '1営業日以内に、宛名入りのPDFでお送りします'), ('打ち合わせと会場確認', 'オンラインで30分の打ち合わせと、会場の下見を行います'),
-            ('本番', '当日、スタッフ2名で会場に伺います'), ('納品と請求', '完了報告書、納品書、請求書をまとめてお送りします')]
+            ('本番', '当日、スタッフが会場に伺います'), ('納品と請求', '完了報告書、納品書、請求書をまとめてお送りします')]
     fl = ''.join(f'<li><span class="n">0{i}</span><span class="a">{a}</span><span class="b">{b}</span></li>' for i, (a, b) in enumerate(flow, 1))
-    public = f'''<section id="public" class="band sec-2" aria-labelledby="public-title"><div class="wrap pad-band"><div class="g57"><div class="stk">{lab('For public sector')}</div>
-<div class="stack s-64"><div class="stack s-48"><h2 class="t-h2" id="public-title" data-rv>大学・公共機関の<br>発注手続きに合わせます</h2><p class="t-lead">稟議や相見積に必要な書類を、<br>{mk('お問い合わせの前からご用意しています。')}</p></div>
-<ol class="steps">{fl}</ol>
+    body = sec('public', '発注の手続き', '大学・公共機関の<br>発注手続きに合わせます', f'''<div class="stack"><h3 class="sub">ご依頼から納品まで</h3><ol class="steps">{fl}</ol></div>
 <div class="stack"><h3 class="sub">書類と支払い</h3><ul class="rows"><li>見積書・納品書・請求書の3点を発行します</li><li>請求書払い（後払い）に対応しています</li><li>インボイス登録番号：［T0000000000000］</li><li>相見積のための見積依頼も歓迎します</li></ul></div>
 <form id="spec" class="boxg stack" style="color:var(--ink)" data-form="spec" data-endpoint="" aria-labelledby="spec-title">
 <h3 class="t-h2s" id="spec-title">仕様書のひな形を、そのまま使えます</h3>
 <p class="t-note">配信業務の仕様書（A4 1枚、Word形式）と、見積書の見本をお送りします。他社への相見積にもそのままお使いください。</p>
 <div class="fld"><label for="spec-mail">メールアドレス<span class="req">必須</span></label><input id="spec-mail" name="email" type="email" placeholder="name@example.ac.jp" required autocomplete="email" aria-describedby="spec-mail-e"><p class="err" id="spec-mail-e">メールアドレスの形で入力してください</p></div>
 <button class="btn full" type="submit">ひな形を受け取る</button>
-<p class="form-msg" role="status" hidden></p></form>
-</div></div></div></section>'''
+<p class="form-msg" role="status" hidden></p></form>''',
+               lead=f'稟議や相見積に必要な書類を、{mk("お問い合わせの前からご用意しています。")}')
+    return (head(f'大学・公共機関の方へ｜{NAME}', '見積書・納品書・請求書の3点を発行し、請求書払いに対応します。仕様書のひな形もお送りします。')
+            + header('public.html') + '<main id="main">'
+            + page_head('大学・公共機関の方へ', '大学・公共機関の方へ', '稟議、相見積、請求書払い。発注の手続きに合わせて書類をご用意します。')
+            + body + cta_box() + '</main>' + footer('public.html'))
 
-    fq = ''.join(f'<details name="faq"><summary><span class="qa-mk qa-mk--q" aria-hidden="true">Q</span>{q}</summary><div class="ans"><span class="qa-mk qa-mk--a" aria-hidden="true">A</span><p class="t-body">{a}</p></div></details>' for q, a in FAQ)
-    faq = f'''<section id="faq" class="sec" aria-labelledby="faq-title"><div class="wrap"><div class="g57"><div class="stk">{lab('FAQ')}</div>
-<div class="stack s-48"><h2 class="t-h2" id="faq-title" data-rv>よくある質問</h2><div class="faq">{fq}</div></div></div></div></section>'''
-
-    body = (head(f'シンポジウム・講演会のハイブリッド配信代行｜3カメ・2名・25万円〜｜{NAME}',
-                 '大学や公共機関のシンポジウム、公開講座をハイブリッドで配信します。3カメラ・スタッフ2名・マイク5本までで25万円（税別）から。8問のプラン診断で、合うプランと費用がわかります。', home=True)
-            + intro + header(True, sub) + '<main id="main">' + hero + switching + clients + scope + price + team + day + ticket + demo + works + option + coaching + public + faq + '</main>'
-            + footer(True))
-    return tag_sections(body, sub)
+# ------------------------------------------------------------------ メインビジュアルの比較（持ち主の確認用。メニューには出さない）
+def mvs():
+    blocks = ''.join(f'<section class="mv mv-cmp" aria-labelledby="mv-{k}"><div class="wrap stack s-48"><p class="t-lab" id="mv-{k}">{v["name"]}{"（いま使っている案）" if k == MV_USE else ""}</p>{mv(k, "p", f"mv-{k}-h")}</div></section>'
+                     for k, v in MV.items())
+    return (head(f'メインビジュアルの比較｜{NAME}', 'トップのリード文と箇条書きの案を並べて比べるページです。')
+            + header('mvs.html') + '<main id="main">'
+            + page_head('メインビジュアルの比較', 'リード文と箇条書きを比べる', f'トップの最初の画面に置く文の案です。src/build.py の MV_USE を変えると、トップの文が入れ替わります。いまは「{MV[MV_USE]["name"]}」を使っています。')
+            + blocks + '</main>' + footer('mvs.html'))
 
 def contact():
     sub = contact.sub = [('top', '見積を依頼する'), ('flow', '送信後の流れ'), ('sample', '見積書の見本'), ('consult', '見積の前に相談する'), ('tel', '電話で問い合わせる')]
@@ -474,7 +547,7 @@ def contact():
 <tr><th>受付用のデジタルチケット（来場300人まで）</th><td class="r">含む</td></tr>
 <tr><th>消費税（10%）</th><td class="r">25,000</td></tr><tr><th>合計</th><td class="r">275,000</td></tr></table></div>'''
     return (head(f'お問い合わせ・お見積｜ハイブリッド配信のご相談｜{NAME}', '日程と会場、登壇者の人数がわかれば見積書をお出しします。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。')
-            + header(False, sub) + f'''<main id="main">
+            + header('contact.html') + f'''<main id="main">
 <div class="wrap ph-head stack s-48" id="top"><nav aria-label="パンくず"><ol class="crumb"><li><a href="index.html">トップ</a></li><li aria-current="page">お問い合わせ・お見積</li></ol></nav>
 {lab('Contact')}<h1 class="t-h1">見積書をお送りします</h1><p class="t-lead">{mk('必須の4項目だけ')}で送信できます。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。</p></div>
 <div class="wrap g75">
@@ -486,13 +559,13 @@ def contact():
 <section id="tel" class="stack s-16"><h2 class="sub">お電話でも受け付けています</h2><p class="t-ct">［電話番号］</p><p class="t-note t-sub">［受付時間］</p></section>
 <blockquote class="boxw stack"><p class="t-body">［担当者の声を1件。頼む前の不安に触れているもの］</p><footer class="t-note t-sub">［所属・役職］</footer></blockquote>
 </aside></div>
-</main>''' + footer(False, form=False))
+</main>''' + footer('contact.html'))
 
 def thanks():
     flow = [('いまここ', '見積のご依頼を受け付けました'), ('1営業日以内', '見積書PDFがメールで届きます'), ('そのあと', '必要に応じて30分の打ち合わせを行い、ご発注後に会場を下見します')]
     fl = ''.join(f'<li{" class=\"now\"" if i == 0 else ""}><span class="a">{a}</span><span class="b">{b}</span></li>' for i, (a, b) in enumerate(flow))
     return (head(f'送信が完了しました｜{NAME}', 'お見積のご依頼を受け付けました。')
-            + header(False) + f'''<main id="main">
+            + header('thanks.html') + f'''<main id="main">
 <p class="form-msg" style="text-align:center">これは送信完了ページの見本です。フォームの送信先がまだ設定されていないため、実際には何も送信されていません。</p>
 <div class="wrap ph-head stack s-48">{lab('送信完了')}<h1 class="t-h1">ご依頼を受け付けました</h1>
 <p class="t-lead">1営業日以内に、宛名入りの見積書PDFをメールでお送りします。確認メールが届かない場合は、［電話番号］までご連絡ください。</p>
@@ -501,7 +574,7 @@ def thanks():
 <p class="t-lead">上司への説明や相見積にそのまま使える書類です。どれも登録なしでダウンロードできます。</p>
 <ul class="stack s-16"><li>{btn('仕様書のひな形（Word）［ファイル準備中］', 'thanks.html', 'line')}</li><li>{btn('料金表と見積書見本（PDF）［ファイル準備中］', 'thanks.html', 'line')}</li><li>{btn('当日のチェックリスト（PDF）［ファイル準備中］', 'thanks.html', 'line')}</li></ul></div></section>
 <div class="wrap sec-3"><a class="tlink" href="index.html">トップページへ戻る</a></div>
-</main>''' + footer(False, form=False))
+</main>''' + footer('thanks.html'))
 
 def rules():
     sub = rules.sub = [('rules-top', 'このページについて'), ('layout', '画面の組み方'), ('type', '文字の大きさと字間'), ('color', '色の役割'), ('marks', '目印と影'), ('motion', '動きの決まり'), ('platform', '使っているWeb標準')]
@@ -535,10 +608,10 @@ def rules():
                  ('本文', '14 → 16', 'マイク音声を直接取り込みます。'), ('補足', '12 → 14', '相見積にそのまま使えます')]
     ty = ''.join(f'<tr><th scope="row">{a}</th><td data-l="大きさ（px）">{b}</td><td data-l="見本">{c}</td></tr>' for a, b, c in type_rows)
     return (head(f'デザインルール｜{NAME}', 'カルラライブのサイトのデザインルールと、使っている Web 標準の一覧です。')
-            + header(False, sub) + f'''<main id="main"><div class="wrap ph-head stack s-48" id="rules-top">{lab('Design rules')}<h1 class="t-h1">白い地に、<br>ティールで道しるべを置く。</h1>
+            + header('rules.html') + f'''<main id="main"><div class="wrap ph-head stack s-48" id="rules-top">{lab('Design rules')}<h1 class="t-h1">白い地に、<br>ティールで道しるべを置く。</h1>
 <p class="t-lead">C案を元に、スマホを基本に組み直したサイトのルールです。色・影・目印は recruit.handy.school の仕組みを参考にしています。文字と余白は、幅390pxのスマホから1200pxのPCまで、段差なく大きくなります。</p></div>
-<section class="sec-3" id="layout"><div class="wrap g57"><div class="stk">{lab('Layout')}</div><div class="stack s-48"><h2 class="t-h2">スマホは1段、PCは左のレール＋2段</h2>
-<ul class="rows"><li>スマホを基本に書き、幅1024px以上で広げます</li><li>PCは左に幅200pxの固定レールを置きます。上からロゴ、現在地つきの目次（単語ではなく「何が書いてあるか」がわかる言葉で）、2つの行動（黄＝8問でプラン診断、濃い珊瑚＝見積を依頼する）、ページの切り替え。右端の細い線が、ページを読み進めた量です</li><li>スマホでは上のバーと現在地つきのサブナビが一緒に追従し、下部に追従ボタン（プラン診断／見積を依頼する）を置きます。目次の中身はPCのレールと同じです</li><li>本文はレールの右で、左5：右7の2段</li><li>プラン診断はトップの最初の画面に置きます。PCでは見出しの右でその場で答え、スマホでは見出しのすぐ下の黄色いボタンから全画面のモーダル（dialog）で開きます。サブナビや下部の「プラン診断」からも同じモーダルが開きます</li></ul></div></div></section>
+<section class="sec-3" id="layout"><div class="wrap g57"><div class="stk">{lab('Layout')}</div><div class="stack s-48"><h2 class="t-h2">スマホは1段、PCは左のレール＋1段</h2>
+<ul class="rows"><li>スマホを基本に書き、幅1024px以上で広げます</li><li>PCは左に幅200pxの固定レールを置きます。上からロゴ、メニュー（7項目まで。単語ではなく「何が書いてあるか」がわかる言葉で）、2つの行動（黄＝8問でプラン診断、珊瑚＝見積を依頼する。どちらもアイコンつき）、ページの切り替え。トップの中の項目には現在地が付き、右端の細い線がページを読み進めた量です</li><li>スマホでは上のバーとメニューの横並びが一緒に追従し、下部に追従ボタン（プラン診断／見積を依頼する）を置きます。メニューの中身はPCのレールと同じです</li><li>本文はレールの右で1段。セクションの頭にタグ・見出し・リードを置き、その下に中身を置きます。左に見出しだけの列を作りません</li><li>トップに置くのは、メインビジュアル、費用の内訳、料金プラン、オプション、対応事例、よくある質問まで。当日の体制、受付と道具、コーチング、発注の手続きは下層のページに分けます</li><li>プラン診断はページに埋め込まず、どのページのどこからでもボタンでモーダル（dialog）を開きます。スマホでは全画面、PCでは画面の中央に出ます。JSが動かないときは、ページの下に置いた診断へ移動します</li></ul></div></div></section>
 <section class="sec-3" id="type"><div class="wrap g57"><div class="stk">{lab('Type')}</div><div class="stack s-48"><h2 class="t-h2">1書体、1つの太さ</h2>
 <table class="tbl"><thead><tr><th scope="col">役割</th><th scope="col">大きさ（px、スマホ → PC）</th><th scope="col">見本</th></tr></thead><tbody>{ty}</tbody></table>
 <p class="t-note t-sub">和文：Zen Kaku Gothic New の Medium（使う文字だけに絞って同梱）／英字・数字：Helvetica Neue。入力欄の文字はスマホでも16px。字間は大きさの2%、本文とリードの行送りは1.8、見出しは1.45。</p></div></div></section>
@@ -558,18 +631,19 @@ def rules():
 <li class="reason">{ico('check')}<div class="stack s-16"><h3 class="t-ct">{mk('要点のマーカー')}</h3><p class="t-body">各セクションのリードで、いちばん伝えたい一文にだけ引きます。1つのセクションに1か所まで。文字の下半分を黄色（#FFEB78）にし、画面に入ったときに左から引かれます</p></div></li>
 <li class="reason">{ico('doc')}<div class="stack s-16"><h3 class="t-ct">影は重ねない</h3><p class="t-body">影が付くのは、いちばん外側の面だけ。影の付いた面の中に置くものは、線で区切ります。ボタンには影を付けません。強さは2つ：置いてあるもの（カード、白い箱、左レール）は 0 0 30px 黒8%、物として見せるもの（見積書の見本、暗い囲み）は 0 5px 40px 黒20%</p></div></li>
 <li class="reason">{ico('switch')}<div class="stack s-16"><h3 class="t-ct">見出しのタグと、章の切れ目</h3><p class="t-body">各章の頭に、目次と同じ言葉のタグ（白地にティールの線の丸い札）を付けます。スマホでは、章の頭に端から端までティールの線を引き、その線の上にタグを乗せて切れ目を示します。線画のアイコンはティールの角丸の四角（44px、角丸10px）に入れ、飾りなので読み上げからは外します</p></div></li>
-<li class="reason">{ico('backup')}<div class="stack s-16"><h3 class="t-ct">QとA、○と—</h3><p class="t-body">よくある質問は珊瑚のQとティールのA。お引き受けする会はティールの○、ほかの方法をおすすめする会は灰色の—で、読む前に種類がわかるようにします</p></div></li>
+<li class="reason">{ico('backup')}<div class="stack s-16"><h3 class="t-ct">QとA</h3><p class="t-body">よくある質問は珊瑚のQとティールのA。読む前に、問いと答えの区別がつくようにします</p></div></li>
 </ul>
 <p class="t-note t-sub">穴埋め（［ ］）はマーカーと見分けがつくよう、灰色の斜線にしています。</p></div></div></section>
 <section class="sec-3" id="motion"><div class="wrap g57"><div class="stk">{lab('Motion')}</div><div class="stack s-48"><h2 class="t-h2">動きは、減らせる</h2>
-<ul class="rows"><li>押せるものの反応は 0.3秒、cubic-bezier(0.4, 0.4, 0, 1) にそろえます</li><li>要点のマーカーは 0.8秒で引きます。幕や出現の動きは cubic-bezier(0.19, 1, 0.22, 1)</li><li>読み込みの幕は、その回の最初の1回だけ。2回目からは出ません</li><li>カメラの自動切り替えには「切り替えを止める」ボタンをつけています</li><li>端末で「視差効果を減らす」を選んでいる人には、幕・自動切り替え・流れる英字・出現の動き・マーカーの動きをすべて止めます（マーカーは最初から引いた状態）</li></ul></div></div></section>
+<ul class="rows"><li>押せるものの反応は 0.3秒、cubic-bezier(0.4, 0.4, 0, 1) にそろえます</li><li>要点のマーカーは 0.8秒で引きます。幕や出現の動きは cubic-bezier(0.19, 1, 0.22, 1)</li><li>読み込みの幕は、その回の最初の1回だけ。2回目からは出ません</li><li>カメラの自動切り替えには「切り替えを止める」ボタンをつけています</li><li>端末で「視差効果を減らす」を選んでいる人には、幕・自動切り替え・出現の動き・マーカーの動きをすべて止めます（マーカーは最初から引いた状態）</li></ul></div></div></section>
 <section class="sec-3" id="platform"><div class="wrap g57"><div class="stk">{lab('Platform')}</div><div class="stack s-48"><h2 class="t-h2">使っている Web 標準と、使えないときの形</h2>
 <p class="t-lead">基準は Baseline Widely available（主要ブラウザで30か月以上使えるもの）。それより新しい機能は、無くても見た目と操作が壊れない場所にだけ使っています。</p>
 <table class="tbl"><thead><tr><th scope="col">機能</th><th scope="col">Baseline（2026年11月）</th><th scope="col">使っている場所</th><th scope="col">使えないとき</th></tr></thead><tbody>{tr}</tbody></table>
 <p class="t-note t-sub">「Widely」は主要ブラウザで30か月以上、「Newly」は主要ブラウザの最新版で使えるもの、「Limited」は一部のブラウザだけ。</p></div></div></section>
-</main>''' + footer(False, form=False))
+</main>''' + footer('rules.html'))
 
-PAGES = {'index.html': index, 'contact.html': contact, 'thanks.html': thanks, 'rules.html': rules}
+PAGES = {'index.html': index, 'service.html': service, 'reception.html': reception, 'coaching.html': coaching, 'public.html': public,
+         'contact.html': contact, 'thanks.html': thanks, 'rules.html': rules, 'mvs.html': mvs}
 def subset_font(text):
     """ページで使っている文字だけの書体ファイルを作る（元の書体は約1MB、切り出すと数十KB）"""
     from fontTools import subset

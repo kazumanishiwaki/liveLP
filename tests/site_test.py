@@ -15,8 +15,8 @@ with sync_playwright() as p:
     pg.on('pageerror', lambda e: errs.append(str(e))); pg.on('console', lambda m: errs.append(m.text) if m.type=='error' else None)
     pg.goto(U,wait_until='networkidle')
     # --- スマホ：診断はボタンからモーダルで開く（キーボード）
-    pg.focus('.dg-launch'); pg.keyboard.press('Enter'); pg.wait_for_timeout(300)
-    print('modal open:', pg.evaluate("document.querySelector('#diag-modal').open"))
+    pg.focus('.mv .btn.plan'); pg.keyboard.press('Enter'); pg.wait_for_timeout(300)
+    print('modal open:', pg.evaluate("document.querySelector('#diag').open"))
     # --- キーボードだけで診断
     pg.focus('.dg-q.is-cur input')            # 1問目の最初の選択肢
     pg.keyboard.press('ArrowRight'); pg.wait_for_timeout(300)   # 2-3人 を選ぶ（自動で進まないこと）
@@ -35,13 +35,13 @@ with sync_playwright() as p:
     print('sum:', pg.inner_text('.dg-sum').replace('\n',' / '))
     pg.locator('.dg').scroll_into_view_if_needed(); pg.evaluate('scrollBy(0,-110)'); pg.wait_for_timeout(200); pg.screenshot(path=S+'ct_res.png')
     pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
-    print('modal closed:', not pg.evaluate("document.querySelector('#diag-modal').open"), 'focus back:', pg.evaluate("document.activeElement.className"))
+    print('modal closed:', not pg.evaluate("document.querySelector('#diag').open"), 'focus back:', pg.evaluate("document.activeElement.className"))
     # --- サブナビ
     pg.evaluate("scrollTo(0,0)"); pg.wait_for_timeout(200)
-    print('subnav at top:', pg.evaluate("document.querySelector('.subnav a[aria-current]')?.textContent"))
-    pg.click('.subnav a[href="#plan"]'); pg.wait_for_timeout(300)
-    print('subnav #plan opens modal:', pg.evaluate("document.querySelector('#diag-modal').open")); pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
-    for k in ['price','works','faq']:
+    print('subnav at top (none expected):', pg.evaluate("document.querySelector('.subnav a[aria-current]')?.textContent"))
+    pg.click('.spbar a[data-open-diag]'); pg.wait_for_timeout(300)
+    print('spbar opens modal:', pg.evaluate("document.querySelector('#diag').open")); pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
+    for k in ['cost','price','works']:
         pg.click(f'.subnav a[href="#{k}"]'); pg.wait_for_timeout(400)
         print(' jump', k, '->', pg.evaluate("document.querySelector('.subnav a[aria-current]')?.textContent"), 'top', pg.evaluate(f"Math.round(document.getElementById('{k}').getBoundingClientRect().top)"))
     # --- FAQ（1つだけ開く）
@@ -54,11 +54,13 @@ with sync_playwright() as p:
     pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
     print('menu after Esc:', pg.evaluate("document.getElementById('menu').open"), 'focus back:', pg.evaluate("document.activeElement.classList.contains('menu-btn')"))
     # --- カメラ（ラジオ）
+    pg.goto(U+'service.html',wait_until='networkidle')
+    print('service page current:', pg.evaluate("document.querySelector('.subnav a[aria-current]')?.textContent"))
     pg.locator('#switching').scroll_into_view_if_needed(); pg.click('label.cam:has(#cam-3)'); pg.wait_for_timeout(100)
     print('cam3 shown:', pg.evaluate("getComputedStyle(document.querySelector('.shot-3')).display"), pg.evaluate("getComputedStyle(document.querySelector('.shot-1')).display"))
     print('pause btn visible (reduce):', pg.evaluate("!document.querySelector('.sw-pause').hidden"), pg.inner_text('.sw-pause'))
     # --- popover
-    pg.locator('#price').scroll_into_view_if_needed(); pg.click('button[popovertarget="tip-mic"]'); pg.wait_for_timeout(200)
+    pg.goto(U,wait_until='networkidle'); pg.locator('#price .tiles').scroll_into_view_if_needed(); pg.click('button[popovertarget="tip-mic"]'); pg.wait_for_timeout(200)
     print('popover open:', pg.evaluate("document.getElementById('tip-mic').matches(':popover-open')"))
     r=pg.evaluate("(()=>{const b=document.querySelector('[popovertarget=tip-mic]').getBoundingClientRect(),p=document.getElementById('tip-mic').getBoundingClientRect();return [Math.round(b.top),Math.round(p.bottom),Math.round(p.left),Math.round(p.right)]})()")
     print('  btn.top / pop.bottom / pop.left-right:', r)
@@ -74,7 +76,7 @@ with sync_playwright() as p:
     print('errors', errs)
     # --- JS なし
     ctx2=b.new_context(viewport={'width':390,'height':844},java_script_enabled=False); q=ctx2.new_page(); q.goto(U,wait_until='networkidle')
-    print('nojs: questions visible', q.evaluate("[...document.querySelectorAll('.dg-q')].filter(e=>getComputedStyle(e).display!=='none').length"), 'menu fallback', q.evaluate("getComputedStyle(document.querySelector('.menu-fallback')).display"), 'menu btn', q.evaluate("getComputedStyle(document.querySelector('.menu-btn')).display"), 'shot1', q.evaluate("getComputedStyle(document.querySelector('.shot-1')).display"))
+    print('nojs: questions visible', q.evaluate("[...document.querySelectorAll('.dg-q')].filter(e=>getComputedStyle(e).display!=='none').length"), 'menu fallback', q.evaluate("getComputedStyle(document.querySelector('.menu-fallback')).display"), 'menu btn', q.evaluate("getComputedStyle(document.querySelector('.menu-btn')).display"), 'diag link', q.evaluate("document.querySelector('.mv .btn.plan').getAttribute('href')"), 'diag inline', q.evaluate("getComputedStyle(document.getElementById('diag')).display"))
     q.screenshot(path=S+'ct_nojs.png', full_page=False)
     b.close()
 srv.terminate()

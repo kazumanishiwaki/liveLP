@@ -7,6 +7,7 @@ const RETRY_MS = Number(process.env.SMOKE_RETRY_MS || 10_000);
 const checks = [
   { name: "トップ", path: "", type: "text/html", text: "カルラライブ" },
   { name: "見積の依頼", path: "contact.html", type: "text/html", text: "見積" },
+  { name: "当日の体制と流れ", path: "service.html", type: "text/html", text: "持ち場" },
   { name: "CSS", path: "assets/site.css", type: "text/css" },
   { name: "共通トークン", path: "assets/karura-tokens.css", type: "text/css" },
   { name: "JS", path: "assets/site.js", type: "javascript" },
