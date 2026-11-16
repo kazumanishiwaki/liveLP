@@ -15,7 +15,7 @@ with sync_playwright() as p:
     pg.on('pageerror', lambda e: errs.append(str(e))); pg.on('console', lambda m: errs.append(m.text) if m.type=='error' else None)
     pg.goto(U,wait_until='networkidle')
     # --- スマホ：診断はボタンからモーダルで開く（キーボード）
-    pg.focus('.mv .btn.plan'); pg.keyboard.press('Enter'); pg.wait_for_timeout(300)
+    pg.focus('.mv-acts .btn.plan'); pg.keyboard.press('Enter'); pg.wait_for_timeout(300)
     print('modal open:', pg.evaluate("document.querySelector('#diag').open"))
     # --- キーボードだけで診断
     pg.focus('.dg-q.is-cur input')            # 1問目の最初の選択肢
@@ -45,8 +45,9 @@ with sync_playwright() as p:
         pg.click(f'.subnav a[href="#{k}"]'); pg.wait_for_timeout(400)
         print(' jump', k, '->', pg.evaluate("document.querySelector('.subnav a[aria-current]')?.textContent"), 'top', pg.evaluate(f"Math.round(document.getElementById('{k}').getBoundingClientRect().top)"))
     # --- FAQ（1つだけ開く）
-    pg.click('#faq details:nth-of-type(1) summary'); pg.click('#faq details:nth-of-type(2) summary'); pg.wait_for_timeout(100)
-    print('faq open count:', pg.evaluate("document.querySelectorAll('#faq details[open]').length"))
+    print('faq open at start:', pg.evaluate("document.querySelectorAll('#faq details[open]').length"), '/', pg.evaluate("document.querySelectorAll('#faq details').length"))
+    pg.click('#faq details:nth-of-type(1) summary'); pg.wait_for_timeout(100)
+    print('faq after closing one:', pg.evaluate("document.querySelectorAll('#faq details[open]').length"))
     # --- メニュー（dialog）
     pg.evaluate('scrollTo(0,0)'); pg.click('.menu-btn'); pg.wait_for_timeout(300)
     print('menu open:', pg.evaluate("document.getElementById('menu').open"), 'focus in dialog:', pg.evaluate("document.getElementById('menu').contains(document.activeElement)"))
@@ -60,7 +61,7 @@ with sync_playwright() as p:
     print('cam3 shown:', pg.evaluate("getComputedStyle(document.querySelector('.shot-3')).display"), pg.evaluate("getComputedStyle(document.querySelector('.shot-1')).display"))
     print('pause btn visible (reduce):', pg.evaluate("!document.querySelector('.sw-pause').hidden"), pg.inner_text('.sw-pause'))
     # --- popover
-    pg.goto(U,wait_until='networkidle'); pg.locator('#price .tiles').scroll_into_view_if_needed(); pg.click('button[popovertarget="tip-mic"]'); pg.wait_for_timeout(200)
+    pg.goto(U,wait_until='networkidle'); pg.locator('#price .cmp').scroll_into_view_if_needed(); pg.click('button[popovertarget="tip-mic"]'); pg.wait_for_timeout(200)
     print('popover open:', pg.evaluate("document.getElementById('tip-mic').matches(':popover-open')"))
     r=pg.evaluate("(()=>{const b=document.querySelector('[popovertarget=tip-mic]').getBoundingClientRect(),p=document.getElementById('tip-mic').getBoundingClientRect();return [Math.round(b.top),Math.round(p.bottom),Math.round(p.left),Math.round(p.right)]})()")
     print('  btn.top / pop.bottom / pop.left-right:', r)
@@ -76,7 +77,7 @@ with sync_playwright() as p:
     print('errors', errs)
     # --- JS なし
     ctx2=b.new_context(viewport={'width':390,'height':844},java_script_enabled=False); q=ctx2.new_page(); q.goto(U,wait_until='networkidle')
-    print('nojs: questions visible', q.evaluate("[...document.querySelectorAll('.dg-q')].filter(e=>getComputedStyle(e).display!=='none').length"), 'menu fallback', q.evaluate("getComputedStyle(document.querySelector('.menu-fallback')).display"), 'menu btn', q.evaluate("getComputedStyle(document.querySelector('.menu-btn')).display"), 'diag link', q.evaluate("document.querySelector('.mv .btn.plan').getAttribute('href')"), 'diag inline', q.evaluate("getComputedStyle(document.getElementById('diag')).display"))
+    print('nojs: questions visible', q.evaluate("[...document.querySelectorAll('.dg-q')].filter(e=>getComputedStyle(e).display!=='none').length"), 'menu fallback', q.evaluate("getComputedStyle(document.querySelector('.menu-fallback')).display"), 'menu btn', q.evaluate("getComputedStyle(document.querySelector('.menu-btn')).display"), 'diag link', q.evaluate("document.querySelector('.mv-acts .btn.plan').getAttribute('href')"), 'diag inline', q.evaluate("getComputedStyle(document.getElementById('diag')).display"))
     q.screenshot(path=S+'ct_nojs.png', full_page=False)
     b.close()
 srv.terminate()

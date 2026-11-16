@@ -269,36 +269,58 @@ def tbl_gear():
     tr = ''.join(f'<tr><td class="k">{a}</td><td class="m" data-l="機種">{b}</td><td class="k" data-l="数">{c}</td><td data-l="用途">{d}</td></tr>' for a, b, c, d in rows)
     return f'<table class="tbl"><caption class="vh">持ち込む機材の内訳（スタンダード）</caption><thead><tr><th scope="col">種類</th><th scope="col">機種</th><th scope="col">数</th><th scope="col">用途</th></tr></thead><tbody>{tr}</tbody></table>'
 
-def tbl_extra():
-    rows = [('配信時間を1時間延長する', '［金額］'), ('スタッフを1名追加する（オンライン登壇者がいる場合、マイク6本以上の場合）', '［金額］'),
-            ('カメラを1台追加する', '［金額］'), ('会場に使えるインターネット回線がない', '［金額］'), ('対応エリア（新宿から90分圏内）外の交通費・宿泊費', '実費')]
-    tr = ''.join(f'<tr><td>{a}</td><td class="r" data-l="追加料金（税別）">{b}</td></tr>' for a, b in rows)
-    return f'<table class="tbl"><caption class="vh">追加料金がかかる条件</caption><thead><tr><th scope="col">条件</th><th scope="col" class="r">追加料金（税別）</th></tr></thead><tbody>{tr}</tbody></table>'
-
 def tbl_option():
-    rows = [('記録写真', '専任のカメラマン1名が、報告書や広報に使える写真を撮ります', '［金額］'),
-            ('記録映像の編集', '3台のカメラの映像から、話している人に合わせて切り替えた記録映像を、字幕つきで作ります', '［金額］'),
-            ('2分のダイジェスト映像', '次回の告知や成果報告に使える、短いまとめの映像を作ります', '［金額］'),
-            ('文字起こし', '報告書の下書きにそのまま使えるテキストを作ります', '［金額］'),
-            ('LINEで申し込む受付', '申込をLINEログインにして、主催者のLINE公式アカウントの友だちを増やします。LINE側の設定も代行します', '［金額］')]
-    tr = ''.join(f'<tr><th scope="row">{a}</th><td data-l="内容">{b}</td><td class="r" data-l="料金（税別）">{c}</td></tr>' for a, b, c in rows)
-    return f'<table class="tbl tbl--opt"><caption class="vh">オプションの一覧</caption><thead><tr><th scope="col">オプション</th><th scope="col">内容</th><th scope="col" class="r">料金（税別）</th></tr></thead><tbody>{tr}</tbody></table>'
+    """オプションは1つの表。体制や条件で足すもの（旧「追加料金の5つ」）と、同じ日に頼めるもの"""
+    groups = [('当日の体制や条件で足すもの', [
+                  ('配信時間の延長', '3時間を超える配信。1時間ごと', '［金額］'),
+                  ('スタッフの追加', 'オンラインから登壇する人がいる会、マイクが6本以上要る会', '［金額］'),
+                  ('カメラの追加', '1台ごと', '［金額］'),
+                  ('回線の持ち込み', '会場に使えるインターネット回線がないとき', '［金額］'),
+                  ('対応エリア外の交通費・宿泊費', '新宿から90分圏内の外の会場', '実費')]),
+              ('同じ日に頼めるもの', [
+                  ('記録写真', '専任のカメラマン1名が、報告書や広報に使える写真を撮ります', '［金額］'),
+                  ('記録映像の編集', '3台のカメラの映像から、話している人に合わせて切り替えた記録映像を、字幕つきで作ります', '［金額］'),
+                  ('2分のダイジェスト映像', '次回の告知や成果報告に使える、短いまとめの映像を作ります', '［金額］'),
+                  ('文字起こし', '報告書の下書きにそのまま使えるテキストを作ります', '［金額］'),
+                  ('LINEで申し込む受付', '申込をLINEログインにして、主催者のLINE公式アカウントの友だちを増やします。LINE側の設定も代行します', '［金額］')])]
+    body = ''
+    for g, rows in groups:
+        body += f'<tbody><tr class="tbl-group"><th scope="rowgroup" colspan="3">{g}</th></tr>'
+        body += ''.join(f'<tr><th scope="row">{a}</th><td data-l="内容">{b}</td><td class="r" data-l="料金（税別）">{c}</td></tr>' for a, b, c in rows) + '</tbody>'
+    return f'<table class="tbl tbl--opt"><caption class="vh">オプションの一覧</caption><thead><tr><th scope="col">オプション</th><th scope="col">内容</th><th scope="col" class="r">料金（税別）</th></tr></thead>{body}</table>'
+
+def tbl_plans():
+    """プランごとの比較表（何が含まれるか）。スマホでは横にスクロール"""
+    Y = '<span class="yes" role="img" aria-label="含む">○</span>'
+    rows = [('料金（税別）', '<b class="cmp-price">25<small>万円</small></b>', '<b class="cmp-price">35<small>万円</small></b>', '<b class="cmp-price">ASK</b>'),
+            ('スタッフ', '2名', '3名', '内容に合わせて'),
+            ('カメラ', '3台', '5台', '内容に合わせて'),
+            ('マイクの持ち込み', f'5本まで{tip("tip-mic", "マイクが5本の理由", "登壇者4人分と、会場の質問用1本です。6本以上必要な会は、スタッフを1名追加します。")}', '［本数］まで', '内容に合わせて'),
+            ('配信の時間／会場での作業', f'3時間／6時間まで{tip("tip-time", "作業時間の内訳", "設営2時間、配信3時間、撤収1時間が目安です。")}', '［時間］', '内容に合わせて'),
+            ('発表スライドの映像の取り込み', Y, Y, Y),
+            ('会場設備のマイク音声の取り込み', Y, Y, Y),
+            ('予備の録画機と、予備の回線', Y, Y, Y),
+            ('事前の打ち合わせと会場の下見', Y, Y, Y),
+            ('録画データの納品', Y, Y, Y),
+            (f'受付用のデジタルチケット（来場300人まで）{tip("tip-ticket", "デジタルチケットでできること", "申込の受付、当日のQRコード・タッチでの入場、終了後の来場者数の報告までを引き受けます。チケットの販売と決済は行いません。")}', Y, Y, Y)]
+    tr = ''.join(f'<tr><th scope="row">{a}</th><td class="is-main">{b}</td><td>{c}</td><td class="is-ask">{d}</td></tr>' for a, b, c, d in rows)
+    return (f'<div class="cmp-wrap" tabindex="0" role="region" aria-label="プランごとの比較表（横にスクロールできます）"><table class="cmp"><caption class="vh">プランごとに含まれるもの</caption>'
+            f'<thead><tr><td></td><th scope="col" class="is-main">スタンダード</th><th scope="col">ワイド</th><th scope="col" class="is-ask">オーダー</th></tr></thead><tbody>{tr}</tbody></table></div>')
 
 def tip(tid, label, body):
     """「?」で開く補足。popover 未対応では、本文の下に注記として出る"""
     return (f'<span class="tip"><button type="button" class="tip-btn" popovertarget="{tid}" aria-label="{label}" style="anchor-name:--{tid}">?</button>'
             f'<span id="{tid}" popover class="tip-body" style="position-anchor:--{tid}">{body}</span></span>')
 
-def case(n, org, bg, imgs, extra_size):
-    gallery = ''.join(img(c, a) for c, a in imgs)
-    return f'''<article class="case" aria-labelledby="case{n}-t"><div class="case-l">{img(bg, '', 'case-bg')}
-<p class="t-note">事例 {n}　|　［主催機関名］</p>
+def case(n, photo, alt, size_note=''):
+    """事例のカード（横スクロールの1枚）。どの事例も同じ項目で並べる"""
+    return f'''<li class="case-card stack s-16"><div class="zoom">{img(photo, alt)}</div>
+<p class="t-note t-sub">事例 {n}　|　［主催機関名］</p>
 <div class="case-tags"><span class="pill">［大学］</span><span class="pill">［シンポジウム］</span></div>
-<h3 class="t-ct" id="case{n}-t">［会の名称：課題と成果を一文で］</h3>
+<h3 class="t-ct">［会の名称：課題と成果を一文で］</h3>
 <p class="t-body">［当日起きたことと、どう戻したか。2〜3行］</p>
-<dl class="chips"><div class="chip"><dt>会の規模</dt><dd>登壇［ ］人、会場［ ］人</dd></div><div class="chip"><dt>当日の体制</dt><dd>スタッフ［ ］名{extra_size}</dd></div>
-<div class="chip"><dt>使用機材</dt><dd>カメラ［ ］台、マイク［ ］本</dd></div><div class="chip"><dt>金額</dt><dd>［25万〜30万円］</dd></div></dl></div>
-<div class="case-r">{gallery}</div></article>'''
+<dl class="chips"><div class="chip"><dt>会の規模</dt><dd>登壇［ ］人、会場［ ］人</dd></div><div class="chip"><dt>当日の体制</dt><dd>スタッフ［ ］名{size_note}</dd></div>
+<div class="chip"><dt>使用機材</dt><dd>カメラ［ ］台、マイク［ ］本</dd></div><div class="chip"><dt>金額</dt><dd>［25万〜35万円］</dd></div></dl></li>'''
 
 FAQ = [
     ('何日前までに頼めば間に合いますか', '［最短の日数と、繁忙期の目安］'),
@@ -318,47 +340,52 @@ FAQ = [
 ]
 
 # ------------------------------------------------------------------ メインビジュアル（リードと箇条書きは3案を比べる。採用中は MV_USE）
+# 箇条書きは、それぞれの中身が書いてある場所へのリンクにする（href はトップから見た場所。ほかのページでは index.html を付ける）
 MV_KIND = 'シンポジウム・講演会・公開講座のライブ配信／ハイブリッド配信（会場＋オンライン）'
 MV = {
     'A': {'name': '案A：必要なぶんだけ',
           'h1': '必要なぶんの機材と人で、<br>会場とオンラインに届けます。',
           'lead': '大学・公共機関のシンポジウムと講演会を、ハイブリッドで配信します。',
           'kind': 'list',
-          'items': ['カメラ3台・スタッフ2名・マイク5本で、25万円（税別）から', '見積書に、スタッフの役割と機材の内訳をすべて書きます', 'カメラ1台で足りる会なら、そうお伝えします']},
+          'items': [('カメラ3台・スタッフ2名・マイク5本で、25万円（税別）から', '#price'), ('見積書に、スタッフの役割と機材の内訳をすべて書きます', '#cost'),
+                    ('カメラ1台で足りる会なら、そうお伝えします', '#faq')]},
     'B': {'name': '案B：見積の中身から',
           'h1': '配信の見積を、<br>中身から読めるものに。',
           'lead': '誰が来て、何を持ち込み、何時間いるか。見積書にすべて書きます。',
           'kind': 'list',
-          'items': ['スタンダード 25万円：カメラ3台・スタッフ2名', 'ワイド 35万円：カメラ5台・スタッフ3名', '追加料金がかかる条件は5つだけ。表で公開しています']},
+          'items': [('スタンダード 25万円：カメラ3台・スタッフ2名', '#price'), ('ワイド 35万円：カメラ5台・スタッフ3名', '#price'),
+                    ('オプションの料金も、表で公開しています', '#option')]},
     'C': {'name': '案C：いまの見出し＋対象・体制・費用',
           'h1': 'カメラ5台はいりません。<br>でも1台では、パネルディスカッションは撮れません。',
           'lead': '会の大きさに合った体制で、会場の様子をそのままオンラインに届けます。',
           'kind': 'facts',
-          'items': [('対象', '登壇者2〜6人、会場50〜300人のシンポジウム・講演会'), ('体制', 'カメラ3台、スタッフ2名、マイク5本まで'), ('費用', '25万円（税別）から。内訳はすべて見積書に書きます')]},
+          'items': [('対象', '登壇者2〜6人、会場50〜300人のシンポジウム・講演会', '#works'), ('体制', 'カメラ3台、スタッフ2名、マイク5本まで', 'service.html#team'),
+                    ('費用', '25万円（税別）から。内訳はすべて見積書に書きます', '#price')]},
 }
 MV_USE = 'C'
 
-def mv(key, tag='h1', hid='mv-title'):
+def mv(key, page='index.html', tag='h1', hid='mv-title'):
+    """横いっぱいの写真に文を重ねる。写真はまだ穴埋め（ダミーの会場写真を暗くして敷いている）"""
     v = MV[key]
+    at = lambda h: h if (page == 'index.html' or not h.startswith('#')) else 'index.html' + h
     if v['kind'] == 'facts':
-        body = '<dl class="mv-facts">' + ''.join(f'<div><dt>{a}</dt><dd>{b}</dd></div>' for a, b in v['items']) + '</dl>'
+        body = '<dl class="mv-facts">' + ''.join(f'<div><dt>{a}</dt><dd><a href="{at(h)}">{b}</a></dd></div>' for a, b, h in v['items']) + '</dl>'
     else:
-        body = '<ul class="ticklist">' + ''.join(f'<li>{ico("check", "s")}<span>{t}</span></li>' for t in v['items']) + '</ul>'
-    return f'''<div class="mv-grid">
-<div class="mv-copy stack">
+        body = '<ul class="ticklist">' + ''.join(f'<li>{ico("check", "s")}<a href="{at(h)}">{t}</a></li>' for t, h in v['items']) + '</ul>'
+    return f'''<div class="mv-bg">{img('P03', '', lazy=False, eager_high=True)}</div>
+<div class="wrap mv-in"><div class="mv-copy stack">
 <p class="hero-kind">{MV_KIND}</p>
 <{tag} class="t-h1" id="{hid}">{v['h1']}</{tag}>
 <p class="t-lead">{v['lead']}</p>
 {body}
-<div class="btns">{diag_btn()}{quote_btn()}</div>
-</div>
-<figure class="mv-photo"><div class="ph">［写真：配信中の会場。客席の後ろから、登壇者とスクリーン、配信の機材が一緒に写るもの］</div></figure>
-</div>'''
+<div class="mv-acts">{diag_btn('プラン診断')}{quote_btn()}</div>
+</div></div>
+<p class="mv-note">［写真：配信中の会場。客席の後ろから、登壇者とスクリーン、配信の機材が一緒に写るもの］</p>'''
 
 # ------------------------------------------------------------------ トップ
 def index():
     intro = '<div class="intro" aria-hidden="true"><p>' + ''.join(f'<span style="--i:{i}">{c}</span>' for i, c in enumerate(NAME_EN)) + '</p></div>'
-    hero = f'<section class="mv" aria-labelledby="mv-title"><div class="wrap">{mv(MV_USE)}</div></section>'
+    hero = f'<section class="mv" aria-labelledby="mv-title">{mv(MV_USE)}</section>'
 
     work = [('準備', '打ち合わせと下見', 'オンラインで30分の打ち合わせ、会場の下見、配信先（Zoom・YouTubeなど）の設定'),
             ('設営', '約2時間', 'カメラ・マイク・回線を置いて、音と映像を確かめます'),
@@ -372,34 +399,28 @@ def index():
     lean = [('全員に持ち場があります', 'スタッフは、映像と、音声・配信の2つの持ち場に1人ずつ。持ち場のない人の費用はいただきません。'),
             ('機材は、会に合わせて選びます', '登壇者2〜6人の会にはカメラ3台。5台を持ち込むのは、登壇者が多い会や会場が広い会だけです。'),
             ('予備は、止まると取り返しがつかないものだけ', '録画機と回線は2系統。どちらかが止まっても、配信と記録は続きます。'),
-            ('見積書にすべて書きます', '人・機材・時間の内訳を明記します。あとから増えるのは、追加料金の表にある5つだけです。')]
+            ('見積書にすべて書きます', '人・機材・時間の内訳を明記します。あとから増えるのは、オプションの表にあるものだけです。')]
     ln = ''.join(f'<li><span class="a">{a}</span><span class="b">{b}</span></li>' for a, b in lean)
     cost = sec('cost', '費用の内訳', '配信の費用は、<br>人と機材と時間で決まります', f'''<div class="stack"><h3 class="sub">配信の仕事の内訳</h3><ol class="steps">{wk}</ol></div>
 <div class="stack"><h3 class="sub">費用を決める3つ</h3><ul class="reasons reasons--3">{fc}</ul></div>
 <div class="boxg stack s-48" style="color:var(--ink)"><h3 class="t-h2s">無駄のない配信とは</h3><ul class="lean">{ln}</ul></div>''',
                lead='配信代行の見積は、会場に来る人の数、持ち込む機材、会場にいる時間の3つで、ほぼ決まります。カルラライブは、会の大きさに必要なぶんだけを組み合わせます。')
 
-    plans = [('スタンダード', '25', '万円（税別）', 'カメラ3台・スタッフ2名・マイク5本まで', '登壇者2〜6人、会場50〜300人のシンポジウム・講演会', True),
-             ('ワイド', '35', '万円（税別）', 'カメラ5台・スタッフ3名・マイク［本数］まで', '登壇者が7人以上の会、会場が300人を超える会、客席の様子も届けたい会', True),
-             ('オーダー', 'ASK', '', 'ロケ配信、進行台本の制作など。内容に合わせてお見積りします', '屋外や会場の外からの中継、複数の会場や複数日にわたる会、進行台本から一緒につくる会', False)]
-    pl = ''.join(f'''<li class="plan-card stack s-16"><h3 class="plan-name">{n}</h3><p class="t-big2">{p}{f"<small>{u}</small>" if u else ""}</p>
-<p class="plan-spec">{s}</p><dl class="plan-fit"><dt>向いている会</dt><dd>{f}</dd></dl>{quote_btn("見積を依頼する" if q else "内容を相談する", "full")}</li>''' for n, p, u, s, f, q in plans)
-    tiles = ['スタッフ2名', 'カメラ3台と、発表スライドの映像取り込み',
-             f'マイク5本までの持ち込み{tip("tip-mic", "マイクが5本の理由", "登壇者4人分と、会場の質問用1本です。6本以上必要な会は、スタッフを1名追加します。")}',
-             '会場設備のマイク音声も直接取り込みます', '予備の録画機と、予備のインターネット回線',
-             f'配信3時間まで、会場での作業6時間まで{tip("tip-time", "作業時間の内訳", "設営2時間、配信3時間、撤収1時間が目安です。")}',
-             '事前の打ち合わせと会場の下見', '録画データの納品',
-             f'受付用のデジタルチケット（来場300人まで）{tip("tip-ticket", "デジタルチケットでできること", "申込の受付、当日のQRコード・タッチでの入場、終了後の来場者数の報告までを引き受けます。チケットの販売と決済は行いません。")}']
+    plans = [('main', 'スタンダード', '25', '万円（税別）', 'カメラ3台・スタッフ2名・マイク5本まで', '登壇者2〜6人、会場50〜300人のシンポジウム・講演会'),
+             ('', 'ワイド', '35', '万円（税別）', 'カメラ5台・スタッフ3名・マイク［本数］まで', '登壇者が7人以上の会、会場が300人を超える会、客席の様子も届けたい会'),
+             ('ask', 'オーダー', 'ASK', '', 'ロケ配信、進行台本の制作など。内容に合わせてお見積りします', '屋外や会場の外からの中継、複数の会場や複数日にわたる会')]
+    pl = ''.join(f'''<li class="plan-card stack s-16{" plan-card--" + k if k else ""}">{'<p class="plan-badge">基本のプラン</p>' if k == 'main' else ''}<h3 class="plan-name">{n}</h3><p class="t-big2">{p}{f"<small>{u}</small>" if u else ""}</p>
+<p class="plan-spec">{sp}</p><dl class="plan-fit"><dt>向いている会</dt><dd>{f}</dd></dl></li>''' for k, n, p, u, sp, f in plans)
     price = sec('price', '料金プラン', '料金は3つです', f'''<ul class="plans">{pl}</ul>
 <p class="t-note t-sub">定期的に配信する会（毎月の公開講座など）は、回数に応じて割引があります。</p>
-<div class="stack"><h3 class="sub">スタンダードに含まれるもの</h3><ul class="tiles">{''.join(f'<li><span>{t}</span></li>' for t in tiles)}</ul></div>
-<div class="stack"><h3 class="t-h3">追加料金がかかるのは、この5つだけです</h3>{tbl_extra()}</div>
-<div class="btns">{quote_btn()}<a class="tlink" href="contact.html#sample">見積書の見本を見る</a><span class="t-note t-sub">上司への説明や、相見積にそのまま使えます</span></div>''',
+<div class="stack"><h3 class="sub">プランごとに含まれるもの</h3>{tbl_plans()}</div>
+<div class="btns">{quote_btn('見積を依頼する', 'xl')}</div>
+<p class="t-note t-sub"><a href="contact.html#sample">見積書の見本</a>は、上司への説明や相見積にそのまま使えます。</p>''',
                 lead=f'どのプランにも、事前の打ち合わせ、会場の下見、録画データの納品、受付用のデジタルチケットが含まれます。{mk("見積書にも同じ内容を書きます。")}', tone='bandg')
 
-    option = sec('option', 'オプション', '同じ日に頼めるもの', f'''{tbl_option()}
-<p class="t-note t-sub">オプションは、どのプランにも付けられます。プラン診断で選ぶと、見積のご依頼にそのまま入ります。</p>''',
-                 lead='記録写真と記録映像も、配信と同じ日にお受けします。見積・打ち合わせ・請求は、配信とまとめて1回です。')
+    option = sec('option', 'オプション', '必要なときだけ、足せるもの', f'''{tbl_option()}
+<p class="t-note t-sub">オプションは、どのプランにも付けられます。プラン診断で選んだものは、見積のご依頼にそのまま入ります。</p>''',
+                 lead='当日の体制や条件で足すものと、同じ日に頼める記録写真・記録映像です。どれも見積書に1行ずつ書きます。見積・打ち合わせ・請求は、配信とまとめて1回です。')
 
     kinds = [('face', 'パネルディスカッションのあるシンポジウム', '登壇者2〜6人。話す人が替わるたびに、カメラを切り替えます'),
              ('mic', '公開講座・講演会', '会場に50〜300人。会場の質問も、オンラインの視聴者に届けます'),
@@ -413,15 +434,16 @@ def index():
 <div class="stack"><h3 class="sub">これまでに配信・記録を担当した機関</h3><p class="t-note">［配信した会の件数、継続して依頼いただいている機関の数］</p>
 <ul class="logos">{''.join('<li><div class="ph">［ロゴ］</div></li>' for _ in range(6))}</ul></div>
 </div>
-<div class="mtl">
-{case(1, '', 'P02', [('P02', '（ダミー）パネルディスカッション全体'), ('P06', '（ダミー）客席後方のカメラ'), ('P07', '（ダミー）ミキサーとマイク'), ('P08', '（ダミー）配信卓とモニター'), ('P10', '（ダミー）会場からの質問'), ('P11', '（ダミー）受付と案内表示'), ('P12', '（ダミー）開場前の設営')], '（映像1名、音声・配信1名）')}
-{case(2, '', 'P03', [('P03', '（ダミー）会場全体'), ('P01', '（ダミー）話している人のアップ'), ('P09', '（ダミー）オンライン登壇者の映る画面'), ('P07', '（ダミー）ミキサーとマイク'), ('P06', '（ダミー）客席後方のカメラ'), ('P12', '（ダミー）開場前の設営'), ('P10', '（ダミー）会場からの質問')], '')}
-{case(3, '', 'P10', [('P10', '（ダミー）会場からの質問'), ('P02', '（ダミー）パネルディスカッション全体'), ('P08', '（ダミー）配信卓とモニター'), ('P11', '（ダミー）受付と案内表示'), ('P01', '（ダミー）話している人のアップ'), ('P06', '（ダミー）客席後方のカメラ'), ('P03', '（ダミー）会場全体')], '')}
-</div>
+<ul class="cases" aria-label="事例の一覧（横にスクロールできます）">
+{case(1, 'P02', '（ダミー）パネルディスカッション全体', '（映像1名、音声・配信1名）')}
+{case(2, 'P09', '（ダミー）オンライン登壇者の映る画面')}
+{case(3, 'P10', '（ダミー）会場からの質問')}
+{case(4, 'P03', '（ダミー）会場全体')}
+</ul>
 <div class="wrap mtl"><blockquote class="boxw stack" style="max-width:48rem"><p class="t-lead">［頼む前に不安だったこと、当日どうだったか。2〜3行］</p><footer class="t-note t-sub">［所属・役職・氏名（掲載できる範囲）］</footer></blockquote></div>
 </section>'''
 
-    fq = ''.join(f'<details name="faq"><summary><span class="qa-mk qa-mk--q" aria-hidden="true">Q</span>{q}</summary><div class="ans"><span class="qa-mk qa-mk--a" aria-hidden="true">A</span><p class="t-body">{a}</p></div></details>' for q, a in FAQ)
+    fq = ''.join(f'<details open><summary><span class="qa-mk qa-mk--q" aria-hidden="true">Q</span>{q}</summary><div class="ans"><span class="qa-mk qa-mk--a" aria-hidden="true">A</span><p class="t-body">{a}</p></div></details>' for q, a in FAQ)
     faq = sec('faq', 'よくある質問', 'よくある質問', f'<div class="faq">{fq}</div>', tone='band')
 
     return (head(f'シンポジウム・講演会のハイブリッド配信代行｜3カメ・2名・25万円〜｜{NAME}',
@@ -529,8 +551,8 @@ def public():
 
 # ------------------------------------------------------------------ メインビジュアルの比較（持ち主の確認用。メニューには出さない）
 def mvs():
-    blocks = ''.join(f'<section class="mv mv-cmp" aria-labelledby="mv-{k}"><div class="wrap stack s-48"><p class="t-lab" id="mv-{k}">{v["name"]}{"（いま使っている案）" if k == MV_USE else ""}</p>{mv(k, "p", f"mv-{k}-h")}</div></section>'
-                     for k, v in MV.items())
+    blocks = ''.join(f'<div class="mv-cmp"><div class="wrap"><p class="t-lab" id="mv-{k}">{v["name"]}{"（いま使っている案）" if k == MV_USE else ""}</p></div>'
+                     f'<section class="mv" aria-labelledby="mv-{k}">{mv(k, "mvs.html", "p", f"mv-{k}-h")}</section></div>' for k, v in MV.items())
     return (head(f'メインビジュアルの比較｜{NAME}', 'トップのリード文と箇条書きの案を並べて比べるページです。')
             + header('mvs.html') + '<main id="main">'
             + page_head('メインビジュアルの比較', 'リード文と箇条書きを比べる', f'トップの最初の画面に置く文の案です。src/build.py の MV_USE を変えると、トップの文が入れ替わります。いまは「{MV[MV_USE]["name"]}」を使っています。')
@@ -581,8 +603,7 @@ def rules():
     css = (HERE / 'site.css').read_text(encoding='utf-8')
     apis = [
         ('&lt;dialog&gt;（showModal）', 'Widely', 'スマホのメニュー。フォーカスを閉じ込め、Esc で閉じる', '— （JS が動かないときは、ヘッダーの「メニュー」がフッターのメニューへ移動）'),
-        ('&lt;details&gt; / &lt;summary&gt;', 'Widely', 'よくある質問の開閉', '—'),
-        ('details[name]（1つだけ開く）', 'Newly（2024-09）', '開いた質問以外を閉じる', '未対応では、複数同時に開けるだけ'),
+        ('&lt;details open&gt; / &lt;summary&gt;', 'Widely', 'よくある質問。最初から開いておき、読み終えたものを閉じられる', '—'),
         (':has()', 'Widely', 'カメラの切り替え（ラジオの選択で写真を出し分け）、診断の選択肢の色', '—'),
         ('コンテナクエリ（size）', 'Widely', '診断の選択肢を、箱の幅で1列／2列に。事例とスタッフの並び', '—'),
         ('CSS のネスト、@layer、色の混色 color-mix()', 'Widely', 'CSS の書き方', '—'),
