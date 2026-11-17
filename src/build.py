@@ -396,8 +396,7 @@ def mv(key, page='index.html', tag='h1', hid='mv-title'):
 <p class="hero-kind">{MV_KIND}</p>
 <{tag} class="t-h1" id="{hid}">{v['h1']}</{tag}>
 <p class="t-lead">{v['lead']}</p>
-</div></div>
-<p class="mv-note">［写真：配信中の会場。客席の後ろから、登壇者とスクリーン、配信の機材が一緒に写るもの］</p></section>
+</div></div></section>
 <div class="wrap mv-after">{body}<div class="mv-acts">{diag_btn('プラン診断')}{quote_btn()}</div></div>'''
 
 # ------------------------------------------------------------------ トップ
@@ -504,7 +503,7 @@ def service():
 <label class="cam"><input type="radio" name="cam" id="cam-1" value="1" checked><b>カメラ1</b><span>話している人</span></label>
 <label class="cam"><input type="radio" name="cam" id="cam-2" value="2"><b>カメラ2</b><span>登壇者全体</span></label>
 <label class="cam"><input type="radio" name="cam" id="cam-3" value="3"><b>カメラ3</b><span>会場全体</span></label></fieldset>
-<p class="t-note t-sub">写真は同じ会の3枚（ダミー：P01・P02・P03）</p></div>
+</div>
 <div class="screen" data-rv="media">
 {img('P01', '（ダミー）カメラ1：話している人のアップ', 'shot shot-1')}{img('P02', '（ダミー）カメラ2：パネルディスカッション全体', 'shot shot-2')}{img('P03', '（ダミー）カメラ3：会場全体、客席とスクリーン', 'shot shot-3')}
 <p class="onair"><i></i>配信中の画面</p>
