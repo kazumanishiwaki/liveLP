@@ -662,12 +662,43 @@
   .tools { display: grid; gap: 1.25rem;
     & > .hi { min-inline-size: 0; background: var(--paper); border-radius: var(--radius-card); padding: .75rem .75rem 1.25rem; box-shadow: var(--sh-1); }
     & > .hi :is(.t-ct, .t-body, .t-note) { padding-inline: .25rem; } }
-  @media (width >= 48rem) { .tools { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (width >= 48rem) { .tools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (width >= 90rem) { .tools { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
   /* ---------- オプションの表：名前の列を太めに ---------- */
   .tbl--opt th[scope="row"] { white-space: nowrap; }
   .tbl--opt .tbl-group th { padding: 2rem 0 .5rem; border-block-end: 3px solid var(--teal); font-size: var(--fs-note); letter-spacing: .04em; color: var(--ink); }
   @media (width < 40rem) { .tbl--opt .tbl-group { padding-block: 1.5rem 0; border: 0; } .tbl--opt .tbl-group th { padding-block-start: 0; } }
+
+  /* ---------- よくあるお悩み：担当者の声（吹き出し）と、答えが書いてある場所へのリンク ---------- */
+  .voices { display: grid; gap: 1.5rem; }
+  /* PCでは3人の吹き出し・名前・リンクの高さをそろえる（subgrid） */
+  @media (width >= 64rem) { .voices { grid-template-columns: repeat(3, minmax(0, 1fr)); } .voice { grid-row: span 3; grid-template-rows: subgrid; } }
+  .voice { display: grid; grid-template-rows: 1fr auto auto; gap: .75rem; }
+  .voice-q { position: relative; padding: 1.5rem; border-radius: var(--radius-card); background: var(--wash); line-height: 1.9;
+    &::after { content: ""; position: absolute; inset-block-start: 100%; inset-inline-start: 2rem; border: .625rem solid transparent; border-block-start-color: var(--wash); } }
+  .voice-who { margin-block-start: .5rem; }
+
+  /* ---------- 当日のタイムライン：左に時刻、右に中身 ---------- */
+  .tl { display: grid; border-block-end: 1px solid var(--sand);
+    & li { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: .25rem 1.5rem; padding-block: 1.25rem; border-block-start: 1px solid var(--sand); }
+    & .tl-time { grid-row: span 2; font-family: var(--font-en); font-size: 1.5rem; line-height: 1.2; color: var(--teal); }
+    & .a { font-size: var(--fs-ct); letter-spacing: .06em; }
+    & .b { line-height: 1.9; } }
+  @media (width >= 64rem) { .tl li { grid-template-columns: 6rem 14rem minmax(0, 1fr); align-items: baseline; } .tl .tl-time { grid-row: auto; } }
+
+  /* ---------- 起きがちなトラブルと予防：左に起きること、右に防ぎ方 ---------- */
+  .pairs { display: grid; border-block-end: 1px solid var(--sand);
+    & li { display: grid; gap: .5rem 2rem; padding-block: 1.25rem; border-block-start: 1px solid var(--sand); }
+    & .pair-q { font-size: var(--fs-ct); line-height: 1.6; letter-spacing: .06em; & .t-num { margin-inline-end: .75rem; } }
+    & .pair-a { line-height: 1.9; padding-inline-start: 1rem; border-inline-start: 3px solid var(--teal); } }
+  @media (width >= 64rem) { .pairs li { grid-template-columns: 20rem minmax(0, 1fr); align-items: center; } }
+
+  /* ---------- セット割：別々に頼んだ合計に取り消し線、セット価格を大きく ---------- */
+  .set-tag { justify-self: start; inline-size: fit-content; padding: .25rem .875rem; border-radius: 20px; background: var(--teal); color: #fff; font-size: .75rem; letter-spacing: .08em; }
+  .set-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1rem;
+    & s { font-size: 1.25rem; opacity: .7; }
+    & b { font-family: var(--font-en); font-weight: 400; font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem); line-height: 1; } }
 
   /* ---------- スタッフ ---------- */
   /* 1人1枚の横長カード：左に小さな写真、右に持ち場。PCは2枚を横に並べる */
