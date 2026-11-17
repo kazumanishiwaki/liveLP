@@ -25,11 +25,15 @@ def mark(h):
     return ''.join(p if p.startswith('<') else ANA.sub(lambda m: f'<span class="ana">{m.group(0)}</span>', p)
                    for p in re.split(r'(<[^>]+>)', h))
 
+GRAY = '%23e6e6e6'  # 写真・図はすべて無地のグレーで置く（2026-11-18 決定）。本物が届いたら src/img から差し替える
+
 def img(code, alt, cls='', lazy=True, eager_high=False):
+    """写真の枠。いまは元の写真と同じ縦横比の、無地のグレー"""
     w, h = SIZES[code]
-    a = ' loading="lazy" decoding="async"' if lazy else (' fetchpriority="high"' if eager_high else '')
     c = f' class="{cls}"' if cls else ''
-    return f'<img{c} src="img/{code}.webp" alt="{alt}" width="{w}" height="{h}"{a}>'
+    alt = alt.replace('（ダミー）', '')
+    src = f"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 {w} {h}'%3E%3Crect width='{w}' height='{h}' fill='{GRAY}'/%3E%3C/svg%3E"
+    return f'<img{c} src="{src}" alt="{alt}" width="{w}" height="{h}">'
 
 def btn(text, href, cls=''):
     return f'<a class="btn {cls}" href="{href}">{text}</a>'
@@ -465,7 +469,7 @@ def index():
 <p class="t-lead">{mk('すべての事例を、人数・体制・機材・金額の同じ項目で載せています。')}ご自身の会に近いものを探してください。</p></div>
 <div class="stack"><h3 class="sub">よくご依頼いただく会</h3><ul class="reasons">{kd}</ul></div>
 <div class="stack"><h3 class="sub">これまでに配信・記録を担当した機関</h3><p class="t-note">［配信した会の件数、継続して依頼いただいている機関の数］</p>
-<ul class="logos">{''.join('<li><div class="ph">［ロゴ］</div></li>' for _ in range(6))}</ul></div>
+<ul class="logos">{''.join('<li><div class="ph" style="aspect-ratio:5/2;padding:0"></div></li>' for _ in range(6))}</ul></div>
 </div>
 <ul class="cases" aria-label="事例の一覧（横にスクロールできます）">
 {case(1, 'P02', '（ダミー）パネルディスカッション全体', '（映像1名、音声・配信1名）')}
@@ -491,7 +495,7 @@ def service():
 <li class="staff-card"><div class="zoom">{img('P05', '（ダミー）音声・配信担当のスタッフ')}</div><div class="stack s-16"><h3 class="t-ct">音声・配信担当</h3><p class="t-body">マイクと音量の調整、配信の見守り、登壇者のPCの接続</p><p class="t-note">当日いる場所：配信卓（会場の音響卓の隣）</p><p class="t-note t-sub">［氏名・経歴一行］</p></div></li></ul>
 <p class="t-note">ワイド（35万円）では、3人目が［3人目の役割］を受け持ちます。</p>
 <p class="t-body">見積書と一緒に「当日のスタッフ表」をお渡しします。来る人の名前、持ち場、当日いる場所を1枚にまとめたものです。会場の方や来賓に「あの人は何をしている人か」を聞かれても、すぐにお答えいただけます。</p>
-<figure data-rv="media"><div class="ph" style="aspect-ratio:16/9">［図：会場の見取り図に、カメラ3台・スタッフ2名・マイクの位置を置いた配置図］</div></figure>
+<figure data-rv="media"><div class="ph" style="aspect-ratio:16/9"></div></figure>
 <div class="stack"><h3 class="t-h3">持ち込む機材（スタンダード）</h3>{tbl_gear()}</div>''',
                lead='映像と、音声・配信。2つの持ち場に1人ずつで伺います。どちらも本番中ずっと手を動かす仕事です。人数を増やして見積を大きくすることはしません。')
 
@@ -519,7 +523,7 @@ def service():
     day = sec('day', '当日の流れ', '当日、ご担当者は配信に<br>かかりきりにならずに済みます', f'''<ul class="reasons">{rs}</ul>
 <div class="boxg stack" style="color:var(--ink)"><h3 class="t-h2s">止まらないとは言いません。止まったときにどう戻すかを、事前にお渡しします</h3>
 <p class="t-note">事前に「復旧手順書」を1枚お渡しします。何が止まったら、誰が、何分で、どう復旧するかを明記しています。</p>
-<div class="ph" style="background:var(--paper)">［画像：復旧手順書の実物　穴埋め08］</div></div>''',
+<div class="ph" style="aspect-ratio:3/2"></div></div>''',
               lead=f'登壇者を迎え、進行を見守り、来賓に挨拶する。<br>{mk("配信の実務はスタッフにお任せください。")}')
     tl = [('10:30', '搬入・設営', 'カメラ・マイク・回線を置き、音と映像を確かめます'),
           ('12:00', 'リハーサル', '登壇者のPCをつなぎ、マイクの音量と、スライドの映り方を全員分確かめます'),
@@ -565,7 +569,7 @@ def reception():
              ('S02', 'タイムキーパー の画面', '進行管理：タイムキーパー', '残り時間と合図を、登壇者とスタッフのスマホに表示します。進行の遅れを防ぎます。', '読み取ると、デモの進行表が開きます'),
              ('S03', 'Movie Switcher の画面', '記録映像の作成：Movie Switcher', '3台のカメラの映像から、話している人に合わせて切り替えた記録映像と字幕を作ります。', ''),
              ('', '会場診断ツールの画面', '会場の確認：会場診断ツール', '会場でスマホやPCから開くだけで、回線の速さと安定さを測ります。ご依頼の前の確認に、無料でお使いいただけます。', '［準備中］')]
-    tl = ''.join(f'<li class="hi stack s-16"><div class="zoom">{img(c, "（ダミー）" + a) if c else f"<div class=ph>［画面：{a}］</div>"}</div><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p>'
+    tl = ''.join(f'<li class="hi stack s-16"><div class="zoom">{img(c, "（ダミー）" + a) if c else "<div class=ph style='aspect-ratio:3/2'></div>"}</div><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p>'
                  + (f'<p class="t-note t-sub">{"" if n.startswith("［準備中") else "［QR］　"}{n}</p>' if n else '') + '</li>' for c, a, t, b, n in tools)
     demo = sec('demo', '現場の道具', '現場で使っている道具を、<br>いま試せます', f'''<ul class="tools" aria-label="道具の一覧">{tl}</ul>
 <p class="t-note t-sub">これらの道具は、当日私たちが用意して操作します。ご自身で使えるようになりたい方には、<a href="coaching.html">コーチング</a>をご用意しています。　［穴埋め09：デモ環境］</p>''',
@@ -741,7 +745,6 @@ if __name__ == '__main__':
     if OUT.exists():
         shutil.rmtree(OUT)
     (OUT / 'assets' / 'fonts').mkdir(parents=True)
-    shutil.copytree(HERE / 'img', OUT / 'img')
     for name in ('site.css', 'site.js'):
         shutil.copyfile(HERE / name, OUT / 'assets' / name)
     shutil.copyfile(TOKENS, OUT / 'assets' / 'karura-tokens.css')
