@@ -115,7 +115,7 @@ def bico(name):
             f'stroke-linejoin="round" aria-hidden="true" focusable="false">{BICON[name]}</svg>')
 
 def go():
-    """ページ内や別の節へ移るリンクの印（下線の代わりの、ティールの丸い矢印）"""
+    """別の節やページへ移るリンクの印（下線の代わりの、背景なしのグレーの矢印）"""
     return f'<span class="go">{bico("arrow")}</span>'
 
 def diag_btn(text='プラン診断をはじめる', cls=''):
@@ -353,7 +353,7 @@ def case(n, photo, alt, size_note=''):
 <div class="case-tags"><span class="pill">［主催の種類］</span><span class="pill">［シンポジウム］</span></div>
 <h3 class="t-ct">［会の名称：課題と成果を一文で］</h3>
 <p class="t-body">［当日起きたことと、どう戻したか。2〜3行］</p>
-<dl class="chips"><div class="chip"><dt>会の規模</dt><dd>登壇［ ］人、会場［ ］人</dd></div><div class="chip"><dt>当日の体制</dt><dd>スタッフ［ ］名{size_note}</dd></div>
+<dl class="chips"><div class="chip"><dt>会の規模</dt><dd>登壇［ ］人、会場［ ］人</dd></div><div class="chip"><dt>当日の体制</dt><dd>スタッフ［ ］人{size_note}</dd></div>
 <div class="chip"><dt>使用機材</dt><dd>カメラ［ ］台、マイク［ ］本</dd></div><div class="chip"><dt>金額</dt><dd>［25万〜35万円］</dd></div></dl></li>'''
 
 FAQ = [
@@ -689,69 +689,145 @@ def thanks():
 </main>''' + footer('thanks.html'))
 
 def rules():
-    sub = rules.sub = [('rules-top', 'このページについて'), ('layout', '画面の組み方'), ('type', '文字の大きさと字間'), ('color', '色の役割'), ('marks', '目印と影'), ('motion', '動きの決まり'), ('platform', '使っているWeb標準')]
-    css = (HERE / 'site.css').read_text(encoding='utf-8')
+    """デザインルール。ページの見本は build.py の部品関数で描くので、部品を直せば見本も変わる"""
+    sub = rules.sub = [('rules-top', '原則'), ('layout', '画面の組み方'), ('type', '文字'), ('color', '色'), ('shape', '余白・角丸・影'),
+                       ('parts', 'パーツ'), ('words', '言葉'), ('motion', '動き'), ('platform', 'Web標準')]
     apis = [
-        ('&lt;dialog&gt;（showModal）', 'Widely', 'スマホのメニュー。フォーカスを閉じ込め、Esc で閉じる', '— （JS が動かないときは、ヘッダーの「メニュー」がフッターのメニューへ移動）'),
+        ('&lt;dialog&gt;（showModal）', 'Widely', 'スマホのメニュー、プラン診断。フォーカスを閉じ込め、Esc で閉じる', 'メニューはフッターへ、診断はページの下へ移動するリンクになる'),
         ('&lt;details open&gt; / &lt;summary&gt;', 'Widely', 'よくある質問。最初から開いておき、読み終えたものを閉じられる', '—'),
         (':has()', 'Widely', 'カメラの切り替え（ラジオの選択で写真を出し分け）、診断の選択肢の色', '—'),
-        ('コンテナクエリ（size）', 'Widely', '診断の選択肢を、箱の幅で1列／2列に。事例とスタッフの並び', '—'),
-        ('CSS のネスト、@layer、色の混色 color-mix()', 'Widely', 'CSS の書き方', '—'),
+        ('コンテナクエリ（size）', 'Widely', '診断の選択肢を、箱の幅で1列／2列に', '—'),
+        ('CSS のネスト、@layer、color-mix()', 'Widely', 'CSS の書き方', '—'),
         (':user-invalid と required / type=email', 'Widely', '入力の誤りを、触ったあとだけ赤く表示', '—'),
-        ('IntersectionObserver', 'Widely', 'カメラの自動送りを、見えているときだけ動かす', '—'),
-        ('popover', 'Newly（2025-01）', '「?」で開く補足（マイク5本の理由など）', '未対応では、補足を本文の下に注記として表示し「?」を隠す'),
-        ('アンカー配置（anchor positioning）', 'Newly（2026-01）', '補足を「?」の真上に出す', '未対応では、画面の中央に出す'),
-        ('@starting-style / transition-behavior', 'Newly（2024-08）', 'メニューと補足が開くときの動き', '未対応では、動きなしで開く'),
-        ('スクロール連動アニメーション', 'Limited', '見出しや写真が、スクロールに合わせて現れる', '未対応では、最初から表示'),
-        ('word-break: auto-phrase', 'Limited', '見出しを文節で改行', '未対応では、通常の折り返し'),
+        ('IntersectionObserver', 'Widely', 'カメラの自動送りを、見えているときだけ動かす。目次の現在地', '—'),
+        ('popover', 'Newly（2025-01）', '「?」で開く補足', '補足を本文の下に注記として表示し「?」を隠す'),
+        ('アンカー配置（anchor positioning）', 'Newly（2026-01）', '補足を「?」の真上に出す', '画面の中央に出す'),
+        ('@starting-style / transition-behavior', 'Newly（2024-08）', 'メニューと補足が開くときの動き', '動きなしで開く'),
+        ('スクロール連動アニメーション', 'Limited', '見出しや写真が、スクロールに合わせて現れる', '最初から表示'),
+        ('word-break: auto-phrase', 'Limited', '見出し、カードの題、ボタンの文字を文節で改行', '通常の折り返し'),
     ]
     tr = ''.join(f'<tr><th scope="row">{a}</th><td data-l="Baseline">{b}</td><td data-l="使っている場所">{c}</td><td data-l="使えないとき">{d}</td></tr>' for a, b, c, d in apis)
+
     # 色見本は、ただ1つの元（design/karura-tokens.css）から読む
     kcss = TOKENS.read_text(encoding='utf-8')
-    kmap = {'bg': 'bg', 'paper': 'paper', 'cream': 'cream', 'wash': 'wash', 'ink': 'ink', 'ink-strong': 'ink-2', 'line': 'sand', 'sub': 'sub',
-            'teal': 'teal', 'coral': 'coral', 'yellow': 'yellow', 'marker': 'marker'}
-    tokens = [(kmap[k], v) for k, v in re.findall(r'--k-([a-z-]+): (#[0-9a-f]{6});', kcss) if k in kmap]
-    assert len(tokens) == len(kmap), '色見本のトークンが足りません'
-    names = {'bg': '地：ページの背景（白）', 'paper': '紙：白い地に置く箱、フォーム', 'cream': 'クリーム：帯、囲み', 'wash': '淡いティール：帯', 'ink': '文字：見出し・本文、フッター', 'ink-2': '濃い文字：強調', 'sand': '罫線', 'sand-d': '補足の線', 'sub': '補足の文字（黒50%）', 'red': '配信中・必須の印（珊瑚）', 'teal': 'ティール（主色）：目次の現在地・ボタン・診断・アイコン', 'teal-ink': 'ティール：地の上の文字', 'coral': '珊瑚：見積に進む・Q・番号', 'coral-ink': '珊瑚：見積に進むボタン', 'yellow': '黄：プラン診断・アイコン', 'marker': 'マーカー：要点の下線'}
-    sw = ''.join(f'<li class="stack s-16"><span style="display:block;block-size:4rem;border-radius:6px;background:{v};box-shadow:inset 0 0 0 1px rgb(0 0 0 / .08)"></span><span class="t-note"><b>{v.upper()}</b><br>{names[k]}</span></li>' for k, v in tokens)
-    type_rows = [('大見出し', '26 → 50', 'カメラ5台はいりません。'), ('セクション見出し', '26 → 44', '事例を公開しています'), ('囲みの見出し', '18 → 28', '日程と会場だけ'),
-                 ('小見出し', '18 → 26', '持ち込む機材の内訳'), ('カードの題・質問', '16 → 20', '登壇者は何人ですか'), ('リード', '14 → 18', '登壇者を迎え、進行を見守る。'),
-                 ('本文', '14 → 16', 'マイク音声を直接取り込みます。'), ('補足', '12 → 14', '相見積にそのまま使えます')]
-    ty = ''.join(f'<tr><th scope="row">{a}</th><td data-l="大きさ（px）">{b}</td><td data-l="見本">{c}</td></tr>' for a, b, c in type_rows)
-    return (head(f'デザインルール｜{NAME}', 'カルラライブのサイトのデザインルールと、使っている Web 標準の一覧です。')
-            + header('rules.html') + f'''<main id="main"><div class="wrap ph-head stack s-48" id="rules-top">{lab('Design rules')}<h1 class="t-h1">白い地に、<br>ティールで道しるべを置く。</h1>
-<p class="t-lead">C案を元に、スマホを基本に組み直したサイトのルールです。色・影・目印は recruit.handy.school の仕組みを参考にしています。文字と余白は、幅390pxのスマホから1200pxのPCまで、段差なく大きくなります。</p></div>
-<section class="sec-3" id="layout"><div class="wrap g57"><div class="stk">{lab('Layout')}</div><div class="stack s-48"><h2 class="t-h2">スマホは1段、PCは左のレール＋1段</h2>
-<ul class="rows"><li>スマホを基本に書き、幅1024px以上で広げます</li><li>PCは左に幅200pxの固定レールを置きます。上からロゴ、メニュー（7項目まで。単語ではなく「何が書いてあるか」がわかる言葉で）、2つの行動（黄＝8問でプラン診断、珊瑚＝見積を依頼する。どちらもアイコンつき）、ページの切り替え。トップの中の項目には現在地が付きます。大学・公共機関の方へのページは、メニューの下にバナーで置きます</li><li>スマホでは上のバーとメニューの横並びが一緒に追従し、下部に追従ボタン（プラン診断／見積を依頼する）を置きます。メニューの中身はPCのレールと同じです</li><li>本文はレールの右で1段。セクションの頭にタグ・見出し・リードを置き、その下に中身を置きます。左に見出しだけの列を作りません</li><li>トップに置くのは、メインビジュアル、費用の内訳、料金プラン、オプション、対応事例、よくある質問まで。当日の体制と流れ、配信支援ツール、内製化支援、発注の手続きは下層のページに分けます</li><li>プラン診断はページに埋め込まず、どのページのどこからでもボタンでモーダル（dialog）を開きます。スマホでは全画面、PCでは画面の中央に出ます。JSが動かないときは、ページの下に置いた診断へ移動します</li></ul></div></div></section>
-<section class="sec-3" id="type"><div class="wrap g57"><div class="stk">{lab('Type')}</div><div class="stack s-48"><h2 class="t-h2">1書体、1つの太さ</h2>
-<table class="tbl"><thead><tr><th scope="col">役割</th><th scope="col">大きさ（px、スマホ → PC）</th><th scope="col">見本</th></tr></thead><tbody>{ty}</tbody></table>
-<p class="t-note t-sub">和文：Noto Sans JP（本文は Regular、見出しと強調は Medium。使う文字だけに絞って同梱）／英字・数字：Helvetica Neue。入力欄の文字はスマホでも16px。字間は大きさの2%、本文とリードの行送りは1.8、見出しは1.45。</p></div></div></section>
-<section class="sec-3" id="color"><div class="wrap g57"><div class="stk">{lab('Color')}</div><div class="stack s-48"><h2 class="t-h2">白の地に、主色のティール</h2>
-<ul class="logos" style="grid-template-columns:repeat(auto-fill,minmax(9rem,1fr))">{sw}</ul>
-<ul class="rows"><li>主色はティール。目次の現在地、見出しのタグ、アイコンの四角、一覧の見出しの下線、手順の番号、診断で選んだ答え、プラン名の帯、そのほかの行動のボタンに使います</li>
-<li>珊瑚は「見積を依頼する」だけ：見積に進むボタン（どこにあっても同じ色）。ほかに、よくある質問のQと、送信後の流れの「いまここ」</li>
-<li>黄（#FACA00）は「プラン診断をはじめる」だけ：左レール、スマホの入口、下部の追従ボタン、メニューの中。ほかの場所では使いません。要点のマーカーは別の淡い黄（#FFEB78）で、本文の要点だけに引きます</li>
-<li>同じ意味のボタンは同じ色：黄＝プラン診断をはじめる、珊瑚＝見積を依頼する、ティール＝そのほかの行動（次へ、相談する、ひな形を受け取る）、線だけ＝資料や補助</li>
-<li>地は白。セクションの面はクリーム（#F8F6F3）とティールの淡い色（#F2FBFC）の2つだけで、どちらも参考サイトの半透明の色を白に重ねた値です</li>
-<li>差し色は小さな面にだけ使い、大きな面は白・クリーム・淡いティールのまま。ボタンやラベルの四角は参考サイトどおり、差し色の上に白い文字を乗せます</li>
-<li>キーボードで操作しているときの枠は濃い文字色（#333333）。暗い面の上では白</li>
-<li>色・影・角丸・文字・動きの値は、design/karura-tokens.css の1つのファイルが元です。このサイトと、進行管理の「タイムキーパー」・質疑応答の「FAQ」（紹介ページ・管理画面・閲覧画面）が同じファイルを読むので、そこを直せば全体に反映されます</li></ul></div></div></section>
-<section class="sec-3" id="marks"><div class="wrap g57"><div class="stk">{lab('Marks &amp; Shadow')}</div><div class="stack s-48"><h2 class="t-h2">目が滑らないための目印</h2>
-<p class="t-lead">長いページでも読む場所を見失わないよう、4つの目印を決まった場所にだけ置きます。</p>
-<ul class="reasons">
-<li class="reason">{ico('check')}<div class="stack s-16"><h3 class="t-ct">{mk('要点のマーカー')}</h3><p class="t-body">各セクションのリードで、いちばん伝えたい一文にだけ引きます。1つのセクションに1か所まで。文字の下半分を黄色（#FFEB78）にし、画面に入ったときに左から引かれます</p></div></li>
-<li class="reason">{ico('doc')}<div class="stack s-16"><h3 class="t-ct">影は重ねない</h3><p class="t-body">影が付くのは、いちばん外側の面だけ。影の付いた面の中に置くものは、線で区切ります。ボタンには影を付けません。強さは2つ：置いてあるもの（カード、白い箱、左レール）は 0 0 30px 黒8%、物として見せるもの（見積書の見本、暗い囲み）は 0 5px 40px 黒20%</p></div></li>
-<li class="reason">{ico('switch')}<div class="stack s-16"><h3 class="t-ct">見出しのタグと、章の切れ目</h3><p class="t-body">各章の頭に、目次と同じ言葉のタグ（白地にティールの線の丸い札）を付けます。スマホでは、章の頭に端から端までティールの線を引き、その線の上にタグを乗せて切れ目を示します。線画のアイコンはティールの角丸の四角（44px、角丸10px）に入れ、飾りなので読み上げからは外します</p></div></li>
-<li class="reason">{ico('backup')}<div class="stack s-16"><h3 class="t-ct">QとA</h3><p class="t-body">よくある質問は珊瑚のQとティールのA。読む前に、問いと答えの区別がつくようにします</p></div></li>
-</ul>
-<p class="t-note t-sub">穴埋め（［ ］）はマーカーと見分けがつくよう、灰色の斜線にしています。</p></div></div></section>
-<section class="sec-3" id="motion"><div class="wrap g57"><div class="stk">{lab('Motion')}</div><div class="stack s-48"><h2 class="t-h2">動きは、減らせる</h2>
-<ul class="rows"><li>押せるものの反応は 0.3秒、cubic-bezier(0.4, 0.4, 0, 1) にそろえます</li><li>要点のマーカーは 0.8秒で引きます。幕や出現の動きは cubic-bezier(0.19, 1, 0.22, 1)</li><li>読み込みの幕は、その回の最初の1回だけ。2回目からは出ません</li><li>カメラの自動切り替えには「切り替えを止める」ボタンをつけています</li><li>端末で「視差効果を減らす」を選んでいる人には、幕・自動切り替え・出現の動き・マーカーの動きをすべて止めます（マーカーは最初から引いた状態）</li></ul></div></div></section>
-<section class="sec-3" id="platform"><div class="wrap g57"><div class="stk">{lab('Platform')}</div><div class="stack s-48"><h2 class="t-h2">使っている Web 標準と、使えないときの形</h2>
-<p class="t-lead">基準は Baseline Widely available（主要ブラウザで30か月以上使えるもの）。それより新しい機能は、無くても見た目と操作が壊れない場所にだけ使っています。</p>
-<table class="tbl"><thead><tr><th scope="col">機能</th><th scope="col">Baseline（2026年11月）</th><th scope="col">使っている場所</th><th scope="col">使えないとき</th></tr></thead><tbody>{tr}</tbody></table>
-<p class="t-note t-sub">「Widely」は主要ブラウザで30か月以上、「Newly」は主要ブラウザの最新版で使えるもの、「Limited」は一部のブラウザだけ。</p></div></div></section>
-</main>''' + footer('rules.html'))
+    names = {'bg': ('地', 'ページの背景'), 'paper': ('紙', '白い地に置く箱、カード、フォーム'), 'cream': ('クリーム', '帯、囲み'), 'wash': ('淡いティール', '帯、バナー'),
+             'ink': ('文字', '見出し・本文、暗い囲み'), 'ink-strong': ('濃い文字', '強調、キーボードの枠'), 'sub': ('補足', '補足の文字、文字リンクの矢印'),
+             'line': ('罫線', '一覧と表の区切り'), 'teal': ('ティール（主色）', '現在地、タグ、アイコン、そのほかの行動'),
+             'coral': ('珊瑚', '見積を依頼する、だけ'), 'yellow': ('黄', 'プラン診断、だけ'), 'marker': ('マーカー', '要点の下線')}
+    tokens = [(k, v) for k, v in re.findall(r'--k-([a-z-]+): (#[0-9a-f]{6});', kcss) if k in names]
+    assert len(tokens) == len(names), '色見本のトークンが足りません'
+    sw = ''.join(f'<li class="swatch"><span style="background:{v}"></span><p class="t-note"><b>{names[k][0]}</b>　{v.upper()}<br><span class="t-sub">{names[k][1]}</span></p></li>' for k, v in tokens)
+
+    type_rows = [('大見出し（h1）', '.t-h1', '26 → 50', '1.45'), ('セクション見出し（h2）', '.t-h2', '26 → 44', '1.45'), ('囲みの見出し', '.t-h2s', '18 → 28', '1.5'),
+                 ('小見出し（h3）', '.t-h3', '18 → 26', '1.6'), ('カードの題・質問', '.t-ct', '16 → 20', '1.5'), ('リード', '.t-lead', '14 → 18', '1.8'),
+                 ('本文', '.t-body', '14 → 16', '1.8'), ('補足', '.t-note', '12 → 14', '1.7')]
+    ty = ''.join(f'<tr><th scope="row"><span class="{c[1:]}">{a}</span></th><td data-l="クラス"><code>{c}</code></td><td data-l="大きさ（px）">{b}</td><td data-l="行送り">{l}</td></tr>' for a, c, b, l in type_rows)
+
+    shape_rows = [('ページの左右', '--pad', '16 → 80px'), ('セクションの上下', '--sec / --sec-2 / --sec-3', '100 → 200px（大・中・小の3つ）'),
+                  ('見出しと中身の間', '--gap-56', '28 → 56px'), ('ブロックの間', '--gap-48 / --gap-64', '16 → 48px／40 → 64px'),
+                  ('ボタンの高さ', '--btn-h', '48 → 60px'), ('左レールの幅', '--rail', '200px')]
+    sh = ''.join(f'<tr><th scope="row">{a}</th><td data-l="トークン"><code>{b}</code></td><td data-l="値（スマホ → PC）">{c}</td></tr>' for a, b, c in shape_rows)
+
+    def part(name, cls, demo, use, rule):
+        return (f'<li class="part"><div class="part-demo">{demo}</div><div class="stack s-16"><h4 class="t-ct">{name}　<code>{cls}</code></h4>'
+                f'<p class="t-body">{use}</p><p class="t-note t-sub">{rule}</p></div></li>')
+    groups = [
+        ('行動（押せるもの）', [
+            part('プラン診断のボタン', '.btn.plan', diag_btn(), '診断のモーダルを開く。どのページのどこからでも同じ形', '黄はこのボタンとバッジ・レールのタイルだけ。文字は濃い灰'),
+            part('見積のボタン', '.btn.quote', quote_btn(), '見積の依頼へ進む', '珊瑚はこの行動だけ。料金の節では1つだけ置き、中央に寄せる'),
+            part('そのほかのボタン', '.btn ／ .btn.line', btn('次へ進む', '#parts') + btn('ひな形を受け取る', '#parts', 'line'), 'ティール＝相談する・次へなどの行動、線だけ＝資料や補助', 'ボタンには影を付けない。右端に小さな矢印。スマホでは横いっぱい'),
+            part('文字リンク', '.tlink ＋ .go', f'<a class="tlink" href="#parts">料金プランを見る{go()}</a>', '別の節やページへ移る', '下線は引かず、右に背景なしのグレーの矢印。押すと矢印が少し右へ'),
+            part('プラン診断のバッジ', '.badge', '<a class="badge" href="#diag" data-open-diag aria-haspopup="dialog"><span class="badge-bg" aria-hidden="true"></span>'
+                 f'<span class="badge-t">{bico("diag")}8問で<br>プラン診断</span></a>', 'トップの MV の下だけ', '黄のギザギザ。縁だけがゆっくり回り、文字は回さない。動きを減らす設定では止める'),
+            part('バナー', '.banner', banner('rules.html'), '「大学・公共機関の方へ」の入口。PC は左レールのメニューの下、スマホはメニューの中', 'メニューの項目には入れない。淡いティールの面に、左の帯と矢印'),
+        ]),
+        ('見出しまわり', [
+            part('見出しのタグ', '.t-lab', lab('よくあるお悩み'), '各節の頭。目次と同じ言葉', '押せるものに見えないよう、枠も面も付けない。頭にティールの短い線。スマホでは章の切れ目の線の上に乗る'),
+            part('節の頭', 'sec()', '<div class="sec-head stack">' + lab('料金プラン') + '<p class="t-h2s">見出しは2行まで</p><p class="t-note">リードは1〜2文。要点の1文にだけマーカー</p></div>',
+                 'タグ → 見出し → リード の順に縦に積む', '左に見出しだけの列を作らない。読みやすい幅で止める'),
+            part('小見出し', '.sub', '<p class="sub">どのプランにも含まれるもの</p>', '節の中の区切り', 'ティールの下線。文字は補足の大きさ'),
+            part('札', '.pill', '<span class="pill">シンポジウム</span><span class="pill">［主催の種類］</span>', '事例の種類などの分類', '線だけ。押せるものには使わない'),
+        ]),
+        ('中身の入れ物', [
+            part('アイコン', '.chipi ／ .bico', ico('mic') + ico('check', 's') + f'<span style="color:var(--ink)">{bico("diag")}</span>',
+                 '四角に入れたもの（.chipi）は内容の目印、線だけのもの（.bico）はボタンの頭', 'ティールの角丸の四角に白の線画。飾りなので読み上げない'),
+            part('アイコンと文の組', '.reason', f'<ul class="reasons"><li class="reason">{ico("doc")}<div class="stack s-16"><h3 class="t-ct">わかりやすい料金</h3><p class="t-body">アイコンと題を横に並べ、本文はアイコンの下まで広げる</p></div></li></ul>',
+                 '強み、費用を決める3つ、配信支援ツール', '3つ並べるときは PC で3列。題は文節で改行'),
+            part('吹き出し', '.voice', f'<ul class="voices"><li class="voice"><blockquote class="voice-q"><p>お客さまの声は、吹き出しに入れます。</p></blockquote><p class="voice-who t-note t-sub"><span class="avatar">{bico("person")}</span>総務・広報のご担当</p></li></ul>',
+                 'よくあるお悩み', 'しっぽは下の人のアイコンを指す。肩書きは特設ページ以外では一般的な言い方'),
+            part('囲み', '.boxw ／ .boxg ／ .boxd', '<div class="boxw" style="padding:1rem">白い箱</div><div class="boxd" style="padding:1rem;box-shadow:none">暗い囲み</div>',
+                 '白い箱＝まとまった説明、クリーム＝フォーム、暗い囲み＝ページの終わりの見積の依頼', '影は外側の面だけ。中に置くものは線で区切る'),
+        ]),
+        ('一覧と表', [
+            part('行の一覧', '.rows', '<ul class="rows" style="inline-size:100%"><li>1行に1つ</li><li>罫線で区切る</li></ul>', '決まりや条件を並べる', '番号は付けない（順番に意味があるときは手順を使う）'),
+            part('手順', '.steps', '<ol class="steps" style="inline-size:100%"><li><span class="n">01</span><span class="a">相談</span><span class="b">順番に意味があるときだけ番号を付ける</span></li></ol>', '依頼の流れ、内製化の4段階', '番号はティールの丸'),
+            part('含まれるもの', '.incl', f'<ul class="incl" style="inline-size:100%"><li>{ico("check", "s")}<span>事前の打ち合わせ</span></li><li>{ico("check", "s")}<span>予備の録画機</span></li></ul>',
+                 'プランに含まれるもの、下見で確かめること', '題と説明があるときは、題を太字にして改行'),
+            part('表', '.tbl ／ .cmp', '<table class="tbl" style="inline-size:100%"><tbody><tr><th scope="row">スタッフ</th><td class="r">3人</td></tr><tr><th scope="row">カメラ</th><td class="r">3台</td></tr></tbody></table>',
+                 '料金の比較、オプション、機材の内訳', '同じ意味の値は同じ行・同じ縦位置にそろえる。スマホの幅では1行ずつ縦に積む（比較表は横スクロール）'),
+            part('事例のスライダー', '.cases ＋ .cases-count', f'<a class="tlink" href="index.html#works">対応事例で見る{go()}</a>', '事例', '横にスクロール。右上に「1 / 4」で今の位置を出す'),
+        ]),
+        ('補助', [
+            part('要点のマーカー', '.mk', f'<p class="t-body">{mk("いちばん伝えたい一文")}にだけ引く</p>', 'リードの要点', '1つの節に1か所まで。文字の下半分を淡い黄'),
+            part('補足の「?」', '.tip', '<p class="t-body">マイク5本まで' + tip('tip-rules', 'マイク5本の理由', '登壇者4人と司会1人の分です。') + '</p>', '数字の根拠など、読まなくても困らない補足', '使えないブラウザでは本文の下に注記として出す'),
+            part('穴埋め', '.ana', '<p class="t-body">［金額］</p>', 'まだ決まっていない値', '［ ］で囲むと自動で灰色の斜線になる。マーカーと見分けるため黄色は使わない'),
+            part('画像の仮置き', 'img()', f'<div style="inline-size:8rem">{img("P04", "（ダミー）画像の仮置き")}</div>', '写真・図', 'すべて無地のグレーで置く。注釈は付けない。本物が届いたら src/img から差し替える'),
+        ]),
+    ]
+    parts = ''.join(f'<div class="stack"><h3 class="sub">{g}</h3><ul class="parts">{"".join(items)}</ul></div>' for g, items in groups)
+
+    principles = [('1段で組む', 'スマホは1段、PC は左のレール＋1段。左に見出しだけの列を作らない'),
+                  ('色は意味で決める', '黄＝プラン診断、珊瑚＝見積を依頼する、ティール＝そのほか。同じ意味は同じ色'),
+                  ('押せるものだけを、押せる形に', 'ボタンと文字リンク以外は、枠や面でボタンに見せない'),
+                  ('影は2段だけで、重ねない', '影の付いた面の中は線で区切る。ボタンには付けない'),
+                  ('同じ意味のものは、同じ位置に', '金額や人数は縦位置をそろえ、同じ行動は同じ名前・同じ色'),
+                  ('相手に合わせた言葉は、その相手のページで', '大学・公共向けの言葉は特設ページだけ。ほかは一般的な言い方')]
+    pr = ''.join(f'<li><span class="n">0{i}</span><span class="a">{a}</span><span class="b">{b}</span></li>' for i, (a, b) in enumerate(principles, 1))
+
+    words = ['行動の名前はどこでも同じ：「プラン診断」「見積を依頼する」。見積フォームの送信だけ「見積書を受け取る」',
+             'メニューの名前：サービス内訳／料金プラン／対応事例／当日の体制と流れ／配信支援ツール／内製化支援（7つまで）',
+             'スタッフは「人」で数える（3人、4人）。金額は「25万円（税別）」',
+             '大学・公共向けの言葉（大学、自治体、学会、公開講座、助成元など）は「大学・公共機関の方へ」だけで使う',
+             'トンチや言葉遊びはしない。何がどうなるかを素直に書く',
+             'まだ決まっていない値は［ ］で囲む（穴埋め）。推測で埋めない']
+    wd = ''.join(f'<li>{w}</li>' for w in words)
+
+    S = lambda sid, tag, title, body, lead='': sec(sid, tag, title, body, lead)
+    body = (S('layout', '画面の組み方', 'スマホは1段、<br>PCは左のレール＋1段', '''<ul class="rows">
+<li>スマホを基本に書き、幅1024px以上で広げます</li>
+<li>PC は左に幅200pxの固定レール。上からロゴ、メニュー、バナー（大学・公共機関の方へ）、2つの行動（プラン診断・見積を依頼する）、ページの切り替え</li>
+<li>スマホは上のバーとメニューの横並びが一緒に追従し、画面の下に追従ボタン（プラン診断／見積を依頼する）。メニューの中身は PC のレールと同じ</li>
+<li>トップの中の項目には現在地が付きます。読み進めた量のインジケータは付けません</li>
+<li>トップに置くのは MV、強み、お悩み、サービス内訳、料金プラン、オプション、対応事例、よくある質問まで。当日の体制と流れ、配信支援ツール、内製化支援、発注の手続きは下層のページ</li>
+<li>プラン診断はページに埋め込まず、ボタンでモーダルを開きます。スマホは全画面、PC は画面の中央。JS が動かないときはページの下の診断へ移動</li></ul>''')
+            + S('type', '文字', '1書体、2つの太さ', f'''<table class="tbl"><thead><tr><th scope="col">役割</th><th scope="col">クラス</th><th scope="col">大きさ（px、スマホ → PC）</th><th scope="col">行送り</th></tr></thead><tbody>{ty}</tbody></table>
+<ul class="rows"><li>和文は Noto Sans JP。本文は Regular（400）、見出しと強調は Medium（500）。使う文字だけに絞って同梱します</li>
+<li>英字と数字は Helvetica Neue（Windows では Arial）</li><li>字間は大きさの2%。見出しは文節で改行し、入力欄の文字はスマホでも16px</li></ul>''')
+            + S('color', '色', '白の地に、<br>主色のティール', f'''<ul class="swatches">{sw}</ul>
+<ul class="rows"><li>同じ意味のボタンは同じ色：黄＝プラン診断、珊瑚＝見積を依頼する、ティール＝そのほかの行動、線だけ＝資料や補助</li>
+<li>黄はプラン診断だけ（ボタン、バッジ、レールのタイル、下の追従ボタン）。要点のマーカーは別の淡い黄で、本文にだけ引きます</li>
+<li>珊瑚は見積を依頼するだけ。ほかに、よくある質問の Q と、必須の印</li>
+<li>大きな面は白・クリーム・淡いティールの3つだけ。差し色は小さな面に使います</li>
+<li>値の元は design/karura-tokens.css。このサイトと、タイムキーパー・FAQ のツールが同じファイルを読むので、そこを直せば全体に反映されます</li></ul>''')
+            + S('shape', '余白・角丸・影', '余白は画面の幅に<br>合わせて伸びる', f'''<table class="tbl"><thead><tr><th scope="col">場所</th><th scope="col">トークン</th><th scope="col">値（スマホ → PC）</th></tr></thead><tbody>{sh}</tbody></table>
+<ul class="rows"><li>角丸は4つ：入力欄・小さな箱 6〜8px、カード・アイコンの四角 10px、タグや札は丸（20px）、ボタンは 6px</li>
+<li>影は2段だけ：置いてあるもの（カード、白い箱、左レール）0 0 30px 黒8%、物として見せるもの（見積書の見本、暗い囲み）0 5px 40px 黒20%</li>
+<li>影の付いた面の中に置くものは、影ではなく線で区切ります。ボタンには影を付けません</li></ul>''')
+            + S('parts', 'パーツ', 'サイト全体で使う部品', parts, lead='見本は、サイトで使っている部品そのものを置いています。部品を直すと、ここも一緒に変わります。')
+            + S('words', '言葉', '同じことは、<br>同じ言葉で', f'<ul class="rows">{wd}</ul>')
+            + S('motion', '動き', '動きは、減らせる', '''<ul class="rows"><li>押せるものの反応は 0.3秒、cubic-bezier(0.4, 0.4, 0, 1)。幕や出現は cubic-bezier(0.19, 1, 0.22, 1)</li>
+<li>ずっと動くのは、プラン診断のバッジの縁（24秒で1周）と、カメラの自動切り替え（止めるボタンつき）だけ</li>
+<li>要点のマーカーは画面に入ったときに 0.8秒で引きます。読み込みの幕は、その回の最初の1回だけ</li>
+<li>「視差効果を減らす」を選んでいる人には、幕・自動切り替え・バッジの回転・出現・マーカーの動きをすべて止めます</li></ul>''')
+            + S('platform', 'Web標準', '使っている Web 標準と、<br>使えないときの形', f'''<table class="tbl"><thead><tr><th scope="col">機能</th><th scope="col">Baseline（2026年11月）</th><th scope="col">使っている場所</th><th scope="col">使えないとき</th></tr></thead><tbody>{tr}</tbody></table>
+<p class="t-note t-sub">基準は Baseline Widely available（主要ブラウザで30か月以上使えるもの）。「Newly」は主要ブラウザの最新版で使えるもの、「Limited」は一部のブラウザだけ。新しい機能は、無くても見た目と操作が壊れない場所にだけ使います。</p>''',
+                lead='新しい機能は、無くても壊れない場所にだけ使います。'))
+    return (head(f'デザインルール｜{NAME}', 'カルラライブのサイトのデザインルール、パーツ、言葉の決まり、使っている Web 標準の一覧です。')
+            + header('rules.html') + '<main id="main">'
+            + f'''<div class="wrap ph-head stack s-48" id="rules-top">{lab('デザインルール')}<h1 class="t-h1">白い地に、<br>ティールで道しるべを置く</h1>
+<p class="t-lead">サイトの組み方、色、パーツ、言葉の決まりをまとめています。迷ったときは、まず下の6つの原則に戻ります。</p>
+<ol class="steps">{pr}</ol></div>''' + body + '</main>' + footer('rules.html'))
+
 
 PAGES = {'index.html': index, 'service.html': service, 'reception.html': reception, 'coaching.html': coaching, 'public.html': public,
          'contact.html': contact, 'thanks.html': thanks, 'rules.html': rules, 'mvs.html': mvs}
