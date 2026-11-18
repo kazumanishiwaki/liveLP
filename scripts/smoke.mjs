@@ -11,7 +11,7 @@ const checks = [
   { name: "CSS", path: "assets/site.css", type: "text/css" },
   { name: "共通トークン", path: "assets/karura-tokens.css", type: "text/css" },
   { name: "JS", path: "assets/site.js", type: "javascript" },
-  { name: "書体", path: "assets/fonts/zkgn-500.woff2", type: "font/woff2" },
+  { name: "書体", path: "assets/fonts/noto-400.woff2", type: "font/woff2" },
 ];
 
 async function run(check) {

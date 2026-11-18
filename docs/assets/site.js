@@ -92,22 +92,22 @@ function judge(a) {
       lead: 'この条件なら、ご自身で配信できます。業者に頼む必要はありません。iPhoneと外付けマイク1本で始められます。' };
   }
   if (!big && need <= 3) {
-    return { key: 'consult', plan: '配信コーチング：相談', price: ['［3］', '万円（税別）'], adds, why, cta: 'quote',
+    return { key: 'consult', plan: '内製化支援：相談', price: ['［3］', '万円（税別）'], adds, why, cta: 'quote',
       lead: '機材と接続を一度整理すれば、ご自身で配信できる可能性が高い会です。オンライン60分で、接続の図と当日のチェックリストを作成します。' };
   }
   if (big) why.unshift(`${a.spk === '7+' ? '登壇者が7人以上' : '会場が300人を超える'}ので、カメラ5台で登壇者と会場を撮り分けます`);
   const addStaff = !big && (a.rmt === 'y' || mics > 5);
-  if (addStaff) adds.push(['スタッフを1名追加', a.rmt === 'y' ? 'オンラインから登壇する人がいるため' : `マイクが${mics}本必要になるため`]);
+  if (addStaff) adds.push(['スタッフを1人追加', a.rmt === 'y' ? 'オンラインから登壇する人がいるため' : `マイクが${mics}本必要になるため`]);
   if (a.time === '3+') adds.push(['配信時間の延長', '3時間を超える分']);
   opts.forEach((o) => adds.push([LABEL.opt[o], 'オプション：同じ日にまとめて依頼']));
-  if (a.self === 'y') adds.push(['コーチング：同行', '私たちの配信を横で見て、次の会から自分たちで回せるように']);
+  if (a.self === 'y') adds.push(['内製化支援：同行', '私たちの配信を横で見て、次の会から自分たちで回せるように']);
   return big
     ? { key: 'wide', plan: 'ワイド', price: ['35', '万円（税別）'], adds, why, cta: 'quote',
-        lead: 'カメラ5台・スタッフ3名のプランが合う会です。登壇者が多い会や、広い会場の様子も届けたい会に向いています。',
-        staff: 3, cams: 5, mics: ['［本数］'] }
+        lead: 'カメラ5台・スタッフ4人のプランが合う会です。登壇者が多い会や、広い会場の様子も届けたい会に向いています。',
+        staff: 4, cams: 5, mics: ['［本数］'] }
     : { key: 'standard', plan: 'スタンダード', price: ['25', '万円（税別）'], adds, why, cta: 'quote',
-        lead: 'カメラ3台・スタッフ2名・マイク5本の基本プランが合う会です。事前の打ち合わせ、会場の下見、録画データの納品まで含みます。',
-        staff: 2 + (addStaff ? 1 : 0), cams: 3, mics: [String(Math.min(mics, addStaff ? 8 : 5)), '本'] };
+        lead: 'カメラ3台・スタッフ3人・マイク5本の基本プランが合う会です。事前の打ち合わせと、会場のオンライン下見を含みます。',
+        staff: 3 + (addStaff ? 1 : 0), cams: 3, mics: [String(Math.min(mics, addStaff ? 8 : 5)), '本'] };
 }
 
 /* 結果は DOM を組み立てて入れる（innerHTML に利用者の入力は入れない） */
@@ -145,7 +145,7 @@ function renderResult(box, r) {
   ];
   if (r.staff) {
     const micText = r.mics[1] ? `${r.mics[0]}${r.mics[1]}` : r.mics[0];
-    const dl = el('dl', { class: 'dg-sum' }, el('div', {}, el('dt', {}, '当日の体制'), el('dd', {}, `スタッフ${r.staff}名・カメラ${r.cams}台・マイク${micText}`)));
+    const dl = el('dl', { class: 'dg-sum' }, el('div', {}, el('dt', {}, '当日の体制'), el('dd', {}, `スタッフ${r.staff}人・カメラ${r.cams}台・マイク${micText}`)));
     r.adds.forEach(([t, d]) => dl.append(el('div', {}, el('dt', {}, '追加'), el('dd', {}, t, '　', el('span', { class: 'ana' }, '［金額］'), el('small', {}, d)))));
     parts.push(dl);
   }
@@ -252,7 +252,6 @@ $$('[data-dg]').forEach((dg) => {
 $$('.subnav').forEach((nav) => {
   const links = $$('a[href^="#"]', nav);
   const list = $('ol', nav);
-  const meter = $('.subnav-meter', nav);
   const pairs = links.map((a) => [a, document.getElementById(a.hash.slice(1))]).filter(([, t]) => t);
   let current; // 最初の1回は必ず描く（下層ページでは、いまのページの項目を見える位置へ送る）
   let queued = false;
@@ -263,8 +262,6 @@ $$('.subnav').forEach((nav) => {
     const line = pc.matches ? innerHeight * .3 : nav.getBoundingClientRect().bottom + 24;
     let hit = null;
     for (const [a, t] of pairs) if (t.getBoundingClientRect().top <= line) hit = a;
-    const doc = document.documentElement;
-    meter.style.setProperty('--p', Math.min(1, scrollY / Math.max(1, doc.scrollHeight - innerHeight)));
     // メニューにない節（オプション・よくある質問）にいる間は、その前の項目を現在地のままにする。最初の項目より上では、どれも付けない
     if (hit === current) return;
     current = hit;
@@ -283,6 +280,28 @@ $$('.subnav').forEach((nav) => {
   addEventListener('scroll', queue, { passive: true });
   addEventListener('resize', queue);
   pc.addEventListener('change', () => { current = undefined; queue(); });
+  update();
+});
+
+/* ------------------------------------------------ 4a. 事例のスライダー：いま何枚目か（1 / 4）を出す */
+$$('.cases').forEach((list) => {
+  const count = list.previousElementSibling?.querySelector('.cases-count');
+  if (!count) return;
+  const cards = [...list.children];
+  const now = $('[data-cases-now]', count);
+  $('[data-cases-all]', count).textContent = cards.length;
+  count.hidden = false;
+  let queued = false;
+  const update = () => {
+    queued = false;
+    // 左端にいちばん近いカード。最後までスクロールしたら最後の1枚
+    const left = list.getBoundingClientRect().left + parseFloat(getComputedStyle(list).scrollPaddingInlineStart || 0);
+    let i = 0, best = Infinity;
+    cards.forEach((c, k) => { const d = Math.abs(c.getBoundingClientRect().left - left); if (d < best) { best = d; i = k; } });
+    if (list.scrollLeft + list.clientWidth >= list.scrollWidth - 2) i = cards.length - 1;
+    now.textContent = i + 1;
+  };
+  list.addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(update); } }, { passive: true });
   update();
 });
 
@@ -335,7 +354,7 @@ $$('form[data-form]').forEach((f) => {
   if (f && m) {
     const ta = $('textarea', f);
     ta.value = `【プラン診断の結果】おすすめ：${m.plan}\n${m.lines.join('\n')}`;
-    const map = { standard: 'スタンダード', wide: 'ワイド', consult: 'コーチング', self: 'まだわからない' };
+    const map = { standard: 'スタンダード', wide: 'ワイド', consult: '内製化支援', self: 'まだわからない' };
     $$('input[type="checkbox"]', f).forEach((c) => { if (c.value.startsWith(map[m.key])) c.checked = true; });
     const note = $('.prefill', f);
     note.textContent = `プラン診断の結果（${m.plan}）を、下の「気になっていること」欄に入れておきました。必須の4項目だけ入力すれば送信できます。`;

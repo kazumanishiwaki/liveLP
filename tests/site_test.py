@@ -15,7 +15,7 @@ with sync_playwright() as p:
     pg.on('pageerror', lambda e: errs.append(str(e))); pg.on('console', lambda m: errs.append(m.text) if m.type=='error' else None)
     pg.goto(U,wait_until='networkidle')
     # --- スマホ：診断はボタンからモーダルで開く（キーボード）
-    pg.focus('.mv-acts .btn.plan'); pg.keyboard.press('Enter'); pg.wait_for_timeout(300)
+    pg.focus('.mv-after .badge'); pg.keyboard.press('Enter'); pg.wait_for_timeout(300)
     print('modal open:', pg.evaluate("document.querySelector('#diag').open"))
     # --- キーボードだけで診断
     pg.focus('.dg-q.is-cur input')            # 1問目の最初の選択肢
@@ -77,7 +77,7 @@ with sync_playwright() as p:
     print('errors', errs)
     # --- JS なし
     ctx2=b.new_context(viewport={'width':390,'height':844},java_script_enabled=False); q=ctx2.new_page(); q.goto(U,wait_until='networkidle')
-    print('nojs: questions visible', q.evaluate("[...document.querySelectorAll('.dg-q')].filter(e=>getComputedStyle(e).display!=='none').length"), 'menu fallback', q.evaluate("getComputedStyle(document.querySelector('.menu-fallback')).display"), 'menu btn', q.evaluate("getComputedStyle(document.querySelector('.menu-btn')).display"), 'diag link', q.evaluate("document.querySelector('.mv-acts .btn.plan').getAttribute('href')"), 'diag inline', q.evaluate("getComputedStyle(document.getElementById('diag')).display"))
+    print('nojs: questions visible', q.evaluate("[...document.querySelectorAll('.dg-q')].filter(e=>getComputedStyle(e).display!=='none').length"), 'menu fallback', q.evaluate("getComputedStyle(document.querySelector('.menu-fallback')).display"), 'menu btn', q.evaluate("getComputedStyle(document.querySelector('.menu-btn')).display"), 'diag link', q.evaluate("document.querySelector('.mv-after .badge').getAttribute('href')"), 'diag inline', q.evaluate("getComputedStyle(document.getElementById('diag')).display"))
     q.screenshot(path=S+'ct_nojs.png', full_page=False)
     b.close()
 srv.terminate()
