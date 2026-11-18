@@ -701,7 +701,7 @@ def rules():
                  for a, r, c, sp, pc, l, w in type_rows)
 
     kcss = TOKENS.read_text(encoding='utf-8')
-    names = {'bg': ('地', 'ページの背景（オフホワイト）'), 'paper': ('紙', '箱、カード、フォーム'), 'cream': ('帯', '帯、囲み'), 'wash': ('淡い青', '帯、淡い面のボタン'),
+    names = {'bg': ('地', 'ページの背景（真っ白）'), 'paper': ('紙', '箱、カード、フォーム'), 'cream': ('帯', '帯、囲み（オフホワイト）'), 'wash': ('淡い青', '帯、淡い面のボタン'),
              'ink': ('墨', '見出し・本文、塗りの面'), 'ink-strong': ('濃い墨', '強調、キーボードの枠'), 'sub': ('補足', '注釈、文字リンクの矢印'),
              'line': ('罫線', '表の区切り、箱の線'), 'line-strong': ('網点のグレー', '点線、ヒーローの網点の地'), 'main': ('青（主色）', 'タグ、アイコン、標準のボタン、白い文字を載せる面'),
              'red': ('赤', '申し込み・依頼のボタン、エラー、必須'), 'yellow': ('黄', 'いちばん押してほしいボタン、バッジ'), 'marker': ('マーカー', '要点の下線')}
@@ -772,7 +772,7 @@ def rules():
 <ul class="rows"><li>和文は Noto Sans JP（Regular 400／Medium 500）。英字と数字は Helvetica Neue（Windows では Arial）</li>
 <li>スマホは幅375px、PC は幅1440px 以上での大きさ。その間は画面の幅に合わせて変わる。囲みの中の見出しは <code>.t-h2s</code>（18 → 28px）</li>
 <li>見出しは文節で改行。入力欄の文字はスマホでも16px</li></ul>''')
-            + sec('color', '色', 'オフホワイトの地に、青・赤・黄・墨', f'''<ul class="swatches">{sw}</ul>
+            + sec('color', '色', '白の地に、青・赤・黄・墨', f'''<ul class="swatches">{sw}</ul>
 <ul class="rows"><li>色は意味で決める。同じ意味のものは同じ色</li><li>大きな面は地・帯・淡い青・青だけ。赤と黄は行動とバッジに、網点のグレーはヒーローの地（写真が届くまで）に</li>
 <li>青の上の文字は白。値の元は design/karura-tokens.css（ツールと共通）</li></ul>''')
             + sec('shape', '余白・角丸・影', '余白は幅に合わせて伸びる', f'''<table class="tbl"><thead><tr><th scope="col">場所</th><th scope="col">トークン</th><th scope="col">値（スマホ → PC）</th></tr></thead><tbody>{sh}</tbody></table>
