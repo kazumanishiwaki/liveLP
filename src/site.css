@@ -257,6 +257,7 @@
   .reason { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .75rem 1rem; align-items: center; align-content: start;
     & > .stack { display: contents; }
     & > .stack > :not(h3) { grid-column: 1 / -1; }
+    & h3 { word-break: auto-phrase; }
     & .t-num { display: block; margin-block-end: .5rem; color: #b3b3b3; } }
   @media (width >= 64rem) { .reasons { grid-template-columns: 1fr 1fr; gap: 3rem 2.5rem; } }
 

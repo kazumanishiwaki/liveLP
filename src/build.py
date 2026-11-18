@@ -488,8 +488,17 @@ def index():
 
     return (head(f'シンポジウム・講演会のハイブリッド配信代行｜3カメ・3人・25万円〜｜{NAME}',
                  '大学や公共機関のシンポジウム、公開講座をハイブリッドで配信します。カメラ3台・スタッフ3人・マイク5本までで25万円（税別）から。8問のプラン診断で、合うプランと費用がわかります。', home=True)
-            + intro + header('index.html') + '<main id="main">' + hero + worries + cost + price + option + works + faq + '</main>'
+            + intro + header('index.html') + '<main id="main">' + hero + strengths() + worries + cost + price + option + works + faq + '</main>'
             + footer('index.html', form=True))
+
+# ------------------------------------------------------------------ 強み（トップの MV のすぐ下）
+def strengths():
+    items = [('doc', 'わかりやすい料金体系', 'スタッフ3人・カメラ3台・マイク5本で25万円（税別）。機材費も込みです。全員に持ち場がある、無駄のない体制で伺います。', '#price', '料金プランを見る'),
+             ('qr', '支援ツールで、運営費も圧縮', '配信支援ツール（受付のデジタルチケット、質疑応答、進行管理）で、当日の受付や運営に立つ人を減らせます。', 'reception.html', '配信支援ツールを見る'),
+             ('list', '学内の配信体制と、内製化', '小さな会はご自身で、大きな会は私たちに。内製化の基準づくりから、独り立ちまで並走します。', 'coaching.html', '内製化支援を見る')]
+    li = ''.join(f'''<li class="reason">{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p><a class="tlink" href="{h}">{l}{go()}</a></div></li>''' for k, t, b, h, l in items)
+    return sec('strengths', 'カルラライブの強み', '配信の費用を、<br>読めるものにします', f'<ul class="reasons reasons--3">{li}</ul>',
+               lead='配信当日だけでなく、運営の手間と、その先の体制づくりまで支えます。')
 
 # ------------------------------------------------------------------ 当日の体制と流れ
 def service():
