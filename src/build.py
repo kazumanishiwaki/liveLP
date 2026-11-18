@@ -295,28 +295,18 @@ def tbl_gear():
     tr = ''.join(f'<tr><td class="k">{a}</td><td class="k" data-l="数">{c}</td><td data-l="用途">{d}</td></tr>' for a, c, d in rows)
     return f'<table class="tbl"><caption class="vh">持ち込む機材（スタンダード）</caption><thead><tr><th scope="col">種類</th><th scope="col">数</th><th scope="col">用途</th></tr></thead><tbody>{tr}</tbody></table>'
 
-def tbl_option():
-    """オプションは1つの表。体制や条件で足すもの（旧「追加料金の5つ」）と、同じ日に頼めるもの"""
-    groups = [('当日の体制や条件で足すもの', [
-                  ('配信時間の延長', '3時間を超える配信。1時間ごと', '［金額］'),
-                  ('スタッフの追加', '登壇者のPC操作のサポートなど。オンラインから登壇する人がいる会、マイクが6本以上要る会も', '［金額］'),
-                  ('カメラとカメラマンの追加', '5台目以降の追加', '［金額］'),
-                  ('回線の持ち込み', '会場に使えるインターネット回線がないとき', '［金額］'),
-                  ('予備回線', '会場の回線が切れても配信を続けられるよう、別の回線を用意します', '［金額］'),
-                  ('ロケハン', '実地での会場の下見。オンライン下見で足りないときに', '［金額］'),
-                  ('交通費・宿泊費', '会場までの交通費と、前入りが必要な場合の宿泊費', '別途お見積り')]),
-              ('同じ日に頼めるもの', [
-                  ('録画データの納品', '配信した映像を、録画データとしてお渡しします', '［金額］'),
-                  ('記録写真', '専任のカメラマン1人が、報告書や広報に使える写真を撮ります。数枚の記録撮影は、基本プラン内で対応できます', '［金額］'),
-                  ('記録映像の編集', '3台のカメラの映像から、話している人に合わせて切り替えた記録映像を、字幕つきで作ります', '［金額］'),
-                  ('2分のダイジェスト映像', '次回の告知や成果報告に使える、短いまとめの映像を作ります', '［金額］'),
-                  ('文字起こし', '報告書の下書きにそのまま使えるテキストを作ります', '［金額］'),
-                  ('LINEで申し込む受付', '申込をLINEログインにして、主催者のLINE公式アカウントの友だちを増やします。LINE側の設定も代行します', '［金額］')])]
-    body = ''
-    for g, rows in groups:
-        body += f'<tbody><tr class="tbl-group"><th scope="rowgroup" colspan="3">{g}</th></tr>'
-        body += ''.join(f'<tr><th scope="row">{a}</th><td data-l="内容">{b}</td><td class="r" data-l="料金（税別）">{c}</td></tr>' for a, b, c in rows) + '</tbody>'
-    return f'<table class="tbl tbl--opt"><caption class="vh">オプションの一覧</caption><thead><tr><th scope="col">オプション</th><th scope="col">内容</th><th scope="col" class="r">料金（税別）</th></tr></thead>{body}</table>'
+def option_list():
+    """オプション。編集と記録撮影は写真つきのカードで目立たせ、残りは意味ごとにまとめて名前と料金だけ並べる"""
+    feature = [('P13', '記録撮影', [('記録写真（専任のカメラマン）', '［金額］')], '数枚の記録撮影は、基本プランで対応できます'),
+               ('P14', '編集', [('記録映像の編集（字幕つき）', '［金額］'), ('2分のダイジェスト映像', '［金額］')], '')]
+    groups = [('体制を足す', [('スタッフの追加', '［金額］'), ('カメラとカメラマンの追加（5台目から）', '［金額］'), ('配信時間の延長（1時間ごと）', '［金額］')]),
+              ('回線と下見', [('予備回線', '［金額］'), ('回線の持ち込み', '［金額］'), ('ロケハン（実地の下見）', '［金額］')]),
+              ('納品と受付', [('録画データの納品', '［金額］'), ('文字起こし', '［金額］'), ('LINEで申し込む受付', '［金額］')]),
+              ('交通と宿泊', [('交通費・前入りの宿泊費', '別途お見積り')])]
+    rows = lambda xs: '<ul class="opt-rows">' + ''.join(f'<li><span>{n}</span><span class="r">{v}</span></li>' for n, v in xs) + '</ul>'
+    fc = ''.join(f'''<li class="opt-card"><div class="zoom">{img(pid, f'（ダミー）{t}の写真')}</div><div class="stack s-16"><h3 class="t-h3">{t}</h3>{rows(xs)}{f'<p class="t-note t-sub">{n}</p>' if n else ''}</div></li>''' for pid, t, xs, n in feature)
+    gc = ''.join(f'<li class="opt-group"><h3 class="sub">{g}</h3>{rows(xs)}</li>' for g, xs in groups)
+    return f'<ul class="opt-cards">{fc}</ul><ul class="opt-groups">{gc}</ul>'
 
 def tbl_plans():
     """プランの違いだけを並べる表。どのプランにも含まれるものは、表の下に1回だけ書く（COMMON）。スマホでは横にスクロール"""
@@ -434,18 +424,18 @@ def index():
     kd = ''.join(f'<li class="reason">{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p></div></li>' for k, t, b in kinds)
     factors = [('face', '当日の人数', 'スタッフの人数。ディレクター・配信管理、カメラ・音声、2台目のカメラの3人が基本です。オンライン登壇やマイク6本以上の会では1人増えます。'),
                ('switch', '機材', 'カメラとマイクの数、予備の機材。カメラの台数は、登壇者の人数と会場の広さで決まります。'),
-               ('report', '付随業務（オプション）', '録画データの納品、予備回線、ロケハン、記録写真など、当日の配信のほかに頼める仕事です。必要なものだけを足します。')]
+               ('report', 'オプション', '録画データの納品、予備回線、ロケハン、記録写真など、当日の配信のほかに頼める仕事です。必要なものだけを足します。')]
     fc = ''.join(f'<li class="reason">{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p></div></li>' for k, t, b in factors)
     lean = [('全員に持ち場があります', 'スタッフは3人。ディレクター・配信管理、カメラ・音声、2台目のカメラの持ち場に1人ずつです。持ち場のない人の費用はいただきません。'),
             ('機材は、会に合わせて選びます', '登壇者2〜6人の会にはカメラ3台。5台を持ち込むのは、登壇者が多い会や会場が広い会だけです。'),
             ('予備は、止まると取り返しがつかないものだけ', '録画機は2系統。予備回線はオプションで付けられます。'),
-            ('見積書にすべて書きます', '人・機材・付随業務の内訳を明記します。あとから増えるのは、オプションの表にあるものだけです。')]
+            ('見積書にすべて書きます', '人・機材・オプションの内訳を明記します。あとから増えるのは、オプションの一覧にあるものだけです。')]
     ln = ''.join(f'<li><span class="a">{a}</span><span class="b">{b}</span></li>' for a, b in lean)
-    cost = sec('cost', 'サービス内訳', '配信の費用は、<br>人と機材と付随業務で決まります', f'''<div class="stack"><h3 class="sub">ケーススタディ</h3><ul class="reasons">{kd}</ul></div>
+    cost = sec('cost', 'サービス内訳', '配信の費用は、<br>人と機材とオプションで決まります', f'''<div class="stack"><h3 class="sub">ケーススタディ</h3><ul class="reasons">{kd}</ul></div>
 <div class="stack"><h3 class="sub">費用を決める3つ</h3><ul class="reasons reasons--3">{fc}</ul></div>
 <div class="boxc stack s-48"><div class="stack s-16">{lab('コラム')}<h3 class="t-h2s">無駄のない配信とは</h3>
 <p class="t-body">引っ越しと同じです。単身の荷物に10トントラックはいりませんが、冷蔵庫を友人の軽トラックで運ぶのは不安です。配信も、会の大きさに合った人と機材を選ぶのがいちばん安く、いちばん確かです。</p></div><ul class="lean">{ln}</ul></div>''',
-               lead='配信代行の見積は、当日のスタッフの人数、持ち込む機材、オプションで足す付随業務の3つで、ほぼ決まります。カルラライブは、会の大きさに必要なぶんだけを組み合わせます。')
+               lead='配信代行の見積は、当日のスタッフの人数、持ち込む機材、必要なときだけ足すオプションの3つで、ほぼ決まります。カルラライブは、会の大きさに必要なぶんだけを組み合わせます。')
 
     price = sec('price', '料金プラン', 'シンプルな料金プラン', f'''<div class="stack">{tbl_plans()}
 <p class="t-note t-sub">定期的に配信する会（毎月のセミナーなど）は、回数に応じて割引があります。交通費と、前入りが必要な場合の宿泊費は別途お見積りします。</p></div>
@@ -458,9 +448,9 @@ def index():
 <p class="t-note t-sub t-center">見積書の見本は、上司への説明や相見積にそのまま使えます。　<a class="tlink" href="contact.html#sample">見積書の見本を見る{go()}</a></p>''',
                 lead=f'どのプランにも、事前の打ち合わせ、会場のオンライン下見、予備の録画機、受付用のデジタルチケットが含まれます。{mk("見積書にも同じ内容を書きます。")}', tone='bandg')
 
-    option = sec('option', 'オプション', '必要なときだけ、足せるもの', f'''{tbl_option()}
-<p class="t-note t-sub">オプションは、どのプランにも付けられます。プラン診断で選んだものは、見積のご依頼にそのまま入ります。</p>''',
-                 lead='当日の体制や条件で足すものと、同じ日に頼める記録写真・記録映像です。どれも見積書に1行ずつ書きます。見積・打ち合わせ・請求は、配信とまとめて1回です。')
+    option = sec('option', 'オプション', '必要なときだけ、足せるもの', f'''{option_list()}
+<p class="t-note t-sub">料金はすべて税別です。プラン診断で選んだものは、見積のご依頼にそのまま入ります。</p>''',
+                 lead='どのプランにも付けられます。見積書には1行ずつ書き、請求は配信とまとめて1回です。')
 
     works = f'''<section id="works" class="sec" aria-labelledby="works-title"><div class="wrap stack s-56">
 <div class="sec-head stack">{lab('対応事例')}<h2 class="t-h2" id="works-title" data-rv>これまでに配信した会</h2>
@@ -475,7 +465,6 @@ def index():
 {case(3, 'P10', '（ダミー）会場からの質問')}
 {case(4, 'P03', '（ダミー）会場全体')}
 </ul>
-<div class="wrap mtl"><blockquote class="boxw stack" style="max-width:48rem"><p class="t-lead">［頼む前に不安だったこと、当日どうだったか。2〜3行］</p><footer class="t-note t-sub">［所属・役職・氏名（掲載できる範囲）］</footer></blockquote></div>
 </section>'''
 
     fq = ''.join(f'<details open><summary><span class="qa-mk qa-mk--q" aria-hidden="true">Q</span>{q}</summary><div class="ans"><span class="qa-mk qa-mk--a" aria-hidden="true">A</span><p class="t-body">{a}</p></div></details>' for q, a in FAQ)
@@ -489,9 +478,9 @@ def index():
 # ------------------------------------------------------------------ 強み（トップの MV のすぐ下）
 def strengths():
     items = [('P05', 'doc', 'わかりやすい料金体系', 'スタッフ3人・カメラ3台・マイク5本で25万円（税別）。機材費も込みです。全員に持ち場がある、無駄のない体制で伺います。', '#price', '料金プランを見る'),
-             ('P11', 'qr', '支援ツールで、運営費も圧縮', '配信支援ツール（受付のデジタルチケット、質疑応答、進行管理）で、当日の受付や運営に立つ人を減らせます。', 'reception.html', '配信支援ツールを見る'),
-             ('P12', 'list', '自前の配信体制と、内製化', '小さな会はご自身で、大きな会は私たちに。内製化の基準づくりから、独り立ちまで並走します。', 'coaching.html', '内製化支援を見る')]
-    li = ''.join(f'''<li class="reason"><div class="reason-ph zoom">{img(pid, f'（ダミー）{t}の写真')}</div>{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p>{btn(l, h, 'line')}</div></li>''' for pid, k, t, b, h, l in items)
+             ('P11', 'qr', 'ツールで運営費を圧縮', '配信支援ツール（受付のデジタルチケット、質疑応答、進行管理）で、当日の受付や運営に立つ人を減らせます。', 'reception.html', '配信支援ツールを見る'),
+             ('P12', 'list', '配信体制と内製化', '小さな会はご自身で、大きな会は私たちに。内製化の基準づくりから、独り立ちまで並走します。', 'coaching.html', '内製化支援を見る')]
+    li = ''.join(f'''<li class="reason"><div class="reason-ph zoom">{img(pid, f'（ダミー）{t}の写真')}</div>{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p>{btn(l, h, 'soft s')}</div></li>''' for pid, k, t, b, h, l in items)
     return sec('strengths', 'カルラライブの強み', '配信の費用を、<br>読めるものにします', f'<ul class="reasons reasons--3 reasons--card">{li}</ul>',
                lead='配信当日だけでなく、運営の手間と、その先の体制づくりまで支えます。')
 
@@ -705,156 +694,108 @@ def thanks():
 </main>''' + footer('thanks.html'))
 
 def rules():
-    """デザインルール。ページの見本は build.py の部品関数で描くので、部品を直せば見本も変わる"""
-    sub = rules.sub = [('rules-top', '原則'), ('layout', '画面の組み方'), ('type', '文字'), ('color', '色'), ('shape', '余白・角丸・影'),
-                       ('parts', 'パーツ'), ('words', '言葉'), ('motion', '動き'), ('platform', 'Web標準')]
-    apis = [
-        ('&lt;dialog&gt;（showModal）', 'Widely', 'スマホのメニュー、プラン診断。フォーカスを閉じ込め、Esc で閉じる', 'メニューはフッターへ、診断はページの下へ移動するリンクになる'),
-        ('&lt;details open&gt; / &lt;summary&gt;', 'Widely', 'よくある質問。最初から開いておき、読み終えたものを閉じられる', '—'),
-        (':has()', 'Widely', 'カメラの切り替え（ラジオの選択で写真を出し分け）、診断の選択肢の色', '—'),
-        ('コンテナクエリ（size）', 'Widely', '診断の選択肢を、箱の幅で1列／2列に', '—'),
-        ('CSS のネスト、@layer、color-mix()', 'Widely', 'CSS の書き方', '—'),
-        (':user-invalid と required / type=email', 'Widely', '入力の誤りを、触ったあとだけ赤く表示', '—'),
-        ('IntersectionObserver', 'Widely', 'カメラの自動送りを、見えているときだけ動かす。目次の現在地', '—'),
-        ('popover', 'Newly（2025-01）', '「?」で開く補足', '補足を本文の下に注記として表示し「?」を隠す'),
-        ('アンカー配置（anchor positioning）', 'Newly（2026-01）', '補足を「?」の真上に出す', '画面の中央に出す'),
-        ('@starting-style / transition-behavior', 'Newly（2024-08）', 'メニューと補足が開くときの動き', '動きなしで開く'),
-        ('スクロール連動アニメーション', 'Limited', '見出しや写真が、スクロールに合わせて現れる', '最初から表示'),
-        ('word-break: auto-phrase', 'Limited', '見出し、カードの題、ボタンの文字を文節で改行', '通常の折り返し'),
-    ]
-    tr = ''.join(f'<tr><th scope="row">{a}</th><td data-l="Baseline">{b}</td><td data-l="使っている場所">{c}</td><td data-l="使えないとき">{d}</td></tr>' for a, b, c, d in apis)
+    """デザインルール＝アセットの一覧（文字・色・余白・ボタン・パーツ・動き）。案件ごとの決まりは書かない（AGENTS.md へ）。
+    見本は build.py の部品関数で描くので、部品を直せばここも変わる"""
+    rules.sub = [('type', '文字'), ('color', '色'), ('shape', '余白・角丸・影'), ('buttons', 'ボタン'),
+                 ('heads', '見出しまわり'), ('boxes', '入れ物'), ('lists', '一覧と表'), ('aids', '補助'), ('motion', '動き')]
 
-    # 色見本は、ただ1つの元（design/karura-tokens.css）から読む
+    type_rows = [('H1', 'ページの見出し', '.t-h1', 26, 50, '1.45', 500),
+                 ('H2', '節の見出し', '.t-h2', 26, 44, '1.45', 500),
+                 ('H3', '節の中の見出し', '.t-h3', 18, 26, '1.6', 500),
+                 ('H4', 'カードの題、質問', '.t-ct', 16, 20, '1.5', 500),
+                 ('リード', '見出しの下の1〜2文', '.t-lead', 14, 18, '1.8', 400),
+                 ('本文', '説明の文', '.t-body', 14, 16, '1.8', 400),
+                 ('注釈', '補足、表の注', '.t-note', 12, 14, '1.7', 400)]
+    ty = ''.join(f'<tr><th scope="row"><b>{a}</b><br><span class="t-note t-sub">{r}</span></th><td data-l="クラス"><code>{c}</code></td><td data-l="スマホ" class="r">{sp}px</td><td data-l="PC" class="r">{pc}px</td>'
+                 f'<td data-l="行送り" class="r">{l}</td><td data-l="太さ" class="r">{w}</td><td data-l="見本"><span class="{c[1:]} type-sample">配信の費用</span></td></tr>'
+                 for a, r, c, sp, pc, l, w in type_rows)
+
     kcss = TOKENS.read_text(encoding='utf-8')
-    names = {'bg': ('地', 'ページの背景'), 'paper': ('紙', '白い地に置く箱、カード、フォーム'), 'cream': ('クリーム', '帯、囲み'), 'deep': ('深い青', 'フッター、お客さまの声の吹き出し（白い文字を載せる）'), 'wash': ('淡いティール', '帯、バナー'),
-             'ink': ('文字', '見出し・本文、暗い囲み'), 'ink-strong': ('濃い文字', '強調、キーボードの枠'), 'sub': ('補足', '補足の文字、文字リンクの矢印'),
-             'line': ('罫線', '一覧と表の区切り'), 'teal': ('ティール（主色）', '現在地、タグ、アイコン、そのほかの行動'),
-             'coral': ('珊瑚', '見積を依頼する、だけ'), 'yellow': ('黄', 'プラン診断、だけ'), 'marker': ('マーカー', '要点の下線')}
+    names = {'bg': ('地', 'ページの背景'), 'paper': ('紙', '箱、カード、フォーム'), 'cream': ('クリーム', '帯、囲み'), 'wash': ('淡いティール', '帯、淡い面のボタン'),
+             'ink': ('文字', '見出し・本文'), 'ink-strong': ('濃い文字', '強調、キーボードの枠'), 'sub': ('補足', '注釈、文字リンクの矢印'),
+             'line': ('罫線', '一覧と表の区切り、箱の線'), 'teal': ('ティール（主色）', 'タグ、アイコン、標準のボタン、現在地'),
+             'coral': ('珊瑚', '申し込み・依頼のボタン'), 'yellow': ('黄', 'いちばん押してほしいボタン、バッジ'), 'marker': ('マーカー', '要点の下線'),
+             'deep': ('青', '白い文字を載せる面')}
     tokens = [(k, v) for k, v in re.findall(r'--k-([a-z-]+): (#[0-9a-f]{6});', kcss) if k in names]
     assert len(tokens) == len(names), '色見本のトークンが足りません'
     sw = ''.join(f'<li class="swatch"><span style="background:{v}"></span><p class="t-note"><b>{names[k][0]}</b>　{v.upper()}<br><span class="t-sub">{names[k][1]}</span></p></li>' for k, v in tokens)
 
-    # #2 H1〜H4・本文・注釈の大きさ。見本は、その大きさの文字で描く
-    type_rows = [('H1', 'ページの見出し', '.t-h1', 26, 50, '1.45', 500, 'MV の見出しだけ 28 → 44'),
-                 ('H2', '節の見出し', '.t-h2', 26, 44, '1.45', 500, ''),
-                 ('H3', '節の中の見出し', '.t-h3', 18, 26, '1.6', 500, '囲みの中の見出しは .t-h2s（18 → 28）'),
-                 ('H4', 'カードの題、質問', '.t-ct', 16, 20, '1.5', 500, 'カードの題は h3 でもこの大きさ'),
-                 ('リード', '見出しの下の1〜2文', '.t-lead', 14, 18, '1.8', 400, ''),
-                 ('本文', '説明の文', '.t-body', 14, 16, '1.8', 400, ''),
-                 ('注釈', '補足、表の注、ボタンの下の一言', '.t-note', 12, 14, '1.7', 400, '補足の色は .t-sub（#808080）')]
-    ty = ''.join(f'<tr><th scope="row"><b>{a}</b><br><span class="t-note t-sub">{r}</span></th><td data-l="クラス"><code>{c}</code></td><td data-l="スマホ" class="r">{sp}px</td><td data-l="PC" class="r">{pc}px</td>'
-                 f'<td data-l="行送り" class="r">{l}</td><td data-l="太さ" class="r">{w}</td><td data-l="見本"><span class="{c[1:]} type-sample">配信の費用</span>{f"<br><span class=t-note>{n}</span>" if n else ""}</td></tr>'
-                 for a, r, c, sp, pc, l, w, n in type_rows)
-
-    shape_rows = [('ページの左右', '--pad', '16 → 80px'), ('セクションの上下', '--sec / --sec-2 / --sec-3', '100 → 200px（大・中・小の3つ）'),
-                  ('見出しと中身の間', '--gap-56', '28 → 56px'), ('ブロックの間', '--gap-48 / --gap-64', '16 → 48px／40 → 64px'),
-                  ('ボタンの高さ', '--btn-h', '48 → 60px'), ('左レールの幅', '--rail', '200px')]
+    shape_rows = [('ページの左右', '--pad', '16 → 80px'), ('節の上（大・中・小）', '--sec / --sec-2 / --sec-3', '100 → 200px ／ 中 ／ 80 → 120px'),
+                  ('見出しと中身の間', '--gap-56', '28 → 56px'), ('ブロックの間', '--gap-48 / --gap-64', '16 → 48px ／ 40 → 64px'),
+                  ('ボタンの高さ', '--btn-h', '48 → 60px（小は 44px）')]
     sh = ''.join(f'<tr><th scope="row">{a}</th><td data-l="トークン"><code>{b}</code></td><td data-l="値（スマホ → PC）">{c}</td></tr>' for a, b, c in shape_rows)
 
-    def part(name, cls, demo, use, rule):
+    def part(name, cls, demo, rule):
         return (f'<li class="part"><div class="part-demo">{demo}</div><div class="stack s-16"><h4 class="t-ct">{name}　<code>{cls}</code></h4>'
-                f'<p class="t-body">{use}</p><p class="t-note t-sub">{rule}</p></div></li>')
-    groups = [
-        ('行動（押せるもの）', [
-            part('プラン診断のボタン', '.btn.plan', diag_btn(), '診断のモーダルを開く。どのページのどこからでも同じ形', '黄はこのボタンとバッジ・レールのタイルだけ。文字は濃い灰'),
-            part('見積のボタン', '.btn.quote', quote_btn(), '見積の依頼へ進む', '珊瑚はこの行動だけ。料金の節では1つだけ置き、中央に寄せる'),
-            part('そのほかのボタン', '.btn ／ .btn.line', btn('次へ進む', '#parts') + btn('ひな形を受け取る', '#parts', 'line'), 'ティール＝相談する・次へなどの行動、線だけ＝資料や補助', 'ボタンには影を付けない。右端に小さな矢印。スマホでは横いっぱい'),
-            part('文字リンク', '.tlink ＋ .go', f'<a class="tlink" href="#parts">料金プランを見る{go()}</a>', '別の節やページへ移る', '下線は引かず、右に背景なしのグレーの矢印。押すと矢印が少し右へ'),
-            part('プラン診断のバッジ', '.badge', '<a class="badge" href="#diag" data-open-diag aria-haspopup="dialog"><span class="badge-bg" aria-hidden="true"></span>'
-                 f'<span class="badge-t">{bico("diag")}8問で<br>プラン診断</span></a>', 'トップの MV の右下。写真の下の縁に半分かける', '黄のギザギザ。縁だけがゆっくり回り、文字は回さない。動きを減らす設定では止める'),
-            part('バナー', '.banner', banner('rules.html'), '「大学・公共機関の方へ」の入口。PC は左レールのメニューの下、スマホはメニューの中', 'メニューの項目には入れない。淡いティールの面に、左の帯と矢印'),
-        ]),
-        ('見出しまわり', [
-            part('見出しのタグ', '.t-lab', lab('よくあるお悩み'), '各節の頭。目次と同じ言葉', '押せるものに見えないよう、枠も面も付けない。頭にティールの短い線。形は見直し中で、候補は<a class="tlink" href="labels.html">見出しのタグの比較{go()}</a>'),
-            part('節の頭', 'sec()', '<div class="sec-head stack">' + lab('料金プラン') + '<p class="t-h2s">見出しは2行まで</p><p class="t-note">リードは1〜2文。要点の1文にだけマーカー</p></div>',
-                 'タグ → 見出し → リード の順に縦に積む', '左に見出しだけの列を作らない。読みやすい幅で止める'),
-            part('小見出し', '.sub', '<p class="sub">どのプランにも含まれるもの</p>', '節の中の区切り', 'ティールの下線。文字は補足の大きさ'),
-            part('札', '.pill', '<span class="pill">シンポジウム</span><span class="pill">［主催の種類］</span>', '事例の種類などの分類', '線だけ。押せるものには使わない'),
-        ]),
-        ('中身の入れ物', [
-            part('アイコン', '.chipi ／ .bico', ico('mic') + ico('check', 's') + f'<span style="color:var(--ink)">{bico("diag")}</span>',
-                 '四角に入れたもの（.chipi）は内容の目印、線だけのもの（.bico）はボタンの頭', 'ティールの角丸の四角に白の線画。飾りなので読み上げない'),
-            part('アイコンと文の組', '.reason', f'<ul class="reasons"><li class="reason">{ico("doc")}<div class="stack s-16"><h3 class="t-ct">わかりやすい料金</h3><p class="t-body">アイコンと題を横に並べ、本文はアイコンの下まで広げる</p></div></li></ul>',
-                 '費用を決める3つ、ケーススタディ、配信支援ツール', '3つ並べるときは PC で3列。題は文節で改行'),
-            part('写真つきのカード', '.reasons--card', f'<a class="tlink" href="index.html#strengths">トップの強みで見る{go()}</a>',
-                 'トップの強み', '写真 → アイコンと題 → 本文 → ボタン の順。ボタンは線だけの形で、3枚の下端にそろえる'),
-            part('吹き出し', '.voice', f'<ul class="voices"><li class="voice"><blockquote class="voice-q"><p>お客さまの声は、吹き出しに入れます。</p></blockquote><p class="voice-who t-note t-sub"><span class="avatar">{bico("person")}</span>総務・広報のご担当</p></li></ul>',
-                 'よくあるお悩み', '深い青のベタに白い文字。しっぽは下の人のアイコンを指す。肩書きは特設ページ以外では一般的な言い方'),
-            part('囲み', '.boxw ／ .boxg ／ .boxd', '<div class="boxw" style="padding:1rem">白い箱</div><div class="boxd" style="padding:1rem;box-shadow:none">暗い囲み</div>',
-                 '白い箱＝まとまった説明、クリーム＝フォーム、暗い囲み＝ページの終わりの見積の依頼', '影は外側の面だけ。中に置くものは線で区切る'),
-            part('コラム', '.boxc', '<div class="boxc stack s-16" style="inline-size:100%">' + lab('コラム') + '<p class="t-ct">無駄のない配信とは</p></div>',
-                 '本筋から少し外れた読みもの（サービス内訳の「無駄のない配信とは」）', '面は付けず、灰色の線で囲む。頭に「コラム」のタグ'),
-        ]),
-        ('一覧と表', [
-            part('行の一覧', '.rows', '<ul class="rows" style="inline-size:100%"><li>1行に1つ</li><li>罫線で区切る</li></ul>', '決まりや条件を並べる', '番号は付けない（順番に意味があるときは手順を使う）'),
-            part('手順', '.steps', '<ol class="steps" style="inline-size:100%"><li><span class="n">01</span><span class="a">相談</span><span class="b">順番に意味があるときだけ番号を付ける</span></li></ol>', '依頼の流れ、内製化の4段階', '番号はティールの丸'),
-            part('含まれるもの', '.incl', f'<ul class="incl" style="inline-size:100%"><li>{ico("check", "s")}<span>事前の打ち合わせ</span></li><li>{ico("check", "s")}<span>予備の録画機</span></li></ul>',
-                 'プランに含まれるもの、下見で確かめること', '題と説明があるときは、題を太字にして改行'),
-            part('表', '.tbl ／ .cmp', '<table class="tbl" style="inline-size:100%"><tbody><tr><th scope="row">スタッフ</th><td class="r">3人</td></tr><tr><th scope="row">カメラ</th><td class="r">3台</td></tr></tbody></table>',
-                 '料金の比較、オプション、機材の内訳', '同じ意味の値は同じ行・同じ縦位置にそろえる。スマホの幅では1行ずつ縦に積む（比較表は横スクロール）'),
-            part('事例のスライダー', '.cases ＋ .cases-count', f'<a class="tlink" href="index.html#works">対応事例で見る{go()}</a>', '事例', '横にスクロール。右上に「1 / 4」で今の位置を出す'),
-        ]),
-        ('補助', [
-            part('要点のマーカー', '.mk', f'<p class="t-body">{mk("いちばん伝えたい一文")}にだけ引く</p>', 'リードの要点', '1つの節に1か所まで。文字の下半分を淡い黄'),
-            part('補足の「?」', '.tip', '<p class="t-body">マイク5本まで' + tip('tip-rules', 'マイク5本の理由', '登壇者4人と司会1人の分です。') + '</p>', '数字の根拠など、読まなくても困らない補足', '使えないブラウザでは本文の下に注記として出す'),
-            part('穴埋め', '.ana', '<p class="t-body">［金額］</p>', 'まだ決まっていない値', '［ ］で囲むと自動で灰色の斜線になる。マーカーと見分けるため黄色は使わない'),
-            part('画像の仮置き', 'img()', f'<div style="inline-size:8rem">{img("P04", "（ダミー）画像の仮置き")}</div>', '写真・図', 'すべて無地のグレーで置く。注釈は付けない。本物が届いたら src/img から差し替える'),
-        ]),
-    ]
-    parts = ''.join(f'<div class="stack"><h3 class="sub">{g}</h3><ul class="parts">{"".join(items)}</ul></div>' for g, items in groups)
+                f'<p class="t-body">{rule}</p></div></li>')
+    def group(sid, tag, title, items, lead=''):
+        return sec(sid, tag, title, f'<ul class="parts">{"".join(items)}</ul>', lead)
 
-    principles = [('1段で組む', 'スマホは1段、PC は左のレール＋1段。左に見出しだけの列を作らない'),
-                  ('色は意味で決める', '黄＝プラン診断、珊瑚＝見積を依頼する、ティール＝そのほか。同じ意味は同じ色'),
-                  ('押せるものだけを、押せる形に', 'ボタンと文字リンク以外は、枠や面でボタンに見せない'),
-                  ('影は2段だけで、重ねない', '影の付いた面の中は線で区切る。ボタンには付けない'),
-                  ('同じ意味のものは、同じ位置に', '金額や人数は縦位置をそろえ、同じ行動は同じ名前・同じ色'),
-                  ('相手に合わせた言葉は、その相手のページで', '大学・公共向けの言葉は特設ページだけ。ほかは一般的な言い方')]
-    pr = ''.join(f'<li><span class="n">0{i}</span><span class="a">{a}</span><span class="b">{b}</span></li>' for i, (a, b) in enumerate(principles, 1))
+    # ボタン：種類 × 大きさ
+    kinds = [('塗り・黄', 'plan', 'いちばん押してほしい行動。1画面に1つ'), ('塗り・珊瑚', 'quote', '申し込み・依頼の行動'), ('塗り・ティール', '', 'そのほかの行動'),
+             ('線', 'line', '資料など、補助の行動'), ('淡い面', 'soft', 'カードの中など、並べて置く行動')]
+    bt = ''.join(f'<tr><th scope="row">{n}<br><code>.btn{("." + c) if c else ""}</code><br><span class="t-note t-sub">{u}</span></th>'
+                 f'<td data-l="大">{btn("ボタン", "#buttons", (c + " lg").strip())}</td><td data-l="標準">{btn("ボタン", "#buttons", c)}</td><td data-l="小">{btn("ボタン", "#buttons", (c + " s").strip())}</td></tr>' for n, c, u in kinds)
+    buttons = sec('buttons', 'ボタン', '種類と大きさ', f'''<table class="tbl tbl--btns"><thead><tr><th scope="col">種類</th><th scope="col">大 <code>.lg</code></th><th scope="col">標準</th><th scope="col">小 <code>.s</code></th></tr></thead><tbody>{bt}</tbody></table>
+<ul class="parts">{part('文字リンク', '.tlink ＋ .go', f'<a class="tlink" href="#buttons">一覧を見る{go()}</a>', '別の節やページへ移る。下線は引かず、右に背景なしのグレーの矢印')}
+{part('アイコンつき', '.btn ＋ .bico', f'<a class="btn plan" href="#buttons">{bico("diag")}アイコンつき</a>', 'ボタンの頭に線のアイコン。左に寄せ、矢印は右端')}</ul>
+<ul class="rows"><li>押せるものだけを、ボタンの形にする。タグや札には枠や面を付けない</li><li>ボタンに影は付けない。右端に小さな矢印。スマホでは横いっぱい</li><li>同じ意味の行動は、どこでも同じ色・同じ名前</li></ul>''')
 
-    words = ['行動の名前はどこでも同じ：「プラン診断」「見積を依頼する」。見積フォームの送信だけ「見積書を受け取る」',
-             'メニューの名前：サービス内訳／料金プラン／対応事例／当日の体制と流れ／配信支援ツール／内製化支援（7つまで）',
-             'スタッフは「人」で数える（3人、4人）。金額は「25万円（税別）」',
-             '大学・公共向けの言葉（大学、自治体、学会、公開講座、助成元など）は「大学・公共機関の方へ」だけで使う',
-             'トンチや言葉遊びはしない。何がどうなるかを素直に書く',
-             'まだ決まっていない値は［ ］で囲む（穴埋め）。推測で埋めない']
-    wd = ''.join(f'<li>{w}</li>' for w in words)
+    heads = group('heads', '見出しまわり', 'タグ、小見出し、札', [
+        part('タグ', '.t-lab', lab('よくあるお悩み'), '節の頭。枠も面も付けず、頭にティールの短い線。形は見直し中で、候補は<a class="tlink" href="labels.html">見出しのタグの比較' + go() + '</a>'),
+        part('節の頭', 'sec()', '<div class="sec-head stack">' + lab('タグ') + '<p class="t-h2s">見出しは2行まで</p><p class="t-note">リードは1〜2文</p></div>', 'タグ → 見出し → リード の順に縦に積む。左に見出しだけの列は作らない'),
+        part('小見出し', '.sub', '<p class="sub" style="inline-size:100%">ケーススタディ</p>', '節の中の区切り。ティールの小さな丸と濃い文字、右へ細い線を伸ばす'),
+        part('札', '.pill', '<span class="pill">シンポジウム</span><span class="pill">講演会</span>', '分類。線だけで、押せるものには使わない'),
+    ])
+    boxes = group('boxes', '入れ物', 'カード、吹き出し、囲み', [
+        part('アイコンと文', '.reason', f'<ul class="reasons"><li class="reason">{ico("doc")}<div class="stack s-16"><h3 class="t-ct">カードの題</h3><p class="t-body">アイコンと題を横に並べ、本文はアイコンの下まで広げる</p></div></li></ul>',
+             '3つ並べるときは PC で3列。カードの題は1行に収まる字数（3列なら全角10字まで）'),
+        part('写真つきのカード', '.reasons--card', f'<ul class="reasons reasons--card"><li class="reason"><div class="reason-ph zoom">{img("P05", "（ダミー）写真")}</div>{ico("doc")}<div class="stack s-16"><h3 class="t-ct">カードの題</h3><p class="t-body">本文</p>{btn("詳しく見る", "#boxes", "soft s")}</div></li></ul>',
+             '写真 → アイコンと題 → 本文 → 小さい淡い面のボタン。並べたときはボタンを下端にそろえる'),
+        part('吹き出し', '.voice', f'<ul class="voices"><li class="voice"><blockquote class="voice-q"><p>お客さまの声は、吹き出しに入れます。</p></blockquote><p class="voice-who t-note t-sub"><span class="avatar">{bico("person")}</span>話している人の肩書き</p></li></ul>',
+             '青のベタに白い文字。しっぽは人のアイコンを指す。並べたときは高さをそろえる'),
+        part('白い箱・帯・暗い囲み', '.boxw ／ .boxg ／ .boxd', '<div class="boxw" style="padding:1rem">白い箱</div><div class="boxg" style="padding:1rem">クリーム</div><div class="boxd" style="padding:1rem;box-shadow:none">暗い囲み</div>',
+             '白い箱は細い線で、クリームは面だけで区切る。暗い囲みはページの終わりの行動に'),
+        part('コラム', '.boxc', '<div class="boxc stack s-16" style="inline-size:100%">' + lab('コラム') + '<p class="t-ct">本筋から少し外れた読みもの</p></div>', 'ティールの太めの線と、大きな角丸で囲む。頭に「コラム」のタグ'),
+        part('バッジ', '.badge', '<a class="badge" href="#diag" data-open-diag aria-haspopup="dialog" style="--badge:9rem"><span class="badge-bg" aria-hidden="true"></span>'
+             f'<span class="badge-t">{bico("diag")}バッジ</span></a>', '黄の細かいギザギザ。縁だけがゆっくり回り、文字は回さない。ヒーローの縁に半分かけて置く'),
+        part('バナー', '.banner', '<a class="banner" href="#boxes"><span class="banner-t">バナーの題</span><span class="banner-s">ひとこと</span>' + go() + '</a>', '特設ページへの入口。淡いティールの面に、左の帯と矢印'),
+    ])
+    lists = group('lists', '一覧と表', '並べ方', [
+        part('行の一覧', '.rows', '<ul class="rows" style="inline-size:100%"><li>1行に1つ</li><li>罫線で区切る</li></ul>', '決まりや条件。番号は付けない'),
+        part('手順', '.steps', '<ol class="steps" style="inline-size:100%"><li><span class="n">01</span><span class="a">相談</span><span class="b">順番に意味があるときだけ番号を付ける</span></li></ol>', '番号はティールの英数字'),
+        part('チェックの一覧', '.incl', f'<ul class="incl" style="inline-size:100%"><li>{ico("check", "s")}<span>含まれるもの</span></li><li>{ico("check", "s")}<span>確かめること</span></li></ul>', '題と説明があるときは、題を太字にして改行'),
+        part('名前と料金の行', '.opt-rows', '<ul class="opt-rows" style="inline-size:100%"><li><span>項目の名前</span><span class="r">［金額］</span></li><li><span>項目の名前</span><span class="r">［金額］</span></li></ul>', '左に名前、右に金額。説明は付けず、意味ごとに小見出しでまとめる'),
+        part('表', '.tbl ／ .cmp', '<table class="tbl" style="inline-size:100%"><tbody><tr><th scope="row">スタッフ</th><td class="r">3人</td></tr><tr><th scope="row">カメラ</th><td class="r">3台</td></tr></tbody></table>', '同じ意味の値は、同じ行・同じ縦位置にそろえる。スマホでは1行ずつ縦に積む（比較表は横スクロール）'),
+        part('スライダー', '.cases ＋ .cases-count', '<p class="t-note"><span style="font-size:1.25rem">1</span> / 4</p>', '横にスクロール。右上に「1 / 4」で今の位置'),
+    ])
+    aids = group('aids', '補助', 'アイコン、マーカー、穴埋め', [
+        part('アイコン', '.chipi ／ .bico', ico('mic') + ico('check', 's') + f'<span style="color:var(--ink)">{bico("diag")}</span>', '四角に入れたもの（.chipi）は内容の目印、線だけのもの（.bico）はボタンの頭。飾りなので読み上げない'),
+        part('要点のマーカー', '.mk', f'<p class="t-body">{mk("いちばん伝えたい一文")}にだけ引く</p>', '1つの節に1か所まで'),
+        part('補足の「?」', '.tip', '<p class="t-body">マイク5本まで' + tip('tip-rules', 'マイク5本の理由', '補足の文が、ここに出ます。') + '</p>', '読まなくても困らない補足。使えないブラウザでは本文の下に注記として出す'),
+        part('穴埋め', '.ana', '<p class="t-body">［金額］</p>', 'まだ決まっていない値。［ ］で囲むと自動で灰色の斜線になる'),
+        part('画像の仮置き', 'img()', f'<div style="inline-size:8rem">{img("P04", "（ダミー）画像の仮置き")}</div>', '写真・図は、本物が届くまで無地のグレー'),
+    ])
 
-    S = lambda sid, tag, title, body, lead='': sec(sid, tag, title, body, lead)
-    body = (S('layout', '画面の組み方', 'スマホは1段、<br>PCは左のレール＋1段', '''<ul class="rows">
-<li>スマホを基本に書き、幅1024px以上で広げます</li>
-<li>PC は左に幅200pxの固定レール。上からロゴ、メニュー、バナー（大学・公共機関の方へ）、2つの行動（プラン診断・見積を依頼する）、ページの切り替え</li>
-<li>スマホは上のバーとメニューの横並びが一緒に追従し、画面の下に追従ボタン（プラン診断／見積を依頼する）。メニューの中身は PC のレールと同じ</li>
-<li>トップの中の項目には現在地が付きます。読み進めた量のインジケータは付けません</li>
-<li>トップに置くのは MV、強み、お悩み、サービス内訳、料金プラン、オプション、対応事例、よくある質問まで。当日の体制と流れ、配信支援ツール、内製化支援、発注の手続きは下層のページ</li>
-<li>プラン診断はページに埋め込まず、ボタンでモーダルを開きます。スマホは全画面、PC は画面の中央。JS が動かないときはページの下の診断へ移動</li></ul>''')
-            + S('type', '文字', '1書体、2つの太さ', f'''<table class="tbl tbl--type"><thead><tr><th scope="col">見出し・本文</th><th scope="col">クラス</th><th scope="col" class="r">スマホ</th><th scope="col" class="r">PC</th><th scope="col" class="r">行送り</th><th scope="col" class="r">太さ</th><th scope="col">見本</th></tr></thead><tbody>{ty}</tbody></table>
-<p class="t-note t-sub">スマホは幅375px、PC は幅1440px 以上での大きさ。その間は画面の幅に合わせてなめらかに変わります。</p>
-<ul class="rows"><li>和文は Noto Sans JP。本文は Regular（400）、見出しと強調は Medium（500）。使う文字だけに絞って同梱します</li>
-<li>英字と数字は Helvetica Neue（Windows では Arial）</li><li>字間は大きさの2%。見出しは文節で改行し、入力欄の文字はスマホでも16px</li></ul>''')
-            + S('color', '色', '白の地に、<br>主色のティール', f'''<ul class="swatches">{sw}</ul>
-<ul class="rows"><li>同じ意味のボタンは同じ色：黄＝プラン診断、珊瑚＝見積を依頼する、ティール＝そのほかの行動、線だけ＝資料や補助</li>
-<li>黄はプラン診断だけ（ボタン、バッジ、レールのタイル、下の追従ボタン）。要点のマーカーは別の淡い黄で、本文にだけ引きます</li>
-<li>珊瑚は見積を依頼するだけ。ほかに、よくある質問の Q と、必須の印</li>
-<li>大きな面は白・クリーム・淡いティールと、フッターの深い青だけ。深い青の上の文字は白にします。差し色は小さな面に使います</li>
-<li>値の元は design/karura-tokens.css。このサイトと、タイムキーパー・FAQ のツールが同じファイルを読むので、そこを直せば全体に反映されます</li></ul>''')
-            + S('shape', '余白・角丸・影', '余白は画面の幅に<br>合わせて伸びる', f'''<table class="tbl"><thead><tr><th scope="col">場所</th><th scope="col">トークン</th><th scope="col">値（スマホ → PC）</th></tr></thead><tbody>{sh}</tbody></table>
-<ul class="rows"><li>角丸は4つ：入力欄・小さな箱 6〜8px、カード・アイコンの四角 10px、タグや札は丸（20px）、ボタンは 6px</li>
-<li>影は2段だけ：置いてあるもの（カード、白い箱、左レール）0 0 30px 黒8%、物として見せるもの（見積書の見本、暗い囲み）0 5px 40px 黒20%</li>
-<li>影の付いた面の中に置くものは、影ではなく線で区切ります。ボタンには影を付けません</li></ul>''')
-            + S('parts', 'パーツ', 'サイト全体で使う部品', parts, lead='見本は、サイトで使っている部品そのものを置いています。部品を直すと、ここも一緒に変わります。')
-            + S('words', '言葉', '同じことは、<br>同じ言葉で', f'<ul class="rows">{wd}</ul>')
-            + S('motion', '動き', '動きは、減らせる', '''<ul class="rows"><li>押せるものの反応は 0.3秒、cubic-bezier(0.4, 0.4, 0, 1)。幕や出現は cubic-bezier(0.19, 1, 0.22, 1)</li>
-<li>ずっと動くのは、プラン診断のバッジの縁（24秒で1周）と、カメラの自動切り替え（止めるボタンつき）だけ</li>
-<li>要点のマーカーは画面に入ったときに 0.8秒で引きます。読み込みの幕は、その回の最初の1回だけ</li>
-<li>「視差効果を減らす」を選んでいる人には、幕・自動切り替え・バッジの回転・出現・マーカーの動きをすべて止めます</li></ul>''')
-            + S('platform', 'Web標準', '使っている Web 標準と、<br>使えないときの形', f'''<table class="tbl"><thead><tr><th scope="col">機能</th><th scope="col">Baseline（2026年11月）</th><th scope="col">使っている場所</th><th scope="col">使えないとき</th></tr></thead><tbody>{tr}</tbody></table>
-<p class="t-note t-sub">基準は Baseline Widely available（主要ブラウザで30か月以上使えるもの）。「Newly」は主要ブラウザの最新版で使えるもの、「Limited」は一部のブラウザだけ。新しい機能は、無くても見た目と操作が壊れない場所にだけ使います。</p>''',
-                lead='新しい機能は、無くても壊れない場所にだけ使います。'))
-    return (head(f'デザインルール｜{NAME}', 'カルラライブのサイトのデザインルール、パーツ、言葉の決まり、使っている Web 標準の一覧です。')
+    body = (sec('type', '文字', 'H1〜H4、本文、注釈', f'''<table class="tbl tbl--type"><thead><tr><th scope="col">見出し・本文</th><th scope="col">クラス</th><th scope="col" class="r">スマホ</th><th scope="col" class="r">PC</th><th scope="col" class="r">行送り</th><th scope="col" class="r">太さ</th><th scope="col">見本</th></tr></thead><tbody>{ty}</tbody></table>
+<ul class="rows"><li>和文は Noto Sans JP（Regular 400／Medium 500）。英字と数字は Helvetica Neue（Windows では Arial）</li>
+<li>スマホは幅375px、PC は幅1440px 以上での大きさ。その間は画面の幅に合わせて変わる。囲みの中の見出しは <code>.t-h2s</code>（18 → 28px）</li>
+<li>見出しは文節で改行。入力欄の文字はスマホでも16px</li></ul>''')
+            + sec('color', '色', '白の地に、主色のティール', f'''<ul class="swatches">{sw}</ul>
+<ul class="rows"><li>色は意味で決める。同じ意味のものは同じ色</li><li>大きな面は白・クリーム・淡いティール・青だけ。差し色は小さな面に</li>
+<li>青の上の文字は白。値の元は design/karura-tokens.css（ツールと共通）</li></ul>''')
+            + sec('shape', '余白・角丸・影', '余白は幅に合わせて伸びる', f'''<table class="tbl"><thead><tr><th scope="col">場所</th><th scope="col">トークン</th><th scope="col">値（スマホ → PC）</th></tr></thead><tbody>{sh}</tbody></table>
+<ul class="rows"><li>ヒーロー（MV）のすぐ後の節は、上の余白を小（<code>--sec-3</code>）にする</li>
+<li>角丸：ボタン・入力欄 6px、カード・アイコンの四角 10px、コラム 28px、タグや札は丸</li>
+<li>影は大事なところだけ：比較表や主役のカード（0 0 30px 黒8%）、書類の見本と暗い囲み（0 5px 40px 黒20%）。ほかは細い線か面で区切る</li></ul>''')
+            + buttons + heads + boxes + lists + aids
+            + sec('motion', '動き', '動きは、減らせる', '''<ul class="rows"><li>押せるものの反応は 0.3秒、cubic-bezier(0.4, 0.4, 0, 1)。幕や出現は cubic-bezier(0.19, 1, 0.22, 1)</li>
+<li>ずっと動くのは、バッジの縁（24秒で1周）と、写真の自動切り替え（止めるボタンつき）だけ</li>
+<li>「視差効果を減らす」を選んでいる人には、自動の動きをすべて止める</li></ul>'''))
+    return (head(f'デザインルール｜{NAME}', 'サイトで使う文字・色・余白・ボタン・パーツの一覧です。')
             + header('rules.html') + '<main id="main">'
-            + f'''<div class="wrap ph-head stack s-48" id="rules-top">{lab('デザインルール')}<h1 class="t-h1">白い地に、<br>ティールで道しるべを置く</h1>
-<p class="t-lead">サイトの組み方、色、パーツ、言葉の決まりをまとめています。迷ったときは、まず下の6つの原則に戻ります。</p>
-<ol class="steps">{pr}</ol></div>''' + body + '</main>' + footer('rules.html'))
+            + page_head('デザインルール', 'サイトで使う<br>アセットの一覧', '文字、色、余白、ボタン、パーツの見本と使い方です。見本は、サイトで使っている部品そのものを置いています。')
+            + body + '</main>' + footer('rules.html'))
 
 
 PAGES = {'index.html': index, 'service.html': service, 'reception.html': reception, 'coaching.html': coaching, 'public.html': public,

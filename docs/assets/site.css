@@ -47,7 +47,7 @@
     --marker: var(--k-marker);
 
     /* 影は2段だけで、重ねない。ずらさずに、ふわっと広げる（参考：recruit.handy.school）。ボタンには付けない */
-    --sh-1: var(--k-shadow-1);   /* 置いてあるもの：カード、白い箱 */
+    --sh-1: var(--k-shadow-1);   /* 大事なもの：料金の表、プラン診断 */
     --sh-3: var(--k-shadow-3);  /* 物として見せるもの：見積書の見本、暗い囲み */
     --radius-card: var(--k-radius-card);
     --ease-ui: var(--k-ease-ui); /* 押せるものの反応 0.3s */
@@ -150,6 +150,7 @@
   .s-16 { --gap: 1rem; }
 
   .sec { margin-block-start: var(--sec); }
+  .mv-after + .sec { margin-block-start: var(--sec-3); }
   .sec-2 { margin-block-start: var(--sec-2); }
   .sec-3 { margin-block-start: var(--sec-3); }
   .mtl { margin-block-start: var(--mtl); }
@@ -206,7 +207,9 @@
     & small { font-family: var(--font); font-size: .25em; letter-spacing: .08em; } }
   .t-big2 { font-family: var(--font-en); font-weight: 400; font-size: var(--fs-big2); line-height: 1; letter-spacing: 0;
     & small { font-family: var(--font); font-size: .3em; letter-spacing: .08em; } }
-  .sub { align-self: flex-start; padding: 6px 0; border-block-end: 3px solid var(--teal); font-size: var(--fs-note); line-height: 1; letter-spacing: .04em; }
+  .sub { display: flex; align-items: center; gap: 1rem; align-self: stretch; font-size: var(--fs-note); font-weight: 500; line-height: 1.4; letter-spacing: .06em; color: var(--ink);
+    &::before { content: ""; flex: none; inline-size: .5rem; block-size: .5rem; border-radius: 50%; background: var(--teal); margin-inline-end: -.375rem; }
+    &::after { content: ""; flex: 1; block-size: 1px; background: var(--line); } }
 
   /* ---------- ボタンと文字リンク ---------- */
   .btn {
@@ -221,6 +224,8 @@
       border-block-start: 1.5px solid; border-inline-end: 1.5px solid; rotate: 45deg;
     }
     &.line { background: transparent; color: var(--ink); border-color: var(--ink); &:hover { background: var(--ink); color: #fff; } }
+    &.soft { background: var(--wash); border-color: var(--wash); color: #07737d; &:hover { background: var(--teal); border-color: var(--teal); color: #fff; opacity: 1; } }
+    &.s { min-block-size: 2.75rem; min-inline-size: 0; gap: 1rem; padding-inline: 1rem; font-size: .8125rem; }
     &.full { display: flex; inline-size: 100%; }
     &.lg { min-block-size: clamp(3.25rem, 2.9rem + 1.4vw, 4.25rem); min-inline-size: min(19rem, 100%); font-size: clamp(.875rem, .8rem + .3vw, 1.0625rem); }
   }
@@ -242,11 +247,11 @@
   /* ---------- 囲み ---------- */
   .pill { display: inline-flex; align-items: center; min-block-size: 1.5rem; padding: 0 .75rem; border: 1px solid currentColor; border-radius: 30px; background: rgb(255 255 255 / .1); font-size: .75rem; line-height: 1; letter-spacing: .1em; white-space: nowrap; }
   /* 影は重ねない：影が付くのは、いちばん外側の面だけ。影の付いた面の中に置くものは、線で区切る */
-  .boxg { background: var(--cream); border-radius: var(--radius); padding: 2rem clamp(1rem, .5rem + 2vw, 2rem) 1.5rem; box-shadow: var(--sh-1); }
-  .boxw { background: var(--paper); border: 1px solid rgb(255 255 255 / .6); border-radius: var(--radius-card); padding: 2rem clamp(1rem, .5rem + 2vw, 2rem) 1.5rem; color: var(--ink); box-shadow: var(--sh-1); }
+  .boxg { background: var(--cream); border-radius: var(--radius); padding: 2rem clamp(1rem, .5rem + 2vw, 2rem) 1.5rem; }
+  .boxw { background: var(--paper); border: 1px solid rgb(255 255 255 / .6); border-radius: var(--radius-card); padding: 2rem clamp(1rem, .5rem + 2vw, 2rem) 1.5rem; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
   .boxg .boxw { box-shadow: none; border-color: var(--sand); }
   /* コラム：本筋から少し外れた読みもの。面は付けず、線で囲む */
-  .boxc { border: 1px solid var(--k-line-strong); border-radius: var(--radius-card); padding: clamp(1.5rem, 1rem + 2vw, 2.5rem); }
+  .boxc { border: 2px solid var(--teal); border-radius: 28px; padding: clamp(1.5rem, 1rem + 2.5vw, 3rem); }
   .boxd { background: var(--ink); color: var(--paper); border-radius: var(--radius); padding: clamp(2.5rem, 1.5rem + 3vw, 4rem) clamp(1.5rem, 1rem + 3vw, 4rem); box-shadow: var(--sh-3); }
   .cta-in { display: flex; flex-wrap: wrap; gap: 2rem 4rem; align-items: center; justify-content: space-between; & > :last-child { flex: 1 1 18rem; max-inline-size: 30rem; } }
   .ph { display: grid; place-items: center; padding: 1.25rem; text-align: center; font-size: .8125rem; line-height: 1.7; letter-spacing: .04em; border-radius: var(--radius); background: var(--sand); color: var(--sub); }
@@ -255,7 +260,7 @@
   .rows { border-block-end: 1px solid var(--sand);
     & li { padding-block: .75rem; border-block-start: 1px solid var(--sand); line-height: 2.1; letter-spacing: .09em; } }
   .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(.75rem, .5rem + 1vw, 1.25rem);
-    & li { position: relative; overflow: hidden; display: grid; place-items: center; min-block-size: clamp(4rem, 3.5rem + 2vw, 5rem); padding: .75rem 1rem; background: var(--paper); border-radius: var(--radius-card); box-shadow: var(--sh-1); text-align: center; font-size: var(--fs-note); line-height: 1.6; letter-spacing: .08em; }
+    & li { position: relative; overflow: hidden; display: grid; place-items: center; min-block-size: clamp(4rem, 3.5rem + 2vw, 5rem); padding: .75rem 1rem; background: var(--paper); border-radius: var(--radius-card); box-shadow: inset 0 0 0 1px var(--line); text-align: center; font-size: var(--fs-note); line-height: 1.6; letter-spacing: .08em; }
     & li::before { content: ""; position: absolute; inset: 0 auto 0 0; inline-size: 4px; background: var(--teal); } }
   .steps { border-block-end: 1px solid var(--sand);
     & li { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); gap: .25rem 1.5rem; align-items: center; padding-block: 1.5rem; border-block-start: 1px solid var(--sand); }
@@ -328,7 +333,7 @@
     .hdr {
       position: fixed; inset-block: 0; inset-inline-start: 0; inline-size: var(--rail);
       display: flex; flex-direction: column; gap: 1.5rem; padding: 1.75rem 0 1rem;
-      background: var(--bg); box-shadow: var(--sh-1);
+      background: var(--bg); border-inline-end: 1px solid var(--line);
     }
     .hdr-bar { block-size: auto; padding-inline: 1.25rem; }
     .logo { gap: .75rem; font-size: .875rem; letter-spacing: .12em; padding: 0;
@@ -436,14 +441,14 @@
   .mv .hero-kind { color: rgb(255 255 255 / .85); }
   .mv .ana { background: repeating-linear-gradient(135deg, #4d4d50 0 4px, #5a5a5d 4px 8px); color: #f0f0f0; box-shadow: inset 0 0 0 1px #77777a; }
   /* 写真の下の縁に、プラン診断のバッジを半分かける（右寄せ）。下の節との間は、バッジの下半分のぶんだけ空ける */
-  .mv-after { --badge: clamp(9rem, 6.5rem + 9vw, 13.5rem); position: relative; z-index: 2; display: flex; justify-content: flex-end;
+  .mv-after { --badge: clamp(11rem, 7.5rem + 12vw, 18.5rem); position: relative; z-index: 2; display: flex; justify-content: flex-end;
     margin-block: calc(var(--badge) / -2) calc(var(--badge) / -4); pointer-events: none; & .badge { pointer-events: auto; } }
   /* #9 プラン診断は、ギザギザのバッジ。縁だけがゆっくり回る（文字は回さない） */
   .badge { position: relative; display: grid; place-items: center; inline-size: var(--badge, 9rem); aspect-ratio: 1;
     color: var(--ink); text-decoration: none; text-align: center; isolation: isolate; }
   .badge-bg { position: absolute; inset: 0; z-index: -1; background: var(--yellow);
-    clip-path: polygon(50% 0%, 57% 10%, 69% 4%, 72% 16%, 85% 15%, 84% 28%, 96% 31%, 90% 43%, 100% 50%, 90% 57%, 96% 69%, 84% 72%, 85% 85%, 72% 84%, 69% 96%, 57% 90%, 50% 100%, 43% 90%, 31% 96%, 28% 84%, 15% 85%, 16% 72%, 4% 69%, 10% 57%, 0% 50%, 10% 43%, 4% 31%, 16% 28%, 15% 15%, 28% 16%, 31% 4%, 43% 10%); }
-  .badge-t { display: grid; justify-items: center; gap: .375rem; font-size: clamp(.9375rem, .8rem + .55vw, 1.25rem); line-height: 1.35; letter-spacing: .04em;
+    clip-path: polygon(50.0% 0.0%, 53.9% 5.2%, 58.7% 0.8%, 61.6% 6.5%, 67.1% 3.0%, 69.0% 9.2%, 75.0% 6.7%, 75.8% 13.1%, 82.1% 11.7%, 81.8% 18.2%, 88.3% 17.9%, 86.9% 24.2%, 93.3% 25.0%, 90.8% 31.0%, 97.0% 32.9%, 93.5% 38.4%, 99.2% 41.3%, 94.8% 46.1%, 100.0% 50.0%, 94.8% 53.9%, 99.2% 58.7%, 93.5% 61.6%, 97.0% 67.1%, 90.8% 69.0%, 93.3% 75.0%, 86.9% 75.8%, 88.3% 82.1%, 81.8% 81.8%, 82.1% 88.3%, 75.8% 86.9%, 75.0% 93.3%, 69.0% 90.8%, 67.1% 97.0%, 61.6% 93.5%, 58.7% 99.2%, 53.9% 94.8%, 50.0% 100.0%, 46.1% 94.8%, 41.3% 99.2%, 38.4% 93.5%, 32.9% 97.0%, 31.0% 90.8%, 25.0% 93.3%, 24.2% 86.9%, 17.9% 88.3%, 18.2% 81.8%, 11.7% 82.1%, 13.1% 75.8%, 6.7% 75.0%, 9.2% 69.0%, 3.0% 67.1%, 6.5% 61.6%, 0.8% 58.7%, 5.2% 53.9%, 0.0% 50.0%, 5.2% 46.1%, 0.8% 41.3%, 6.5% 38.4%, 3.0% 32.9%, 9.2% 31.0%, 6.7% 25.0%, 13.1% 24.2%, 11.7% 17.9%, 18.2% 18.2%, 17.9% 11.7%, 24.2% 13.1%, 25.0% 6.7%, 31.0% 9.2%, 32.9% 3.0%, 38.4% 6.5%, 41.3% 0.8%, 46.1% 5.2%); }
+  .badge-t { display: grid; justify-items: center; gap: .375rem; font-size: clamp(1rem, .8rem + .7vw, 1.5rem); line-height: 1.35; letter-spacing: .04em;
     & .bico { inline-size: clamp(1.75rem, 1.4rem + 1vw, 2.5rem); block-size: clamp(1.75rem, 1.4rem + 1vw, 2.5rem); } }
   .badge::after { content: ""; position: absolute; inset: 6%; z-index: -2; border-radius: 50%; box-shadow: var(--sh-3); opacity: .5; }
   .badge:hover .badge-bg { scale: 1.04; }
@@ -536,12 +541,12 @@
   @media (width >= 40rem) { .logos { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   @media (width >= 64rem) { .logos { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.25rem; } }
   .logos li { aspect-ratio: 5 / 2; }
-  .logos .ph { block-size: 100%; background: var(--paper); border-radius: var(--radius-card); box-shadow: var(--sh-1); }
+  .logos .ph { block-size: 100%; background: var(--paper); border-radius: var(--radius-card); box-shadow: inset 0 0 0 1px var(--line); }
 
   .cases-head { display: flex; justify-content: flex-end; margin-block-start: var(--gap-56); }
   .cases-count { font-family: var(--font-en); letter-spacing: .1em; & [data-cases-now] { color: var(--ink); font-size: 1.25rem; } }
   .cases { display: flex; gap: 1.25rem; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; padding: .5rem var(--pad) 1.5rem; scroll-padding-inline: var(--pad); margin-block-start: .5rem; scrollbar-width: thin; }
-  .case-card { flex: 0 0 min(22rem, 82%); scroll-snap-align: start; min-inline-size: 0; background: var(--paper); border-radius: var(--radius-card); padding: .75rem .75rem 1.25rem; box-shadow: var(--sh-1);
+  .case-card { flex: 0 0 min(22rem, 82%); scroll-snap-align: start; min-inline-size: 0; background: var(--paper); border-radius: var(--radius-card); padding: .75rem .75rem 1.25rem; box-shadow: inset 0 0 0 1px var(--line);
     & > :not(.zoom) { padding-inline: .25rem; }
     & .zoom img { aspect-ratio: 3 / 2; object-fit: cover; } }
   @media (width >= 64rem) { .case-card { flex-basis: 24rem; } }
@@ -574,6 +579,15 @@
     & .no { color: #b3b3b3; }
     & .cmp-price { font-family: var(--font-en); font-weight: 400; font-size: 1.75rem; line-height: 1; & small { font-family: var(--font); font-size: .5em; } } }
 
+  .opt-cards { display: grid; gap: 1.5rem; }
+  @media (width >= 48rem) { .opt-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .opt-card { display: grid; gap: 1.25rem; align-content: start; padding: 1rem 1rem 1.5rem; border-radius: var(--radius-card); background: var(--paper); box-shadow: var(--sh-1);
+    & .zoom img { inline-size: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius); } & > .stack { padding-inline: .5rem; } }
+  .opt-groups { display: grid; gap: 2rem 3rem; }
+  @media (width >= 48rem) { .opt-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .opt-group { display: grid; gap: .75rem; align-content: start; }
+  .opt-rows { & li { display: flex; justify-content: space-between; gap: 1rem; padding-block: .75rem; border-block-end: 1px solid var(--line); font-size: var(--fs-body); line-height: 1.6; }
+    & .r { flex: none; text-align: end; } }
   .cmp-badge { display: block; inline-size: fit-content; margin: 0 auto .375rem; padding: .125rem .625rem; border-radius: 20px; background: #fff; color: var(--teal); font-size: .6875rem; letter-spacing: .06em; }
   /* #20 プランの表と「含まれるもの」の間に、プラン診断への導線 */
   .to-diag { display: grid; gap: .75rem 2rem; align-items: center; padding: 1.5rem; border-radius: var(--radius-card); background: var(--paper); box-shadow: var(--sh-1); }
@@ -602,21 +616,19 @@
 
   /* ---------- 現場の道具：カード3枚 ---------- */
   .tools { display: grid; gap: 1.25rem;
-    & > .hi { min-inline-size: 0; background: var(--paper); border-radius: var(--radius-card); padding: .75rem .75rem 1.25rem; box-shadow: var(--sh-1); }
+    & > .hi { min-inline-size: 0; background: var(--paper); border-radius: var(--radius-card); padding: .75rem .75rem 1.25rem; box-shadow: inset 0 0 0 1px var(--line); }
     & > .hi :is(.t-ct, .t-body, .t-note) { padding-inline: .25rem; } }
   @media (width >= 48rem) { .tools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (width >= 90rem) { .tools { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
   /* ---------- オプションの表：名前の列を太めに ---------- */
-  .tbl--opt th[scope="row"] { white-space: nowrap; }
-  .tbl--opt .tbl-group th { padding: 2rem 0 .5rem; border-block-end: 3px solid var(--teal); font-size: var(--fs-note); letter-spacing: .04em; color: var(--ink); }
-  @media (width < 40rem) { .tbl--opt .tbl-group { padding-block: 1.5rem 0; border: 0; } .tbl--opt .tbl-group th { padding-block-start: 0; } }
 
   /* ---------- よくあるお悩み：担当者の声（吹き出し）と、答えが書いてある場所へのリンク ---------- */
   .voices { display: grid; gap: 1.5rem; }
   /* PCでは3人の吹き出し・名前・リンクの高さをそろえる（subgrid） */
-  @media (width >= 64rem) { .voices { grid-template-columns: repeat(3, minmax(0, 1fr)); } .voice { grid-row: span 3; grid-template-rows: subgrid; } }
   .voice { display: grid; grid-template-rows: 1fr auto auto; gap: .75rem; }
+  .voice > .tlink { align-self: start; align-items: flex-start; }
+  @media (width >= 64rem) { .voices { grid-template-columns: repeat(3, minmax(0, 1fr)); } .voice { grid-row: span 3; grid-template-rows: subgrid; } }
   .voice-q { position: relative; padding: 1.5rem; border-radius: 20px; background: var(--deep); color: #fff; line-height: 1.9;
     /* しっぽ：下の人のアイコンを指す（同じ深い青） */
     &::after { content: ""; position: absolute; inset-block-start: calc(100% - 1px); inset-inline-start: 1.75rem; border: .875rem solid transparent; border-block-start-color: var(--deep); border-inline-end-width: 0; } }
@@ -647,9 +659,9 @@
   /* 内製化の基準：2つの列を並べる */
   .crits { display: grid; gap: 1.5rem; }
   @media (width >= 48rem) { .crits { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  .crit { padding: 1.5rem; border-radius: var(--radius-card); background: var(--paper); box-shadow: var(--sh-1); }
+  .crit { padding: 1.5rem; border-radius: var(--radius-card); background: var(--paper); box-shadow: inset 0 0 0 1px var(--line); }
   .staff-card { display: grid; grid-template-columns: clamp(5.5rem, 4rem + 6vw, 8.5rem) minmax(0, 1fr); gap: 1.25rem; align-items: start; align-content: start;
-    background: var(--paper); border-radius: var(--radius-card); padding: 1rem; box-shadow: var(--sh-1);
+    background: var(--paper); border-radius: var(--radius-card); padding: 1rem; box-shadow: inset 0 0 0 1px var(--line);
     & .zoom img { aspect-ratio: 1; object-fit: cover; }
     & h3 { word-break: auto-phrase; } }
 
@@ -660,7 +672,7 @@
 
   /* ---------- FAQ（details）：1問ずつのカード ---------- */
   .faq { display: grid; gap: .75rem; }
-  .faq details { background: var(--paper); border-radius: var(--radius-card); box-shadow: var(--sh-1); padding-inline: 1.25rem 1rem; }
+  .faq details { background: var(--paper); border-radius: var(--radius-card); padding-inline: 1.25rem 1rem; }
   .faq summary {
     position: relative; display: flex; gap: .875rem; align-items: center; list-style: none; cursor: pointer;
     padding: 1.25rem 2rem 1.25rem 0; font-size: var(--fs-ct); line-height: 1.8; letter-spacing: .08em; color: var(--ink-2);
@@ -708,6 +720,7 @@
   /* 見本は狭い箱に入るので、PC でも1列で見せる */
   .part-demo :is(.reasons, .voices, .incl) { grid-template-columns: minmax(0, 1fr); }
   .part-demo .steps li { grid-template-columns: 1.75rem minmax(0, 1fr); & .b { grid-column: 2; } }
+  .tbl--btns td { vertical-align: middle; } .tbl--btns .btn { min-inline-size: 0; }
   .tbl--type .type-sample { display: inline-block; line-height: 1.3; white-space: nowrap; }
   :is(.part, .tbl) code { font-family: var(--font-en); font-size: .8125rem; letter-spacing: .02em; color: var(--sub); word-break: break-all; }
 
