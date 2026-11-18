@@ -28,12 +28,13 @@
   :root {
     --bg: var(--k-bg);        /* 地は白（参考：recruit.handy.school） */
     --paper: var(--k-paper);    /* 白い地に置く箱。影で浮かせる */
-    --cream: var(--k-cream);    /* クリームの面 = rgba(245,242,237,.7) を白に重ねた色 */
+    --cream: var(--k-cream);    /* 帯の面（無彩色のグレー） */
     --wash: var(--k-wash);     /* ティールの淡い面 = rgba(0,180,195,.05) を白に重ねた色 */
     /* 色はすべて recruit.handy.school の実測値にそろえる */
     --ink: var(--k-ink);      /* 文字・見出し（参考の本文色） */
     --ink-2: var(--k-ink-strong);    /* 強めの文字 */
     --sand: var(--k-line);     /* 罫線 = 黒10%を白に重ねた色 */
+    --line: var(--k-line);     /* 箱・カードの細い線（未定義で線が消えていたのを直す） */
     --sub: var(--k-sub);      /* 補足の文字 = rgba(0,0,0,.5) を白に重ねた色 */
     --line-d: #666666;
     --focus: var(--k-ink-strong);    /* キーボードの枠は濃い文字色。黄色は使わない */
@@ -73,10 +74,11 @@
 
     /* 余白 */
     --pad: clamp(1rem, -0.9259rem + 7.9012vw, 5rem);
-    --sec: clamp(6.25rem, 3.2407rem + 12.3457vw, 12.5rem);
-    --sec-2: clamp(6.25rem, 4.4444rem + 7.4074vw, 10rem);
-    --sec-3: clamp(5rem, 3.7963rem + 4.9383vw, 7.5rem);
-    --band: clamp(5rem, 2.5926rem + 9.8765vw, 10rem);
+    --sec: clamp(4rem, 3.1667rem + 3.5556vw, 6rem);   /* 節と節の間（どこも同じ）64 → 96px */
+    --sec-2: var(--sec);
+    --badge-mv: clamp(11rem, 7.5rem + 12vw, 18.5rem);   /* MV に半分かけるバッジの大きさ */
+    --sec-3: var(--sec);
+    --band: var(--sec);   /* 帯の上下の内側も同じ */
     --gap-64: clamp(2.5rem, 1.7778rem + 2.9630vw, 4rem);
     --gap-56: clamp(1.75rem, 0.9074rem + 3.4568vw, 3.5rem);
     --gap-48: clamp(1rem, 0.0370rem + 3.9506vw, 3rem);
@@ -151,14 +153,13 @@
   .s-16 { --gap: 1rem; }
 
   .sec { margin-block-start: var(--sec); }
-  .mv-after + .sec { margin-block-start: clamp(1.5rem, .5rem + 3vw, 3.5rem); }
   .sec-2 { margin-block-start: var(--sec-2); }
   .sec-3 { margin-block-start: var(--sec-3); }
   .mtl { margin-block-start: var(--mtl); }
 
   /* 帯：淡いティールとクリーム（地は白） */
   .band { background: var(--wash); }   /* ティールの淡い面（参考：rgba(0,180,195,.05)） */
-  .bandg { background: var(--cream); }  /* クリームの面（参考：rgba(245,242,237,.7)） */
+  .bandg { background: var(--cream); }  /* 無彩色のグレーの帯 */
   .pad-band { padding-block: var(--band); }
   @media (width >= 64rem) {
     .band { margin-inline: 8px; border-radius: var(--radius); }
@@ -280,7 +281,7 @@
   .reasons--card .reason { grid-template-rows: auto auto 1fr auto; align-content: stretch;
     & .reason-ph { grid-column: 1 / -1; margin-block-end: .5rem; border-radius: var(--radius-card); overflow: hidden;
       & img { inline-size: 100%; aspect-ratio: 16 / 10; object-fit: cover; } }
-    & .t-body { align-self: start; }
+    & .t-body { align-self: start; font-size: var(--fs-note); line-height: 1.8; }
     & .btn { align-self: end; justify-self: start; margin-block-start: .5rem; } }
   @media (width < 48rem) { .reasons--card .reason .btn { justify-self: stretch; } }
 
@@ -440,16 +441,17 @@
   .mv .hero-kind { color: rgb(255 255 255 / .85); }
   .mv .ana { background: repeating-linear-gradient(135deg, #4d4d50 0 4px, #5a5a5d 4px 8px); color: #f0f0f0; box-shadow: inset 0 0 0 1px #77777a; }
   /* 写真の下の縁に、プラン診断のバッジを半分かける（右寄せ）。下の節との間は、バッジの下半分のぶんだけ空ける */
-  .mv-after { --badge: clamp(11rem, 7.5rem + 12vw, 18.5rem); position: relative; z-index: 2; display: flex; justify-content: flex-end;
-    margin-block: calc(var(--badge) / -2) calc(var(--badge) / -4); pointer-events: none; overflow-x: clip;  /* 回る縁が画面の右からはみ出さない */ & .badge { pointer-events: auto; } }
+  .mv-after { position: relative; z-index: 2; display: flex; justify-content: flex-end;
+    --badge: var(--badge-mv); margin-block: calc(var(--badge) / -2); pointer-events: none;  /* 高さを取らない＝MV の下から、ほかの節の間と同じ --sec で次の節 */ overflow-x: clip;  /* 回る縁が画面の右からはみ出さない */ & .badge { pointer-events: auto; } }
   /* #9 プラン診断は、ギザギザのバッジ。縁だけがゆっくり回る（文字は回さない） */
   .badge { position: relative; display: grid; place-items: center; inline-size: var(--badge, 9rem); aspect-ratio: 1;
     color: var(--ink); text-decoration: none; text-align: center; isolation: isolate; }
-  .badge-bg { position: absolute; inset: 0; z-index: -1; background: var(--yellow);
+  .badge-bg { position: absolute; inset: 0; background: var(--yellow);
     clip-path: polygon(50.0% 0.0%, 53.9% 5.2%, 58.7% 0.8%, 61.6% 6.5%, 67.1% 3.0%, 69.0% 9.2%, 75.0% 6.7%, 75.8% 13.1%, 82.1% 11.7%, 81.8% 18.2%, 88.3% 17.9%, 86.9% 24.2%, 93.3% 25.0%, 90.8% 31.0%, 97.0% 32.9%, 93.5% 38.4%, 99.2% 41.3%, 94.8% 46.1%, 100.0% 50.0%, 94.8% 53.9%, 99.2% 58.7%, 93.5% 61.6%, 97.0% 67.1%, 90.8% 69.0%, 93.3% 75.0%, 86.9% 75.8%, 88.3% 82.1%, 81.8% 81.8%, 82.1% 88.3%, 75.8% 86.9%, 75.0% 93.3%, 69.0% 90.8%, 67.1% 97.0%, 61.6% 93.5%, 58.7% 99.2%, 53.9% 94.8%, 50.0% 100.0%, 46.1% 94.8%, 41.3% 99.2%, 38.4% 93.5%, 32.9% 97.0%, 31.0% 90.8%, 25.0% 93.3%, 24.2% 86.9%, 17.9% 88.3%, 18.2% 81.8%, 11.7% 82.1%, 13.1% 75.8%, 6.7% 75.0%, 9.2% 69.0%, 3.0% 67.1%, 6.5% 61.6%, 0.8% 58.7%, 5.2% 53.9%, 0.0% 50.0%, 5.2% 46.1%, 0.8% 41.3%, 6.5% 38.4%, 3.0% 32.9%, 9.2% 31.0%, 6.7% 25.0%, 13.1% 24.2%, 11.7% 17.9%, 18.2% 18.2%, 17.9% 11.7%, 24.2% 13.1%, 25.0% 6.7%, 31.0% 9.2%, 32.9% 3.0%, 38.4% 6.5%, 41.3% 0.8%, 46.1% 5.2%); }
-  .badge-t { display: grid; justify-items: center; gap: .375rem; font-size: clamp(1.25rem, .9rem + 1.1vw, 2rem); line-height: 1.3; letter-spacing: .04em;
-    & .bico { inline-size: clamp(2.25rem, 1.5rem + 2vw, 3.5rem); block-size: clamp(2.25rem, 1.5rem + 2vw, 3.5rem); } }
-  .badge::after { content: ""; position: absolute; inset: 6%; z-index: -2; border-radius: 50%; box-shadow: var(--sh-3); opacity: .5; }
+  .badge-t { display: grid; justify-items: center; gap: .25rem; font-size: clamp(1.25rem, .9rem + 1.1vw, 2rem); line-height: 1.3; letter-spacing: .04em; }
+  .badge-emoji { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif; font-size: clamp(2rem, 1.3rem + 1.8vw, 3.25rem); line-height: 1; }
+  /* 薄いドロップシャドウ。ギザギザは clip-path で切っているので、影は外の箱（.badge-sh）に filter で付ける */
+  .badge-sh { position: absolute; inset: 0; z-index: -1; filter: drop-shadow(0 3px 8px rgb(0 0 0 / .14)); }
   .badge:hover .badge-bg { scale: 1.04; }
   .badge:focus-visible { outline-offset: 4px; border-radius: 50%; }
   @media (prefers-reduced-motion: no-preference) {
@@ -536,15 +538,20 @@
   .sw-pause { position: absolute; inset-inline-end: .75rem; inset-block-start: .75rem; min-block-size: 2rem; padding: 0 .75rem; border: 0; border-radius: 40px; background: color-mix(in srgb, var(--ink-2) 80%, transparent); color: #fff; font-size: .75rem; letter-spacing: .06em; }
 
   /* ---------- 実績・事例 ---------- */
-  .logos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+  .logos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
   @media (width >= 40rem) { .logos { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  @media (width >= 64rem) { .logos { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1.25rem; } }
+  @media (width >= 64rem) { .logos { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .5rem; } }
   .logos li { aspect-ratio: 5 / 2; }
   .logos .ph { block-size: 100%; background: var(--paper); border-radius: var(--radius-card); box-shadow: inset 0 0 0 1px var(--line); }
 
   .cases-head { display: flex; justify-content: flex-end; margin-block-start: var(--gap-56); }
   .cases-count { font-family: var(--font-en); letter-spacing: .1em; & [data-cases-now] { color: var(--ink); font-size: 1.25rem; } }
-  .cases { display: flex; gap: 1.25rem; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; padding: .5rem var(--pad) 1.5rem; scroll-padding-inline: var(--pad); margin-block-start: .5rem; scrollbar-width: thin; }
+  .cases { display: flex; gap: 1.25rem; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; padding: .5rem var(--pad) 1.5rem; scroll-padding-inline: var(--pad); margin-block-start: .5rem;
+    /* スクロールバーを常に表示（Mac の重ねて隠れるバーにしない）。Chrome・Safari は ::-webkit-scrollbar、Firefox は scrollbar-color */
+    &::-webkit-scrollbar { block-size: 6px; }
+    &::-webkit-scrollbar-track { margin-inline: var(--pad); border-radius: 3px; background: var(--line); }
+    &::-webkit-scrollbar-thumb { border-radius: 3px; background: var(--main); } }
+  @supports not selector(::-webkit-scrollbar) { .cases { scrollbar-width: thin; scrollbar-color: var(--main) var(--line); } }
   .case-card { flex: 0 0 min(22rem, 82%); scroll-snap-align: start; min-inline-size: 0; background: var(--paper); border-radius: var(--radius-card); padding: .75rem .75rem 1.25rem; box-shadow: inset 0 0 0 1px var(--line);
     & > :not(.zoom) { padding-inline: .25rem; }
     & .zoom img { aspect-ratio: 3 / 2; object-fit: cover; } }
@@ -588,14 +595,17 @@
     &:not(.is-main) { opacity: .45; } }
   .cs-foot { display: grid; gap: 1rem 2rem; align-items: start; }
   @media (width >= 48rem) { .cs-foot { grid-template-columns: minmax(0, 1fr) auto; } }
-  .cs-cap { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: start; max-inline-size: 40rem; }
+  .cs-caps { position: relative; z-index: 1; margin-block-start: calc(var(--gap, 1.5rem) * -1 - 3rem); margin-inline-start: clamp(.75rem, .5rem + 1vw, 1.5rem);
+    max-inline-size: clamp(16rem, 12rem + 18vw, 30rem); padding: 1.25rem 1.5rem; border-radius: var(--radius-card); background: var(--paper); box-shadow: inset 0 0 0 1px var(--line); }
+  .cs-cap { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; align-items: start;
+    & h4 { word-break: auto-phrase; } }
   .cs-ctl { display: flex; align-items: center; gap: 1rem; }
   .cs-count { font-family: var(--font-en); letter-spacing: .1em; & [data-cs-now] { font-size: 1.25rem; color: var(--ink); } }
   .cs-pause { min-block-size: 2.75rem; padding-inline: 1rem; border: 2px dotted var(--k-line-strong); border-radius: 999px; background: transparent; color: var(--ink); font: inherit; font-size: .8125rem; cursor: pointer;
     &[aria-pressed="true"] { border-style: solid; border-color: var(--ink); } }
   .opt-cards { display: grid; gap: 1.5rem; }
   @media (width >= 48rem) { .opt-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  .opt-card { display: grid; gap: 1.25rem; align-content: start; padding: 1rem 1rem 1.5rem; border-radius: var(--radius-card); background: var(--paper); box-shadow: var(--sh-1);
+  .opt-card { display: grid; gap: 1.25rem; align-content: start; padding: 1rem 1rem 1.5rem; border-radius: var(--radius-card); background: var(--paper); box-shadow: inset 0 0 0 1px var(--line);
     & .zoom img { inline-size: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius); } & > .stack { padding-inline: .5rem; } }
   .opt-groups { display: grid; gap: 2rem 3rem; }
   @media (width >= 48rem) { .opt-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
@@ -692,7 +702,7 @@
 
   /* ---------- FAQ（details）：1問ずつのカード ---------- */
   .faq { display: grid; gap: .75rem; }
-  .faq details { background: var(--paper); border-radius: var(--radius-card); padding-inline: 1.25rem 1rem; }
+  .faq details { background: var(--paper); border-radius: var(--radius-card); padding-inline: 1.25rem 1rem; box-shadow: none; }
   .faq summary {
     position: relative; display: flex; gap: .875rem; align-items: center; list-style: none; cursor: pointer;
     padding: 1.25rem 2rem 1.25rem 0; font-size: var(--fs-ct); line-height: 1.8; letter-spacing: .08em; color: var(--ink-2);
@@ -746,6 +756,7 @@
   :is(.part, .tbl) code { font-family: var(--font-en); font-size: .8125rem; letter-spacing: .02em; color: var(--sub); word-break: break-all; }
 
   /* ---------- フッター ---------- */
+  .foot #contact { background: var(--paper); }
   .foot { margin-block-start: 0; background: var(--deep); color: var(--paper); border-radius: var(--radius) var(--radius) 0 0; padding: 3rem var(--pad) 3rem; }
   @media (width >= 64rem) { .foot { margin: 0 8px 8px; border-radius: var(--radius); padding: 4.625rem clamp(1rem, 3.9vw, 3.5rem) 5rem; } }
   .fnav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1rem; padding-block-end: 1.75rem; border-block-end: 1px solid rgb(255 255 255 / .3);
@@ -788,7 +799,8 @@
   /* ---------- スマホ：章の切れ目。章の頭に端から端までの線を引き、その線の上に目次と同じ言葉のタグを乗せる ---------- */
   @media (width < 64rem) {
     main > section[id] { position: relative; border-block-start: 2px dotted var(--main); }
-    main > section[id]:not(.band, .bandg) { margin-block-start: 4.5rem; padding-block-start: 4rem; }
+    main > section[id]:not(.band, .bandg) { margin-block-start: var(--sec); padding-block-start: var(--sec); }
+    main > .mv-after + section[id]:not(.band) { margin-block-start: calc(var(--badge-mv) / 2 + 1rem); }  /* 端から端の点線とタグが、バッジの下半分に隠れないように */
     main > section[id] .t-lab { position: absolute; inset-block-start: 0; inset-inline-start: var(--pad); translate: 0 -50%; z-index: 1; padding-inline: .5rem; background: var(--bg); }
     main > section[id] .stk:has(> .t-lab:only-child) { display: contents; }
   }

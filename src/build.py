@@ -15,6 +15,9 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 OUT = ROOT / 'docs'
 TOKENS = ROOT / 'design' / 'karura-tokens.css'
+# 読み込むファイルの版（中身が変わると変わる）。ブラウザに古い CSS が残らないようにする
+import hashlib as _h
+ASSET_V = _h.sha1(b''.join(f.read_bytes() for f in (TOKENS, Path(__file__).parent / 'site.css', Path(__file__).parent / 'site.js'))).hexdigest()[:8]
 # 本文の書体は Noto Sans JP（2026-11-18 決定）。元は @fontsource/noto-sans-jp の分割ファイルを、太さごとに1つにまとめたもの
 FONT_SRC = {400: HERE / 'fonts' / 'NotoSansJP-400.woff2', 500: HERE / 'fonts' / 'NotoSansJP-500.woff2'}
 NAME, NAME_EN = 'カルラライブ', 'KARURA LIVE'
@@ -102,7 +105,8 @@ LOGO_MARK = ('<svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true" focu
              '<circle cx="16" cy="16" r="5.5" fill="#fff"/><circle cx="16" cy="16" r="10" fill="none" stroke="#fff" stroke-width="1.6" opacity=".55"/></svg>')
 
 def logo_html():
-    return f'{LOGO_MARK}<span class="logo-t">{NAME_EN}<small>{NAME}</small></span>'
+    # #34 ヘッダーのロゴは文字だけ（マークは使わない。ファビコンには残す）
+    return f'<span class="logo-t">{NAME_EN}<small>{NAME}</small></span>'
 
 BICON = {
     'diag': '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9zM8.5 13.5l2.5 2.5 4.5-5"/>',
@@ -157,9 +161,9 @@ def head(title, desc, home=False, extra=''):
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23385ea7'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23ffffff'/%3E%3C/svg%3E">
 <script>document.documentElement.classList.add('js');{intro}</script>
 <link rel="preload" href="assets/fonts/noto-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/karura-tokens.css">
-<link rel="stylesheet" href="assets/site.css">
-<script type="module" src="assets/site.js"></script>{extra}
+<link rel="stylesheet" href="assets/karura-tokens.css?v={ASSET_V}">
+<link rel="stylesheet" href="assets/site.css?v={ASSET_V}">
+<script type="module" src="assets/site.js?v={ASSET_V}"></script>{extra}
 </head>
 <body>
 '''
@@ -409,7 +413,7 @@ def mv(key, page='index.html', tag='h1', hid='mv-title'):
 <{tag} class="t-h1" id="{hid}">{v['h1']}</{tag}>
 <p class="t-lead">{v['lead']}</p>
 </div></div></section>
-<div class="wrap mv-after"><a class="badge" href="#diag" data-open-diag aria-haspopup="dialog"><span class="badge-bg" aria-hidden="true"></span><span class="badge-t">{bico("diag")}8問で<br>プラン診断</span></a></div>'''
+<div class="wrap mv-after"><a class="badge" href="#diag" data-open-diag aria-haspopup="dialog"><span class="badge-sh" aria-hidden="true"><span class="badge-bg"></span></span><span class="badge-t"><span class="badge-emoji" aria-hidden="true">📋</span>8問で<br>プラン診断</span></a></div>'''
 
 # ------------------------------------------------------------------ トップ
 def index():
@@ -701,7 +705,7 @@ def rules():
                  for a, r, c, sp, pc, l, w in type_rows)
 
     kcss = TOKENS.read_text(encoding='utf-8')
-    names = {'bg': ('地', 'ページの背景（真っ白）'), 'paper': ('紙', '箱、カード、フォーム'), 'cream': ('帯', '帯、囲み（オフホワイト）'), 'wash': ('淡い青', '帯、淡い面のボタン'),
+    names = {'bg': ('地', 'ページの背景（真っ白）'), 'paper': ('紙', '箱、カード、フォーム'), 'cream': ('帯', '帯、囲み（無彩色のグレー）'), 'wash': ('淡い青', '帯、淡い面のボタン'),
              'ink': ('墨', '見出し・本文、塗りの面'), 'ink-strong': ('濃い墨', '強調、キーボードの枠'), 'sub': ('補足', '注釈、文字リンクの矢印'),
              'line': ('罫線', '表の区切り、箱の線'), 'line-strong': ('網点のグレー', '点線、ヒーローの網点の地'), 'main': ('青（主色）', 'タグ、アイコン、標準のボタン、白い文字を載せる面'),
              'red': ('赤', '申し込み・依頼のボタン、エラー、必須'), 'yellow': ('黄', 'いちばん押してほしいボタン、バッジ'), 'marker': ('マーカー', '要点の下線')}
@@ -709,7 +713,7 @@ def rules():
     assert len(tokens) == len(names), '色見本のトークンが足りません'
     sw = ''.join(f'<li class="swatch"><span style="background:{v}"></span><p class="t-note"><b>{names[k][0]}</b>　{v.upper()}<br><span class="t-sub">{names[k][1]}</span></p></li>' for k, v in tokens)
 
-    shape_rows = [('ページの左右', '--pad', '16 → 80px'), ('節の上（大・中・小）', '--sec / --sec-2 / --sec-3', '100 → 200px ／ 中 ／ 80 → 120px'),
+    shape_rows = [('ページの左右', '--pad', '16 → 80px'), ('節と節の間、帯の上下の内側', '--sec', '64 → 96px（ヒーローの後もふくめ、どこも同じ）'),
                   ('見出しと中身の間', '--gap-56', '28 → 56px'), ('ブロックの間', '--gap-48 / --gap-64', '16 → 48px ／ 40 → 64px'),
                   ('ボタンの高さ', '--btn-h', '48 → 60px（小は 44px）')]
     sh = ''.join(f'<tr><th scope="row">{a}</th><td data-l="トークン"><code>{b}</code></td><td data-l="値（スマホ → PC）">{c}</td></tr>' for a, b, c in shape_rows)
@@ -744,11 +748,13 @@ def rules():
              '写真 → アイコンと題 → 本文 → 小さい淡い面のボタン。並べたときはボタンを下端にそろえる'),
         part('吹き出し', '.voice', f'<ul class="voices"><li class="voice"><blockquote class="voice-q"><p>お客さまの声は、吹き出しに入れます。</p></blockquote><p class="voice-who t-note t-sub"><span class="avatar">{bico("person")}</span>話している人の肩書き</p></li></ul>',
              '青のベタに白い文字。しっぽは人のアイコンを指す。並べたときは高さをそろえる'),
-        part('白い箱・帯・暗い囲み', '.boxw ／ .boxg ／ .boxd', '<div class="boxw" style="padding:1rem">白い箱</div><div class="boxg" style="padding:1rem">クリーム</div><div class="boxd" style="padding:1rem;box-shadow:none">暗い囲み</div>',
-             '白い箱は細い線で、クリームは面だけで区切る。暗い囲みはページの終わりの行動に'),
+        part('線のカード', '.opt-card', '<ul class="opt-cards" style="inline-size:100%;grid-template-columns:1fr"><li class="opt-card"><div class="stack s-16"><p class="t-ct">カードの題</p><p class="t-note">影を付けず、細い実線で囲む</p></div></li></ul>',
+             '写真と料金の行を入れるカード。白い地の上でも帯の上でも、影でなく1pxの実線（--line）で囲む'),
+        part('白い箱・帯・暗い囲み', '.boxw ／ .boxg ／ .boxd', '<div class="boxw" style="padding:1rem">白い箱</div><div class="boxg" style="padding:1rem">グレーの面</div><div class="boxd" style="padding:1rem;box-shadow:none">暗い囲み</div>',
+             '白い箱は細い線で、グレーの面は面だけで区切る。暗い囲みはページの終わりの行動に。フッターの見積フォームは白い箱'),
         part('コラム', '.boxc', '<div class="boxc stack s-16" style="inline-size:100%">' + lab('コラム') + '<p class="t-ct">本筋から少し外れた読みもの</p></div>', '青の点線と、大きな角丸で囲む。頭に「コラム」のタグ'),
-        part('バッジ', '.badge', '<a class="badge" href="#diag" data-open-diag aria-haspopup="dialog" style="--badge:9rem"><span class="badge-bg" aria-hidden="true"></span>'
-             f'<span class="badge-t">{bico("diag")}バッジ</span></a>', '黄の細かいギザギザ。縁だけがゆっくり回り、文字は回さない。ヒーローの縁に半分かけて置く'),
+        part('バッジ', '.badge', '<a class="badge" href="#diag" data-open-diag aria-haspopup="dialog" style="--badge:9rem"><span class="badge-sh" aria-hidden="true"><span class="badge-bg"></span></span>'
+             '<span class="badge-t"><span class="badge-emoji" aria-hidden="true">📋</span>バッジ</span></a>', '黄の細かいギザギザに、薄いドロップシャドウ。頭は線のアイコンでなく絵文字。縁だけがゆっくり回り、文字は回さない。ヒーローの縁に半分かけて置く'),
         part('バナー', '.banner', '<a class="banner" href="#boxes"><span class="banner-t">バナーの題</span><span class="banner-s">ひとこと</span>' + go() + '</a>', '特設ページへの入口。淡い青の面に、左の帯と矢印'),
     ])
     lists = group('lists', '一覧と表', '並べ方', [
@@ -776,9 +782,9 @@ def rules():
 <ul class="rows"><li>色は意味で決める。同じ意味のものは同じ色</li><li>大きな面は地・帯・淡い青・青だけ。赤と黄は行動とバッジに、網点のグレーはヒーローの地（写真が届くまで）に</li>
 <li>青の上の文字は白。値の元は design/karura-tokens.css（ツールと共通）</li></ul>''')
             + sec('shape', '余白・角丸・影', '余白は幅に合わせて伸びる', f'''<table class="tbl"><thead><tr><th scope="col">場所</th><th scope="col">トークン</th><th scope="col">値（スマホ → PC）</th></tr></thead><tbody>{sh}</tbody></table>
-<ul class="rows"><li>ヒーロー（MV）のすぐ後の節は、上の余白を小（<code>--sec-3</code>）にする</li>
+<ul class="rows"><li>節と節の間は1つの値（<code>--sec</code>）にそろえる。ヒーロー（MV）の後も同じ。帯は外も内側も同じ値</li>
 <li>角丸：ボタン・入力欄 6px、カード・アイコンの四角 10px、コラム 28px、タグや札は丸</li>
-<li>影は大事なところだけ：比較表や主役のカード（0 0 30px 黒8%）、書類の見本と暗い囲み（0 5px 40px 黒20%）。ほかは細い線か面で区切る</li></ul>''')
+<li>囲みは3種類。カードや箱は細い実線（<code>--line</code>、1px）、区切りと強調の囲み（小見出し・一覧の行・コラム）は点線、影は大事なものだけ</li><li>影は大事なところだけ：比較表とプラン診断（0 0 30px 黒8%）、書類の見本と暗い囲み（0 5px 40px 黒20%）、バッジ（薄いドロップシャドウ）。オプションのカードやよくある質問には付けない</li></ul>''')
             + buttons + heads + boxes + lists + aids
             + sec('motion', '動き', '動きは、減らせる', '''<ul class="rows"><li>押せるものの反応は 0.3秒、cubic-bezier(0.4, 0.4, 0, 1)。幕や出現は cubic-bezier(0.19, 1, 0.22, 1)</li>
 <li>ずっと動くのは、バッジの縁（24秒で1周）と、写真の自動切り替え（止めるボタンつき）だけ</li>
