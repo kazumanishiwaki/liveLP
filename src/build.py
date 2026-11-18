@@ -404,27 +404,22 @@ MV['D'] = {'name': '案D：大手と個人の間',
 MV_USE = 'C'
 
 def mv(key, page='index.html', tag='h1', hid='mv-title'):
-    """写真の上には、種類・見出し・リードだけを重ねる。箇条書き（それぞれの節への矢印つきリンク）と2つの行動は、写真の下の白い面に置く。
+    """写真の上には、種類・見出し・リードだけを重ねる。写真の下の縁に、プラン診断のバッジを半分かけて置く（箇条書きは置かない）。
        写真はまだ穴埋め（ダミーの会場写真を暗くして敷いている）"""
     v = MV[key]
-    at = lambda h: h if (page == 'index.html' or not h.startswith('#')) else 'index.html' + h
-    if v['kind'] == 'facts':
-        body = '<dl class="mv-facts">' + ''.join(f'<div><dt>{a}</dt><dd><a href="{at(h)}"><span>{b}</span>{go()}</a></dd></div>' for a, b, h in v['items']) + '</dl>'
-    else:
-        body = '<ul class="mv-facts mv-facts--list">' + ''.join(f'<li><a href="{at(h)}"><span>{t}</span>{go()}</a></li>' for t, h in v['items']) + '</ul>'
     return f'''<section class="mv" aria-labelledby="{hid}"><div class="mv-bg">{img('P03', '', lazy=False, eager_high=True)}</div>
 <div class="wrap mv-in"><div class="mv-copy stack">
 <p class="hero-kind">{MV_KIND}</p>
 <{tag} class="t-h1" id="{hid}">{v['h1']}</{tag}>
 <p class="t-lead">{v['lead']}</p>
 </div></div></section>
-<div class="wrap mv-after">{body}<a class="badge" href="#diag" data-open-diag aria-haspopup="dialog"><span class="badge-bg" aria-hidden="true"></span><span class="badge-t">{bico("diag")}8問で<br>プラン診断</span></a></div>'''
+<div class="wrap mv-after"><a class="badge" href="#diag" data-open-diag aria-haspopup="dialog"><span class="badge-bg" aria-hidden="true"></span><span class="badge-t">{bico("diag")}8問で<br>プラン診断</span></a></div>'''
 
 # ------------------------------------------------------------------ トップ
 def index():
     intro = '<div class="intro" aria-hidden="true"><p>' + ''.join(f'<span style="--i:{i}">{c}</span>' for i, c in enumerate(NAME_EN)) + '</p></div>'
     hero = mv(MV_USE)
-    voices = [('総務・広報のご担当', '今年からシンポジウムをハイブリッドで、と言われました。Zoomで足りるのかも分からないし、失敗したら自分の責任です。大手の見積は桁が違いました。', '#price', '料金は3つ、すべて公開しています'),
+    voices = [('総務・広報のご担当', '今年からシンポジウムをハイブリッドで、と言われました。Zoomで足りるのかも分からないし、失敗したら自分の責任です。大手の見積は桁が違いました。', '#price', '料金プランは、すべて公開しています'),
               ('イベントを主催するご担当', 'セミナーの企画と運営は自分たちでできます。配信だけを切り出して頼みたい。でも当日、誰が来て何をするのかは先に知っておきたいです。', 'service.html#team', '当日のスタッフ表を、見積と一緒にお渡しします'),
               ('式典や記念の会のご担当', '来賓も関係者も見ている、やり直しのきかない会です。「大丈夫です」ではなく、何がどう大丈夫なのかを説明できないと、決裁が通りません。', 'service.html#trouble', '起きがちなトラブルと、その予防を書いています')]
     vc = ''.join(f'<li class="voice"><blockquote class="voice-q"><p>{q}</p></blockquote><p class="voice-who t-note t-sub"><span class="avatar">{bico("person")}</span>{w}</p>'
@@ -439,20 +434,20 @@ def index():
     kd = ''.join(f'<li class="reason">{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p></div></li>' for k, t, b in kinds)
     factors = [('face', '当日の人数', 'スタッフの人数。ディレクター・配信管理、カメラ・音声、2台目のカメラの3人が基本です。オンライン登壇やマイク6本以上の会では1人増えます。'),
                ('switch', '機材', 'カメラとマイクの数、予備の機材。カメラの台数は、登壇者の人数と会場の広さで決まります。'),
-               ('report', '時間', '会場にいる時間。設営から撤収まで6時間（うち配信3時間）が基本です。')]
+               ('report', '付随業務（オプション）', '録画データの納品、予備回線、ロケハン、記録写真など、当日の配信のほかに頼める仕事です。必要なものだけを足します。')]
     fc = ''.join(f'<li class="reason">{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p></div></li>' for k, t, b in factors)
     lean = [('全員に持ち場があります', 'スタッフは3人。ディレクター・配信管理、カメラ・音声、2台目のカメラの持ち場に1人ずつです。持ち場のない人の費用はいただきません。'),
             ('機材は、会に合わせて選びます', '登壇者2〜6人の会にはカメラ3台。5台を持ち込むのは、登壇者が多い会や会場が広い会だけです。'),
             ('予備は、止まると取り返しがつかないものだけ', '録画機は2系統。予備回線はオプションで付けられます。'),
-            ('見積書にすべて書きます', '人・機材・時間の内訳を明記します。あとから増えるのは、オプションの表にあるものだけです。')]
+            ('見積書にすべて書きます', '人・機材・付随業務の内訳を明記します。あとから増えるのは、オプションの表にあるものだけです。')]
     ln = ''.join(f'<li><span class="a">{a}</span><span class="b">{b}</span></li>' for a, b in lean)
-    cost = sec('cost', 'サービス内訳', '配信の費用は、<br>人と機材と時間で決まります', f'''<div class="stack"><h3 class="sub">よくご依頼いただく会</h3><ul class="reasons">{kd}</ul></div>
+    cost = sec('cost', 'サービス内訳', '配信の費用は、<br>人と機材と付随業務で決まります', f'''<div class="stack"><h3 class="sub">ケーススタディ</h3><ul class="reasons">{kd}</ul></div>
 <div class="stack"><h3 class="sub">費用を決める3つ</h3><ul class="reasons reasons--3">{fc}</ul></div>
-<div class="boxg stack s-48" style="color:var(--ink)"><div class="stack s-16"><h3 class="t-h2s">無駄のない配信とは</h3>
+<div class="boxc stack s-48"><div class="stack s-16">{lab('コラム')}<h3 class="t-h2s">無駄のない配信とは</h3>
 <p class="t-body">引っ越しと同じです。単身の荷物に10トントラックはいりませんが、冷蔵庫を友人の軽トラックで運ぶのは不安です。配信も、会の大きさに合った人と機材を選ぶのがいちばん安く、いちばん確かです。</p></div><ul class="lean">{ln}</ul></div>''',
-               lead='配信代行の見積は、会場に来る人の数、持ち込む機材、会場にいる時間の3つで、ほぼ決まります。カルラライブは、会の大きさに必要なぶんだけを組み合わせます。')
+               lead='配信代行の見積は、当日のスタッフの人数、持ち込む機材、オプションで足す付随業務の3つで、ほぼ決まります。カルラライブは、会の大きさに必要なぶんだけを組み合わせます。')
 
-    price = sec('price', '料金プラン', '料金は3つです', f'''<div class="stack">{tbl_plans()}
+    price = sec('price', '料金プラン', 'シンプルな料金プラン', f'''<div class="stack">{tbl_plans()}
 <p class="t-note t-sub">定期的に配信する会（毎月のセミナーなど）は、回数に応じて割引があります。交通費と、前入りが必要な場合の宿泊費は別途お見積りします。</p></div>
 <div class="to-diag"><p class="t-ct">どのプランが合うか分からないときは</p><p class="t-note">登壇者の人数や会場の大きさなど、8つの質問に答えると、合うプランと費用の目安が出ます。</p>{diag_btn('8問でプラン診断')}</div>
 <div class="stack"><h3 class="sub">どのプランにも含まれるもの</h3><ul class="incl">{''.join(f'<li>{ico("check", "s")}<span>{t}</span></li>' for t in COMMON)}</ul></div>
@@ -493,11 +488,11 @@ def index():
 
 # ------------------------------------------------------------------ 強み（トップの MV のすぐ下）
 def strengths():
-    items = [('doc', 'わかりやすい料金体系', 'スタッフ3人・カメラ3台・マイク5本で25万円（税別）。機材費も込みです。全員に持ち場がある、無駄のない体制で伺います。', '#price', '料金プランを見る'),
-             ('qr', '支援ツールで、運営費も圧縮', '配信支援ツール（受付のデジタルチケット、質疑応答、進行管理）で、当日の受付や運営に立つ人を減らせます。', 'reception.html', '配信支援ツールを見る'),
-             ('list', '自前の配信体制と、内製化', '小さな会はご自身で、大きな会は私たちに。内製化の基準づくりから、独り立ちまで並走します。', 'coaching.html', '内製化支援を見る')]
-    li = ''.join(f'''<li class="reason">{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p><a class="tlink" href="{h}">{l}{go()}</a></div></li>''' for k, t, b, h, l in items)
-    return sec('strengths', 'カルラライブの強み', '配信の費用を、<br>読めるものにします', f'<ul class="reasons reasons--3">{li}</ul>',
+    items = [('P05', 'doc', 'わかりやすい料金体系', 'スタッフ3人・カメラ3台・マイク5本で25万円（税別）。機材費も込みです。全員に持ち場がある、無駄のない体制で伺います。', '#price', '料金プランを見る'),
+             ('P11', 'qr', '支援ツールで、運営費も圧縮', '配信支援ツール（受付のデジタルチケット、質疑応答、進行管理）で、当日の受付や運営に立つ人を減らせます。', 'reception.html', '配信支援ツールを見る'),
+             ('P12', 'list', '自前の配信体制と、内製化', '小さな会はご自身で、大きな会は私たちに。内製化の基準づくりから、独り立ちまで並走します。', 'coaching.html', '内製化支援を見る')]
+    li = ''.join(f'''<li class="reason"><div class="reason-ph zoom">{img(pid, f'（ダミー）{t}の写真')}</div>{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p>{btn(l, h, 'line')}</div></li>''' for pid, k, t, b, h, l in items)
+    return sec('strengths', 'カルラライブの強み', '配信の費用を、<br>読めるものにします', f'<ul class="reasons reasons--3 reasons--card">{li}</ul>',
                lead='配信当日だけでなく、運営の手間と、その先の体制づくりまで支えます。')
 
 # ------------------------------------------------------------------ 当日の体制と流れ
@@ -648,6 +643,27 @@ def mvs():
             + page_head('メインビジュアルの比較', 'リード文と箇条書きを比べる', f'トップの最初の画面に置く文の案です。src/build.py の MV_USE を変えると、トップの文が入れ替わります。いまは「{MV[MV_USE]["name"]}」を使っています。')
             + blocks + '</main>' + footer('mvs.html'))
 
+def labels():
+    """見出しのタグ（.t-lab）の候補を並べて比べるページ。選んだ案を site.css の .t-lab に移す"""
+    samples = [('料金プラン', 'Price', '02', 'シンプルな料金プラン'), ('よくあるお悩み', 'Worries', '03', 'こんなことで、<br>困っていませんか'), ('対応事例', 'Works', '06', 'これまでに配信した会')]
+    cands = [('a', 'A　いまの形', '短いティールの線と、ティールの文字。いちばん控えめで、本文の邪魔をしない。小さく細いので、見出しの前置きとしては弱く見える'),
+             ('b', 'B　英字を添える', '英字の小見出し（先頭だけ大文字）を大きめに置き、下に和文を小さく。章の区切りがはっきりし、ページに抑揚が出る。全部の節に英字の名前を決める必要がある'),
+             ('c', 'C　縦の帯', '左にティールの太い縦の帯と、濃い文字。資料や報告書でよく見る形で、硬めでまじめな印象。小見出し（下線）と役割が近く、見分けにくくなる'),
+             ('d', 'D　四角の印', 'ティールの小さな四角と、濃い文字。目印がはっきりして、どこが節の始まりか一目でわかる。アイコンの四角（.chipi）と形が近い'),
+             ('e', 'E　番号つき', '目次と同じ順番の番号を、英数字で頭に置く。長いページでいまどこかがわかる。順番の意味が薄い下層のページでは番号を付けない')]
+    def head_sample(k, jp, en, num, h2):
+        tag = {'b': f'<p class="t-lab t-lab--b"><span class="en">{en}</span>{jp}</p>',
+               'e': f'<p class="t-lab t-lab--e"><span class="num">{num}</span><span class="t">{jp}</span></p>'}.get(k, f'<p class="t-lab t-lab--{k}">{jp}</p>')
+        return f'<div class="sec-head stack">{tag}<p class="t-h2">{h2}</p></div>'
+    blocks = ''.join(f'''<section class="lab-cand stack s-48" id="lab-{k}" aria-labelledby="lab-{k}-t"><div class="stack s-16"><h2 class="t-h3" id="lab-{k}-t">{name}</h2><p class="t-body">{note}</p></div>
+<div class="lab-demo">{head_sample(k, *samples[0])}</div>
+<div class="lab-demo lab-demo--band">{head_sample(k, *samples[1])}</div>
+<div class="lab-row">{''.join(head_sample(k, *x).replace('<p class="t-h2">', '<p class="t-ct">') for x in samples)}</div></section>''' for k, name, note in cands)
+    return (head(f'見出しのタグの比較｜{NAME}', '各節の頭に置く見出しのタグの候補を並べて比べるページです。')
+            + header('labels.html') + '<main id="main">'
+            + page_head('見出しのタグの比較', '節の頭に置く、<br>タグの候補', '各節の見出しの上に置いている小さなタグ（いまは A）の候補です。白い地と帯の上、3つ並べたときの見え方を比べてください。選んだ案を、サイト全体の見出しのタグにします。')
+            + f'<div class="wrap stack s-64">{blocks}</div>' + '</main>' + footer('labels.html'))
+
 def contact():
     sub = contact.sub = [('top', '見積を依頼する'), ('flow', '送信後の流れ'), ('sample', '見積書の見本'), ('consult', '見積の前に相談する'), ('tel', '電話で問い合わせる')]
     flow = [('1営業日以内', '見積書PDFがメールで届きます'), ('必要に応じて', 'オンラインで30分ほど打ち合わせをします'), ('ご発注後', '会場をオンラインで下見します（実地のロケハンはオプション）')]
@@ -710,7 +726,7 @@ def rules():
 
     # 色見本は、ただ1つの元（design/karura-tokens.css）から読む
     kcss = TOKENS.read_text(encoding='utf-8')
-    names = {'bg': ('地', 'ページの背景'), 'paper': ('紙', '白い地に置く箱、カード、フォーム'), 'cream': ('クリーム', '帯、囲み'), 'wash': ('淡いティール', '帯、バナー'),
+    names = {'bg': ('地', 'ページの背景'), 'paper': ('紙', '白い地に置く箱、カード、フォーム'), 'cream': ('クリーム', '帯、囲み'), 'deep': ('深い青', 'フッター、お客さまの声の吹き出し（白い文字を載せる）'), 'wash': ('淡いティール', '帯、バナー'),
              'ink': ('文字', '見出し・本文、暗い囲み'), 'ink-strong': ('濃い文字', '強調、キーボードの枠'), 'sub': ('補足', '補足の文字、文字リンクの矢印'),
              'line': ('罫線', '一覧と表の区切り'), 'teal': ('ティール（主色）', '現在地、タグ、アイコン、そのほかの行動'),
              'coral': ('珊瑚', '見積を依頼する、だけ'), 'yellow': ('黄', 'プラン診断、だけ'), 'marker': ('マーカー', '要点の下線')}
@@ -718,10 +734,17 @@ def rules():
     assert len(tokens) == len(names), '色見本のトークンが足りません'
     sw = ''.join(f'<li class="swatch"><span style="background:{v}"></span><p class="t-note"><b>{names[k][0]}</b>　{v.upper()}<br><span class="t-sub">{names[k][1]}</span></p></li>' for k, v in tokens)
 
-    type_rows = [('大見出し（h1）', '.t-h1', '26 → 50', '1.45'), ('セクション見出し（h2）', '.t-h2', '26 → 44', '1.45'), ('囲みの見出し', '.t-h2s', '18 → 28', '1.5'),
-                 ('小見出し（h3）', '.t-h3', '18 → 26', '1.6'), ('カードの題・質問', '.t-ct', '16 → 20', '1.5'), ('リード', '.t-lead', '14 → 18', '1.8'),
-                 ('本文', '.t-body', '14 → 16', '1.8'), ('補足', '.t-note', '12 → 14', '1.7')]
-    ty = ''.join(f'<tr><th scope="row"><span class="{c[1:]}">{a}</span></th><td data-l="クラス"><code>{c}</code></td><td data-l="大きさ（px）">{b}</td><td data-l="行送り">{l}</td></tr>' for a, c, b, l in type_rows)
+    # #2 H1〜H4・本文・注釈の大きさ。見本は、その大きさの文字で描く
+    type_rows = [('H1', 'ページの見出し', '.t-h1', 26, 50, '1.45', 500, 'MV の見出しだけ 28 → 44'),
+                 ('H2', '節の見出し', '.t-h2', 26, 44, '1.45', 500, ''),
+                 ('H3', '節の中の見出し', '.t-h3', 18, 26, '1.6', 500, '囲みの中の見出しは .t-h2s（18 → 28）'),
+                 ('H4', 'カードの題、質問', '.t-ct', 16, 20, '1.5', 500, 'カードの題は h3 でもこの大きさ'),
+                 ('リード', '見出しの下の1〜2文', '.t-lead', 14, 18, '1.8', 400, ''),
+                 ('本文', '説明の文', '.t-body', 14, 16, '1.8', 400, ''),
+                 ('注釈', '補足、表の注、ボタンの下の一言', '.t-note', 12, 14, '1.7', 400, '補足の色は .t-sub（#808080）')]
+    ty = ''.join(f'<tr><th scope="row"><b>{a}</b><br><span class="t-note t-sub">{r}</span></th><td data-l="クラス"><code>{c}</code></td><td data-l="スマホ" class="r">{sp}px</td><td data-l="PC" class="r">{pc}px</td>'
+                 f'<td data-l="行送り" class="r">{l}</td><td data-l="太さ" class="r">{w}</td><td data-l="見本"><span class="{c[1:]} type-sample">配信の費用</span>{f"<br><span class=t-note>{n}</span>" if n else ""}</td></tr>'
+                 for a, r, c, sp, pc, l, w, n in type_rows)
 
     shape_rows = [('ページの左右', '--pad', '16 → 80px'), ('セクションの上下', '--sec / --sec-2 / --sec-3', '100 → 200px（大・中・小の3つ）'),
                   ('見出しと中身の間', '--gap-56', '28 → 56px'), ('ブロックの間', '--gap-48 / --gap-64', '16 → 48px／40 → 64px'),
@@ -738,11 +761,11 @@ def rules():
             part('そのほかのボタン', '.btn ／ .btn.line', btn('次へ進む', '#parts') + btn('ひな形を受け取る', '#parts', 'line'), 'ティール＝相談する・次へなどの行動、線だけ＝資料や補助', 'ボタンには影を付けない。右端に小さな矢印。スマホでは横いっぱい'),
             part('文字リンク', '.tlink ＋ .go', f'<a class="tlink" href="#parts">料金プランを見る{go()}</a>', '別の節やページへ移る', '下線は引かず、右に背景なしのグレーの矢印。押すと矢印が少し右へ'),
             part('プラン診断のバッジ', '.badge', '<a class="badge" href="#diag" data-open-diag aria-haspopup="dialog"><span class="badge-bg" aria-hidden="true"></span>'
-                 f'<span class="badge-t">{bico("diag")}8問で<br>プラン診断</span></a>', 'トップの MV の下だけ', '黄のギザギザ。縁だけがゆっくり回り、文字は回さない。動きを減らす設定では止める'),
+                 f'<span class="badge-t">{bico("diag")}8問で<br>プラン診断</span></a>', 'トップの MV の右下。写真の下の縁に半分かける', '黄のギザギザ。縁だけがゆっくり回り、文字は回さない。動きを減らす設定では止める'),
             part('バナー', '.banner', banner('rules.html'), '「大学・公共機関の方へ」の入口。PC は左レールのメニューの下、スマホはメニューの中', 'メニューの項目には入れない。淡いティールの面に、左の帯と矢印'),
         ]),
         ('見出しまわり', [
-            part('見出しのタグ', '.t-lab', lab('よくあるお悩み'), '各節の頭。目次と同じ言葉', '押せるものに見えないよう、枠も面も付けない。頭にティールの短い線。スマホでは章の切れ目の線の上に乗る'),
+            part('見出しのタグ', '.t-lab', lab('よくあるお悩み'), '各節の頭。目次と同じ言葉', '押せるものに見えないよう、枠も面も付けない。頭にティールの短い線。形は見直し中で、候補は<a class="tlink" href="labels.html">見出しのタグの比較{go()}</a>'),
             part('節の頭', 'sec()', '<div class="sec-head stack">' + lab('料金プラン') + '<p class="t-h2s">見出しは2行まで</p><p class="t-note">リードは1〜2文。要点の1文にだけマーカー</p></div>',
                  'タグ → 見出し → リード の順に縦に積む', '左に見出しだけの列を作らない。読みやすい幅で止める'),
             part('小見出し', '.sub', '<p class="sub">どのプランにも含まれるもの</p>', '節の中の区切り', 'ティールの下線。文字は補足の大きさ'),
@@ -752,11 +775,15 @@ def rules():
             part('アイコン', '.chipi ／ .bico', ico('mic') + ico('check', 's') + f'<span style="color:var(--ink)">{bico("diag")}</span>',
                  '四角に入れたもの（.chipi）は内容の目印、線だけのもの（.bico）はボタンの頭', 'ティールの角丸の四角に白の線画。飾りなので読み上げない'),
             part('アイコンと文の組', '.reason', f'<ul class="reasons"><li class="reason">{ico("doc")}<div class="stack s-16"><h3 class="t-ct">わかりやすい料金</h3><p class="t-body">アイコンと題を横に並べ、本文はアイコンの下まで広げる</p></div></li></ul>',
-                 '強み、費用を決める3つ、配信支援ツール', '3つ並べるときは PC で3列。題は文節で改行'),
+                 '費用を決める3つ、ケーススタディ、配信支援ツール', '3つ並べるときは PC で3列。題は文節で改行'),
+            part('写真つきのカード', '.reasons--card', f'<a class="tlink" href="index.html#strengths">トップの強みで見る{go()}</a>',
+                 'トップの強み', '写真 → アイコンと題 → 本文 → ボタン の順。ボタンは線だけの形で、3枚の下端にそろえる'),
             part('吹き出し', '.voice', f'<ul class="voices"><li class="voice"><blockquote class="voice-q"><p>お客さまの声は、吹き出しに入れます。</p></blockquote><p class="voice-who t-note t-sub"><span class="avatar">{bico("person")}</span>総務・広報のご担当</p></li></ul>',
-                 'よくあるお悩み', 'しっぽは下の人のアイコンを指す。肩書きは特設ページ以外では一般的な言い方'),
+                 'よくあるお悩み', '深い青のベタに白い文字。しっぽは下の人のアイコンを指す。肩書きは特設ページ以外では一般的な言い方'),
             part('囲み', '.boxw ／ .boxg ／ .boxd', '<div class="boxw" style="padding:1rem">白い箱</div><div class="boxd" style="padding:1rem;box-shadow:none">暗い囲み</div>',
                  '白い箱＝まとまった説明、クリーム＝フォーム、暗い囲み＝ページの終わりの見積の依頼', '影は外側の面だけ。中に置くものは線で区切る'),
+            part('コラム', '.boxc', '<div class="boxc stack s-16" style="inline-size:100%">' + lab('コラム') + '<p class="t-ct">無駄のない配信とは</p></div>',
+                 '本筋から少し外れた読みもの（サービス内訳の「無駄のない配信とは」）', '面は付けず、灰色の線で囲む。頭に「コラム」のタグ'),
         ]),
         ('一覧と表', [
             part('行の一覧', '.rows', '<ul class="rows" style="inline-size:100%"><li>1行に1つ</li><li>罫線で区切る</li></ul>', '決まりや条件を並べる', '番号は付けない（順番に意味があるときは手順を使う）'),
@@ -800,14 +827,15 @@ def rules():
 <li>トップの中の項目には現在地が付きます。読み進めた量のインジケータは付けません</li>
 <li>トップに置くのは MV、強み、お悩み、サービス内訳、料金プラン、オプション、対応事例、よくある質問まで。当日の体制と流れ、配信支援ツール、内製化支援、発注の手続きは下層のページ</li>
 <li>プラン診断はページに埋め込まず、ボタンでモーダルを開きます。スマホは全画面、PC は画面の中央。JS が動かないときはページの下の診断へ移動</li></ul>''')
-            + S('type', '文字', '1書体、2つの太さ', f'''<table class="tbl"><thead><tr><th scope="col">役割</th><th scope="col">クラス</th><th scope="col">大きさ（px、スマホ → PC）</th><th scope="col">行送り</th></tr></thead><tbody>{ty}</tbody></table>
+            + S('type', '文字', '1書体、2つの太さ', f'''<table class="tbl tbl--type"><thead><tr><th scope="col">見出し・本文</th><th scope="col">クラス</th><th scope="col" class="r">スマホ</th><th scope="col" class="r">PC</th><th scope="col" class="r">行送り</th><th scope="col" class="r">太さ</th><th scope="col">見本</th></tr></thead><tbody>{ty}</tbody></table>
+<p class="t-note t-sub">スマホは幅375px、PC は幅1440px 以上での大きさ。その間は画面の幅に合わせてなめらかに変わります。</p>
 <ul class="rows"><li>和文は Noto Sans JP。本文は Regular（400）、見出しと強調は Medium（500）。使う文字だけに絞って同梱します</li>
 <li>英字と数字は Helvetica Neue（Windows では Arial）</li><li>字間は大きさの2%。見出しは文節で改行し、入力欄の文字はスマホでも16px</li></ul>''')
             + S('color', '色', '白の地に、<br>主色のティール', f'''<ul class="swatches">{sw}</ul>
 <ul class="rows"><li>同じ意味のボタンは同じ色：黄＝プラン診断、珊瑚＝見積を依頼する、ティール＝そのほかの行動、線だけ＝資料や補助</li>
 <li>黄はプラン診断だけ（ボタン、バッジ、レールのタイル、下の追従ボタン）。要点のマーカーは別の淡い黄で、本文にだけ引きます</li>
 <li>珊瑚は見積を依頼するだけ。ほかに、よくある質問の Q と、必須の印</li>
-<li>大きな面は白・クリーム・淡いティールの3つだけ。差し色は小さな面に使います</li>
+<li>大きな面は白・クリーム・淡いティールと、フッターの深い青だけ。深い青の上の文字は白にします。差し色は小さな面に使います</li>
 <li>値の元は design/karura-tokens.css。このサイトと、タイムキーパー・FAQ のツールが同じファイルを読むので、そこを直せば全体に反映されます</li></ul>''')
             + S('shape', '余白・角丸・影', '余白は画面の幅に<br>合わせて伸びる', f'''<table class="tbl"><thead><tr><th scope="col">場所</th><th scope="col">トークン</th><th scope="col">値（スマホ → PC）</th></tr></thead><tbody>{sh}</tbody></table>
 <ul class="rows"><li>角丸は4つ：入力欄・小さな箱 6〜8px、カード・アイコンの四角 10px、タグや札は丸（20px）、ボタンは 6px</li>
@@ -830,7 +858,7 @@ def rules():
 
 
 PAGES = {'index.html': index, 'service.html': service, 'reception.html': reception, 'coaching.html': coaching, 'public.html': public,
-         'contact.html': contact, 'thanks.html': thanks, 'rules.html': rules, 'mvs.html': mvs}
+         'contact.html': contact, 'thanks.html': thanks, 'rules.html': rules, 'mvs.html': mvs, 'labels.html': labels}
 def subset_font(text):
     """ページで使っている文字だけの書体ファイルを、太さごとに作る（元は約2.4MB、切り出すと数百KB）"""
     from fontTools import subset

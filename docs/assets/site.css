@@ -40,6 +40,7 @@
 
     /* 差し色：参考サイトと同じ3色。ボタンは参考どおり白い文字を乗せる */
     --teal: var(--k-teal);
+    --deep: var(--k-deep);
     --coral: var(--k-coral);
     --coral-tint: var(--k-coral-tint);
     --yellow: var(--k-yellow);
@@ -127,7 +128,7 @@
   .vh { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   /* 穴埋め：黄色のマーカーと見分けがつくよう、灰色の斜線にする */
   .ana { background: repeating-linear-gradient(135deg, #e6e6e6 0 4px, #f2f2f2 4px 8px); color: var(--ink); padding-inline: .2em; border-radius: 3px; box-shadow: inset 0 0 0 1px #c9c9c9; }
-  .boxd .ana, .foot .ana { background: repeating-linear-gradient(135deg, #4d4d50 0 4px, #5a5a5d 4px 8px); color: #f0f0f0; box-shadow: inset 0 0 0 1px #77777a; }
+  .boxd .ana { background: repeating-linear-gradient(135deg, #4d4d50 0 4px, #5a5a5d 4px 8px); color: #f0f0f0; box-shadow: inset 0 0 0 1px #77777a; }
 }
 
 /* ---------------------------------------------------------------- layout */
@@ -183,6 +184,18 @@
     font-size: .8125rem; line-height: 1.4; letter-spacing: .08em; color: var(--teal);
     &::before { content: ""; inline-size: 1.5rem; block-size: 2px; background: var(--teal); flex: none; }
   }
+  /* 見出しのタグの候補（labels.html で比べる。選んだら .t-lab に移す） */
+  .t-lab--b { display: grid; gap: .25rem; color: var(--sub); font-size: .75rem; &::before { display: none; }
+    & .en { font-family: var(--font-en); font-size: clamp(1.5rem, 1.2rem + 1vw, 2.25rem); line-height: 1; letter-spacing: .02em; color: var(--teal); } }
+  .t-lab--c { gap: .75rem; color: var(--ink); font-weight: 500; font-size: .875rem; &::before { inline-size: 4px; block-size: 1.25em; border-radius: 2px; } }
+  .t-lab--d { gap: .5rem; color: var(--ink); font-weight: 500; font-size: .875rem; &::before { inline-size: .625rem; block-size: .625rem; border-radius: 2px; } }
+  .t-lab--e { gap: .75rem; color: var(--ink); font-size: .875rem; &::before { order: 1; inline-size: 1.5rem; block-size: 1px; background: var(--k-line-strong); }
+    & .num { order: 0; font-family: var(--font-en); font-size: 1.125rem; letter-spacing: .04em; color: var(--teal); } & .t { order: 2; } }
+  .lab-cand { padding-block-start: 2.5rem; border-block-start: 1px solid var(--sand); }
+  .lab-demo { padding: clamp(1.5rem, 1rem + 2vw, 3rem); border-radius: var(--radius-card); box-shadow: inset 0 0 0 1px var(--sand); }
+  .lab-demo--band { background: var(--cream); box-shadow: none; }
+  .lab-row { display: grid; gap: 1.5rem; }
+  @media (width >= 64rem) { .lab-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   .t-num { font-family: var(--font-en); font-weight: 400; font-size: .875rem; line-height: 1; letter-spacing: .03em; }
   .t-bar {
     padding: 1rem; border-radius: var(--radius); text-align: center;
@@ -232,6 +245,8 @@
   .boxg { background: var(--cream); border-radius: var(--radius); padding: 2rem clamp(1rem, .5rem + 2vw, 2rem) 1.5rem; box-shadow: var(--sh-1); }
   .boxw { background: var(--paper); border: 1px solid rgb(255 255 255 / .6); border-radius: var(--radius-card); padding: 2rem clamp(1rem, .5rem + 2vw, 2rem) 1.5rem; color: var(--ink); box-shadow: var(--sh-1); }
   .boxg .boxw { box-shadow: none; border-color: var(--sand); }
+  /* コラム：本筋から少し外れた読みもの。面は付けず、線で囲む */
+  .boxc { border: 1px solid var(--k-line-strong); border-radius: var(--radius-card); padding: clamp(1.5rem, 1rem + 2vw, 2.5rem); }
   .boxd { background: var(--ink); color: var(--paper); border-radius: var(--radius); padding: clamp(2.5rem, 1.5rem + 3vw, 4rem) clamp(1.5rem, 1rem + 3vw, 4rem); box-shadow: var(--sh-3); }
   .cta-in { display: flex; flex-wrap: wrap; gap: 2rem 4rem; align-items: center; justify-content: space-between; & > :last-child { flex: 1 1 18rem; max-inline-size: 30rem; } }
   .ph { display: grid; place-items: center; padding: 1.25rem; text-align: center; font-size: .8125rem; line-height: 1.7; letter-spacing: .04em; border-radius: var(--radius); background: var(--sand); color: var(--sub); }
@@ -260,6 +275,12 @@
     & h3 { word-break: auto-phrase; }
     & .t-num { display: block; margin-block-end: .5rem; color: #b3b3b3; } }
   @media (width >= 64rem) { .reasons { grid-template-columns: 1fr 1fr; gap: 3rem 2.5rem; } }
+  .reasons--card .reason { grid-template-rows: auto auto 1fr auto; align-content: stretch;
+    & .reason-ph { grid-column: 1 / -1; margin-block-end: .5rem; border-radius: var(--radius-card); overflow: hidden;
+      & img { inline-size: 100%; aspect-ratio: 16 / 10; object-fit: cover; } }
+    & .t-body { align-self: start; }
+    & .btn { align-self: end; justify-self: start; margin-block-start: .5rem; } }
+  @media (width < 48rem) { .reasons--card .reason .btn { justify-self: stretch; } }
 
   .tbl { inline-size: 100%; border-collapse: collapse;
     & th { padding: 0 1rem 1rem 0; border-block-end: 1px solid var(--ink); font-weight: 500; font-size: .875rem; line-height: 1; color: var(--sub); text-align: start; white-space: nowrap; }
@@ -414,17 +435,17 @@
     & .t-lead { color: rgb(255 255 255 / .9); } }
   .mv .hero-kind { color: rgb(255 255 255 / .85); }
   .mv .ana { background: repeating-linear-gradient(135deg, #4d4d50 0 4px, #5a5a5d 4px 8px); color: #f0f0f0; box-shadow: inset 0 0 0 1px #77777a; }
-  /* 写真の下：対象・体制・費用（それぞれの節への矢印つきリンク）と、2つの行動。行動はスマホでも横に並べる */
-  .mv-after { display: grid; gap: 1.5rem; padding-block-start: clamp(1.5rem, 1rem + 2vw, 2.5rem); }
-  .mv-after { grid-template-columns: minmax(0, 1fr); }
-  @media (width >= 48rem) { .mv-after { grid-template-columns: minmax(0, 1fr) auto; gap: 3rem; align-items: center; } }
+  /* 写真の下の縁に、プラン診断のバッジを半分かける（右寄せ）。下の節との間は、バッジの下半分のぶんだけ空ける */
+  .mv-after { --badge: clamp(9rem, 6.5rem + 9vw, 13.5rem); position: relative; z-index: 2; display: flex; justify-content: flex-end;
+    margin-block: calc(var(--badge) / -2) calc(var(--badge) / -4); pointer-events: none; & .badge { pointer-events: auto; } }
   /* #9 プラン診断は、ギザギザのバッジ。縁だけがゆっくり回る（文字は回さない） */
-  .badge { position: relative; display: grid; place-items: center; justify-self: end; inline-size: clamp(7.5rem, 6rem + 6vw, 9.5rem); aspect-ratio: 1;
+  .badge { position: relative; display: grid; place-items: center; inline-size: var(--badge, 9rem); aspect-ratio: 1;
     color: var(--ink); text-decoration: none; text-align: center; isolation: isolate; }
   .badge-bg { position: absolute; inset: 0; z-index: -1; background: var(--yellow);
     clip-path: polygon(50% 0%, 57% 10%, 69% 4%, 72% 16%, 85% 15%, 84% 28%, 96% 31%, 90% 43%, 100% 50%, 90% 57%, 96% 69%, 84% 72%, 85% 85%, 72% 84%, 69% 96%, 57% 90%, 50% 100%, 43% 90%, 31% 96%, 28% 84%, 15% 85%, 16% 72%, 4% 69%, 10% 57%, 0% 50%, 10% 43%, 4% 31%, 16% 28%, 15% 15%, 28% 16%, 31% 4%, 43% 10%); }
-  .badge-t { display: grid; justify-items: center; gap: .25rem; font-size: clamp(.8125rem, .75rem + .25vw, .9375rem); line-height: 1.35; letter-spacing: .04em;
-    & .bico { inline-size: 1.75rem; block-size: 1.75rem; } }
+  .badge-t { display: grid; justify-items: center; gap: .375rem; font-size: clamp(.9375rem, .8rem + .55vw, 1.25rem); line-height: 1.35; letter-spacing: .04em;
+    & .bico { inline-size: clamp(1.75rem, 1.4rem + 1vw, 2.5rem); block-size: clamp(1.75rem, 1.4rem + 1vw, 2.5rem); } }
+  .badge::after { content: ""; position: absolute; inset: 6%; z-index: -2; border-radius: 50%; box-shadow: var(--sh-3); opacity: .5; }
   .badge:hover .badge-bg { scale: 1.04; }
   .badge:focus-visible { outline-offset: 4px; border-radius: 50%; }
   @media (prefers-reduced-motion: no-preference) {
@@ -435,14 +456,6 @@
   .mv-cmp > .wrap { padding-block-end: 1rem; }
   .hero-kind { font-size: var(--fs-note); color: var(--sub); letter-spacing: .04em;
     &::before { content: ""; display: inline-block; inline-size: 2rem; block-size: 4px; margin-inline-end: .75rem; vertical-align: .3em; border-radius: 4px; background: var(--teal); } }
-  /* 対象・体制・費用：左に小さな札、右に中身。行ごとに、その中身が書いてある節へ移るリンク（右端に矢印） */
-  .mv-facts { display: grid; border-block: 1px solid var(--sand);
-    & > :is(div, li) { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 1rem; align-items: center; }
-    & > li { grid-template-columns: minmax(0, 1fr); }
-    & > :is(div, li) + :is(div, li) { border-block-start: 1px solid var(--sand); }
-    & dt { justify-self: start; padding: .125rem .625rem; border-radius: 20px; background: var(--teal); color: #fff; font-size: .75rem; letter-spacing: .08em; }
-    & a { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .875rem; line-height: 1.7; text-decoration: none; }
-    & a:hover { color: var(--ink); & .go { translate: .25rem 0; } } }
   .go { display: inline-grid; place-items: center; flex: none; inline-size: 1.5rem; block-size: 1.5rem; color: var(--sub);
     & .bico { inline-size: 1.25rem; block-size: 1.25rem; } }
 
@@ -604,11 +617,9 @@
   /* PCでは3人の吹き出し・名前・リンクの高さをそろえる（subgrid） */
   @media (width >= 64rem) { .voices { grid-template-columns: repeat(3, minmax(0, 1fr)); } .voice { grid-row: span 3; grid-template-rows: subgrid; } }
   .voice { display: grid; grid-template-rows: 1fr auto auto; gap: .75rem; }
-  .voice-q { position: relative; padding: 1.5rem; border-radius: 20px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--sand); line-height: 1.9;
-    /* しっぽ：下の人のアイコンを指す */
-    &::before, &::after { content: ""; position: absolute; inset-block-start: 100%; inset-inline-start: 1.5rem; border: .75rem solid transparent; border-inline-end-width: 0; }
-    &::before { border-block-start-color: var(--sand); translate: 0 1px; }
-    &::after { border-block-start-color: var(--paper); inset-inline-start: calc(1.5rem + 1px); border-width: calc(.75rem - 1px); border-inline-end-width: 0; } }
+  .voice-q { position: relative; padding: 1.5rem; border-radius: 20px; background: var(--deep); color: #fff; line-height: 1.9;
+    /* しっぽ：下の人のアイコンを指す（同じ深い青） */
+    &::after { content: ""; position: absolute; inset-block-start: calc(100% - 1px); inset-inline-start: 1.75rem; border: .875rem solid transparent; border-block-start-color: var(--deep); border-inline-end-width: 0; } }
   .voice-who { display: flex; align-items: center; gap: .625rem; margin-block-start: .75rem; }
   .avatar { display: inline-grid; place-items: center; flex: none; inline-size: 2.5rem; block-size: 2.5rem; border-radius: 50%; background: var(--wash); color: var(--teal);
     & .bico { inline-size: 1.5rem; block-size: 1.5rem; } }
@@ -697,16 +708,17 @@
   /* 見本は狭い箱に入るので、PC でも1列で見せる */
   .part-demo :is(.reasons, .voices, .incl) { grid-template-columns: minmax(0, 1fr); }
   .part-demo .steps li { grid-template-columns: 1.75rem minmax(0, 1fr); & .b { grid-column: 2; } }
+  .tbl--type .type-sample { display: inline-block; line-height: 1.3; white-space: nowrap; }
   :is(.part, .tbl) code { font-family: var(--font-en); font-size: .8125rem; letter-spacing: .02em; color: var(--sub); word-break: break-all; }
 
   /* ---------- フッター ---------- */
-  .foot { margin-block-start: 0; background: var(--ink); color: var(--paper); border-radius: var(--radius) var(--radius) 0 0; padding: 3rem var(--pad) 3rem; }
+  .foot { margin-block-start: 0; background: var(--deep); color: var(--paper); border-radius: var(--radius) var(--radius) 0 0; padding: 3rem var(--pad) 3rem; }
   @media (width >= 64rem) { .foot { margin: 0 8px 8px; border-radius: var(--radius); padding: 4.625rem clamp(1rem, 3.9vw, 3.5rem) 5rem; } }
-  .fnav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1rem; padding-block-end: 1.75rem; border-block-end: 1px solid #808080;
+  .fnav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1rem; padding-block-end: 1.75rem; border-block-end: 1px solid rgb(255 255 255 / .3);
     & a { display: block; padding-block: .875rem; font-size: .875rem; line-height: 1.4; color: var(--paper); text-decoration: none; }
     & a:hover { text-decoration: underline; } }
   @media (width >= 64rem) { .fnav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 2.5rem; } }
-  .copy { margin-block-start: 1.5rem; font-family: var(--font-en); font-weight: 400; font-size: .8125rem; letter-spacing: .1em; color: #b3b3b3; }
+  .copy { margin-block-start: 1.5rem; font-family: var(--font-en); font-weight: 400; font-size: .8125rem; letter-spacing: .1em; color: rgb(255 255 255 / .75); }
 
   /* ---------- スマホ下部の追従バー ---------- */
   .spbar { position: fixed; inset-inline: 0; inset-block-end: 0; z-index: 60; display: flex; gap: .5rem; padding: .5rem .5rem calc(.5rem + env(safe-area-inset-bottom)); background: color-mix(in srgb, var(--bg) 96%, transparent); border-block-start: 1px solid var(--sand);
