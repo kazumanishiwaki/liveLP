@@ -496,7 +496,7 @@ def strengths():
              ('P11', 'qr', 'ツールで運営費を圧縮', '配信支援ツール（受付のデジタルチケット、質疑応答、進行管理）で、当日の受付や運営に立つ人を減らせます。', 'reception.html', '配信支援ツールを見る'),
              ('P12', 'list', '配信体制と内製化', '小さな会はご自身で、大きな会は私たちに。内製化の基準づくりから、独り立ちまで並走します。', 'coaching.html', '内製化支援を見る')]
     li = ''.join(f'''<li class="reason"><div class="reason-ph zoom">{img(pid, f'（ダミー）{t}の写真')}</div>{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p>{btn(l, h, 'soft s')}</div></li>''' for pid, k, t, b, h, l in items)
-    return sec('strengths', 'カルラライブの強み', '配信の費用を、<br>読めるものにします', f'<ul class="reasons reasons--3 reasons--card">{li}</ul>',
+    return sec('strengths', 'カルラライブの強み', '配信業務の不透明を<br>無くします', f'<ul class="reasons reasons--3 reasons--card">{li}</ul>',
                lead='配信当日だけでなく、運営の手間と、その先の体制づくりまで支えます。')
 
 # ------------------------------------------------------------------ 当日の体制と流れ
