@@ -437,7 +437,7 @@ def index():
     kd = f'''<div class="cs" data-cs><ul class="cs-track" aria-label="ケーススタディの写真（自動で横に流れます）">{items(False)}{items(True)}</ul></div>
 <div class="cs-foot"><div class="cs-caps">{caps}</div><div class="cs-ctl"><p class="t-note cs-count"><span data-cs-now>1</span> / {len(kinds)}</p>
 <button class="cs-pause" type="button" aria-pressed="false" data-cs-pause>止める</button></div></div>'''
-    factors = [('face', '当日の人数', 'スタッフの人数。ディレクター・配信管理、カメラ・音声、2台目のカメラの3人が基本です。オンライン登壇やマイク6本以上の会では1人増えます。'),
+    factors = [('face', '当日の人数', 'いちばん大きいのが、当日のスタッフの人数です。ディレクター・配信管理、カメラ・音声、2台目のカメラの3人が基本です。オンライン登壇やマイク6本以上の会では1人増えます。'),
                ('switch', '機材', 'カメラとマイクの数、予備の機材。カメラの台数は、登壇者の人数と会場の広さで決まります。'),
                ('report', 'オプション', '録画データの納品、予備回線、ロケハン、記録写真など、当日の配信のほかに頼める仕事です。必要なものだけを足します。')]
     fc = ''.join(f'<li class="reason">{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p></div></li>' for k, t, b in factors)
@@ -446,11 +446,11 @@ def index():
             ('予備は、止まると取り返しがつかないものだけ', '録画機は2系統。予備回線はオプションで付けられます。'),
             ('見積書にすべて書きます', '人・機材・オプションの内訳を明記します。あとから増えるのは、オプションの一覧にあるものだけです。')]
     ln = ''.join(f'<li><span class="a">{a}</span><span class="b">{b}</span></li>' for a, b in lean)
-    cost = sec('cost', 'サービス内訳', '配信の費用は、<br>人と機材とオプションで決まります', f'''<div class="stack"><h3 class="sub">ケーススタディ</h3>{kd}</div>
-<div class="stack"><h3 class="sub">費用を決める3つ</h3><ul class="reasons reasons--3">{fc}</ul></div>
+    cost = sec('cost', 'サービス内訳', '配信の費用は、<br>当日何人必要かで決まります', f'''<div class="stack"><h3 class="sub">ケーススタディ</h3>{kd}</div>
+<div class="stack"><h3 class="sub">費用の決まり方</h3><ul class="reasons reasons--3">{fc}</ul></div>
 <div class="boxc stack s-48"><div class="stack s-16">{lab('コラム')}<h3 class="t-h2s">無駄のない配信とは</h3>
 <p class="t-body">引っ越しと同じです。単身の荷物に10トントラックはいりませんが、冷蔵庫を友人の軽トラックで運ぶのは不安です。配信も、会の大きさに合った人と機材を選ぶのがいちばん安く、いちばん確かです。</p></div><ul class="lean">{ln}</ul></div>''',
-               lead='配信代行の見積は、当日のスタッフの人数、持ち込む機材、必要なときだけ足すオプションの3つで、ほぼ決まります。カルラライブは、会の大きさに必要なぶんだけを組み合わせます。')
+               lead='配信代行の見積は、当日のスタッフの人数でほぼ決まります。機材とオプションは、その人数で扱えるぶんを会に合わせて足すものです。カルラライブは、会の大きさに必要な人数だけで伺います。')
 
     price = sec('price', '料金プラン', 'シンプルな料金プラン', f'''<div class="stack">{tbl_plans()}
 <p class="t-note t-sub">定期的に配信する会（毎月のセミナーなど）は、回数に応じて割引があります。交通費と、前入りが必要な場合の宿泊費は別途お見積りします。</p></div>
@@ -464,7 +464,8 @@ def index():
                 lead=f'どのプランにも、事前の打ち合わせ、会場のオンライン下見、予備の録画機、受付用のデジタルチケットが含まれます。{mk("見積書にも同じ内容を書きます。")}', tone='bandg')
 
     option = sec('option', 'オプション', '必要なときだけ、足せるもの', f'''{option_list()}
-<p class="t-note t-sub">料金はすべて税別です。プラン診断で選んだものは、見積のご依頼にそのまま入ります。</p>''',
+<p class="t-note t-sub">料金はすべて税別です。プラン診断で選んだものは、見積のご依頼にそのまま入ります。</p>
+{gear_column()}''',
                  lead='どのプランにも付けられます。見積書には1行ずつ書き、請求は配信とまとめて1回です。')
 
     works = f'''<section id="works" class="sec" aria-labelledby="works-title"><div class="wrap stack s-56">
@@ -490,14 +491,24 @@ def index():
             + intro + header('index.html') + '<main id="main">' + hero + strengths() + worries + cost + price + option + works + faq + '</main>'
             + footer('index.html', form=True))
 
+# ------------------------------------------------------------------ コラム：良い機材（#49 対応事例の上）
+def gear_column():
+    pts = [('音が聞き取れる', '視聴者がいちばん気にするのは、映像より音です。会場の反響や空調の音を抑え、話す人が替わっても音量をそろえます。'),
+           ('暗い会場でも映る', 'スクリーンを見せるために照明を落とした会場でも、登壇者の顔がざらつかずに映ります。'),
+           ('後ろの席から寄れる', '会場の後方に置いたカメラから、登壇者の表情や手元まで寄れます。'),
+           ('途中で止まらない', '長い時間つないでも熱で止まらない業務用の機材を使い、録画は2系統で残します。')]
+    ln = ''.join(f'<li><span class="a">{a}</span><span class="b">{b}</span></li>' for a, b in pts)
+    return f'''<div class="boxc stack s-48"><div class="stack s-16">{lab('コラム')}<h3 class="t-h2s">良い機材は、なにが違うのか？</h3>
+<p class="t-body">同じ「カメラ3台」でも、機材によって配信の見え方と聞こえ方は大きく変わります。違いが出るのは、カタログの数字よりも、会場で困る場面です。</p></div><ul class="lean">{ln}</ul></div>'''
+
 # ------------------------------------------------------------------ 強み（トップの MV のすぐ下）
 def strengths():
-    items = [('P05', 'doc', 'わかりやすい料金体系', 'スタッフ3人・カメラ3台・マイク5本で25万円（税別）。機材費も込みです。全員に持ち場がある、無駄のない体制で伺います。', '#price', '料金プランを見る'),
+    items = [('P05', 'doc', 'わかりやすい料金体系', 'スタッフ3人・カメラ3台・マイク5本で25万円（税別）。機材費も込みです。だれが何をするかまで見積書に書くので、費用の中身が見えます。', '#price', '料金プランを見る'),
              ('P11', 'qr', 'ツールで運営費を圧縮', '配信支援ツール（受付のデジタルチケット、質疑応答、進行管理）で、当日の受付や運営に立つ人を減らせます。', 'reception.html', '配信支援ツールを見る'),
-             ('P12', 'list', '配信体制と内製化', '小さな会はご自身で、大きな会は私たちに。内製化の基準づくりから、独り立ちまで並走します。', 'coaching.html', '内製化支援を見る')]
+             ('P12', 'list', '内製化を支援します', '小さな会はご自身で、大きな会は私たちに。どこまでを社内で配信できるか、その基準づくりから独り立ちまで並走します。', 'coaching.html', '内製化支援を見る')]
     li = ''.join(f'''<li class="reason"><div class="reason-ph zoom">{img(pid, f'（ダミー）{t}の写真')}</div>{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p>{btn(l, h, 'soft s')}</div></li>''' for pid, k, t, b, h, l in items)
     return sec('strengths', 'カルラライブの強み', '配信業務の不透明を<br>無くします', f'<ul class="reasons reasons--3 reasons--card">{li}</ul>',
-               lead='配信当日だけでなく、運営の手間と、その先の体制づくりまで支えます。')
+               lead='配信を頼むと、何にいくらかかり、当日だれが何をするのかが見えにくくなりがちです。カルラライブは、人と機材と作業をすべて見積書に書き、運営の手間とその先の体制づくりまで支えます。')
 
 # ------------------------------------------------------------------ 当日の体制と流れ
 def service():

@@ -632,7 +632,7 @@
   @media (width >= 48rem) { .incl { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (width >= 80rem) { .incl:not(.incl--2) { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
-  /* ---------- 費用を決める3つ（PCは3列） ---------- */
+  /* ---------- 費用の決まり方（PCは3列） ---------- */
   @media (width >= 64rem) { .reasons--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
   /* ---------- 無駄のない配信：見出しと説明の組 ---------- */
@@ -803,6 +803,7 @@
     main > .mv-after + section[id]:not(.band) { margin-block-start: calc(var(--badge-mv) / 2 + 1rem); }  /* 端から端の点線とタグが、バッジの下半分に隠れないように */
     main > section[id] .t-lab { position: absolute; inset-block-start: 0; inset-inline-start: var(--pad); translate: 0 -50%; z-index: 1; padding-inline: .5rem; background: var(--bg); }
     main > section[id] .stk:has(> .t-lab:only-child) { display: contents; }
+    main > section[id] .boxc .t-lab { position: static; translate: none; padding-inline: 0; background: none; }  /* コラムのタグは囲みの中に置く（節のタグだけ線の上へ） */
   }
 }
 
