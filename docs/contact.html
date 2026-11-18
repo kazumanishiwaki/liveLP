@@ -7,7 +7,7 @@
 <meta name="description" content="日程と会場、登壇者の人数がわかれば見積書をお出しします。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#ffffff">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2300b4c3'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23ffffff'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23385ea7'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23ffffff'/%3E%3C/svg%3E">
 <script>document.documentElement.classList.add('js');</script>
 <link rel="preload" href="assets/fonts/noto-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/karura-tokens.css">
@@ -18,7 +18,7 @@
 <a class="skip" href="#main">本文へ移動</a>
 <header class="hdr">
 <div class="hdr-bar">
-<a class="logo" href="index.html" aria-label="カルラライブ トップページ"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="#00b4c3"/><circle cx="16" cy="16" r="5.5" fill="#fff"/><circle cx="16" cy="16" r="10" fill="none" stroke="#fff" stroke-width="1.6" opacity=".55"/></svg><span class="logo-t">KARURA LIVE<small>カルラライブ</small></span></a>
+<a class="logo" href="index.html" aria-label="カルラライブ トップページ"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="#385ea7"/><circle cx="16" cy="16" r="5.5" fill="#fff"/><circle cx="16" cy="16" r="10" fill="none" stroke="#fff" stroke-width="1.6" opacity=".55"/></svg><span class="logo-t">KARURA LIVE<small>カルラライブ</small></span></a>
 <button type="button" class="menu-btn" data-open-menu aria-haspopup="dialog" aria-controls="menu"><span class="vh">メニューを開く</span><i></i><i></i></button>
 <a class="menu-fallback t-note" href="#fnav">メニュー</a>
 </div>
@@ -31,14 +31,14 @@
 </div>
 </header>
 <dialog id="menu" class="menu" aria-label="メニュー">
-<div class="menu-head"><span class="logo"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="#00b4c3"/><circle cx="16" cy="16" r="5.5" fill="#fff"/><circle cx="16" cy="16" r="10" fill="none" stroke="#fff" stroke-width="1.6" opacity=".55"/></svg><span class="logo-t">KARURA LIVE<small>カルラライブ</small></span></span><form method="dialog"><button class="menu-close">閉じる</button></form></div>
+<div class="menu-head"><span class="logo"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="#385ea7"/><circle cx="16" cy="16" r="5.5" fill="#fff"/><circle cx="16" cy="16" r="10" fill="none" stroke="#fff" stroke-width="1.6" opacity=".55"/></svg><span class="logo-t">KARURA LIVE<small>カルラライブ</small></span></span><form method="dialog"><button class="menu-close">閉じる</button></form></div>
 <nav aria-label="メニュー"><ul><li><a href="index.html#cost">サービス内訳<span aria-hidden="true">›</span></a></li><li><a href="index.html#price">料金プラン<span aria-hidden="true">›</span></a></li><li><a href="index.html#works">対応事例<span aria-hidden="true">›</span></a></li><li><a href="service.html">当日の体制と流れ<span aria-hidden="true">›</span></a></li><li><a href="reception.html">配信支援ツール<span aria-hidden="true">›</span></a></li><li><a href="coaching.html">内製化支援<span aria-hidden="true">›</span></a></li><li><a href="index.html#faq">よくある質問<span aria-hidden="true">›</span></a></li><li><a href="contact.html">お問い合わせ・お見積<span aria-hidden="true">›</span></a></li></ul>
 <a class="banner" href="public.html"><span class="banner-t">大学・公共機関の方へ</span><span class="banner-s">稟議・相見積・請求書払いに対応します</span><span class="go"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h13M13 6.5 18.5 12 13 17.5"/></svg></span></a>
 <div class="stack s-16 menu-acts"><a class="btn plan full" href="#diag" data-open-diag aria-haspopup="dialog"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9zM8.5 13.5l2.5 2.5 4.5-5"/></svg><span>8問でプランを診断する</span></a><a class="btn quote full" href="contact.html"><svg class="bico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg><span>見積を依頼する</span></a></div></nav>
 </dialog>
 <main id="main">
 <div class="wrap ph-head stack s-48" id="top"><nav aria-label="パンくず"><ol class="crumb"><li><a href="index.html">トップ</a></li><li aria-current="page">お問い合わせ・お見積</li></ol></nav>
-<p class="t-lab">見積を依頼する</p><h1 class="t-h1">見積書をお送りします</h1><p class="t-lead"><mark class="mk">必須の4項目だけ</mark>で送信できます。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。</p></div>
+<p class="t-lab"><span class="dot" aria-hidden="true"></span>見積を依頼する</p><h1 class="t-h1">見積書をお送りします</h1><p class="t-lead"><mark class="mk">必須の4項目だけ</mark>で送信できます。1営業日以内に、宛名入りの見積書PDFをメールでお送りします。</p></div>
 <div class="wrap g75">
 <form class="boxw stack" data-form="quote" data-endpoint="" data-prefill aria-label="見積の依頼">
 <p class="form-msg prefill" role="status" hidden></p><h3 class="t-ct">必須（4項目）</h3>

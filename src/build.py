@@ -52,16 +52,17 @@ ICON = {
     'report': '<path d="M4 20h16M7 20v-6M12 20V6M17 20v-9"/>',
 }
 def ico(name, size=''):
-    """ティールの角丸チップに入った線画アイコン（飾りなので読み上げない）"""
+    """青の角丸チップに入った線画アイコン（飾りなので読み上げない）"""
     return (f'<span class="chipi{" chipi--" + size if size else ""}" aria-hidden="true">'
             f'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">{ICON[name]}</svg></span>')
 
 def mk(t):
-    """要点に引く黄色のマーカー"""
+    """要点に引く淡い青のマーカー"""
     return f'<mark class="mk">{t}</mark>'
 
 def lab(t):
-    return f'<p class="t-lab">{t}</p>'
+    """見出しのタグ（ ● 文字 ）"""
+    return f'<p class="t-lab"><span class="dot" aria-hidden="true"></span>{t}</p>'
 
 def tag_sections(body, items):
     """各セクションの頭のタグを、目次（サブナビ）と同じ言葉にする"""
@@ -70,7 +71,7 @@ def tag_sections(body, items):
         if at < 0: continue
         nxt = body.find('<section', at + 1)
         m = re.compile(r'<p class="t-lab">.*?</p>').search(body, at, nxt if nxt > 0 else len(body))
-        if m: body = body[:m.start()] + f'<p class="t-lab">{t}</p>' + body[m.end():]
+        if m: body = body[:m.start()] + lab(t) + body[m.end():]
     return body
 
 # ------------------------------------------------------------------ 共通
@@ -97,7 +98,7 @@ def menu_items(page, cls_a=''):
         out += f'<li><a href="{menu_href(h, page)}"{cur}>{t}</a></li>'
     return out
 
-LOGO_MARK = ('<svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="#00b4c3"/>'
+LOGO_MARK = ('<svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect width="32" height="32" rx="7" fill="#385ea7"/>'
              '<circle cx="16" cy="16" r="5.5" fill="#fff"/><circle cx="16" cy="16" r="10" fill="none" stroke="#fff" stroke-width="1.6" opacity=".55"/></svg>')
 
 def logo_html():
@@ -126,7 +127,7 @@ def quote_btn(text='見積を依頼する', cls=''):
     return f'<a class="btn quote {cls}" href="contact.html">{bico("mail")}<span>{text}</span></a>'
 
 def sec(sid, tag, title, body, lead='', tone=''):
-    """1段のセクション。上にタグ・見出し・リード、その下に中身。tone：''＝白、'band'＝淡いティール、'bandg'＝クリーム"""
+    """1段のセクション。上にタグ・見出し・リード、その下に中身。tone：''＝白、'band'＝淡い青、'bandg'＝クリーム"""
     cls, inner = (f'{tone} sec-2', 'wrap pad-band') if tone else ('sec', 'wrap')
     ld = f'<p class="t-lead">{lead}</p>' if lead else ''
     return (f'<section id="{sid}" class="{cls}" aria-labelledby="{sid}-title"><div class="{inner} stack s-56">'
@@ -153,7 +154,7 @@ def head(title, desc, home=False, extra=''):
 <meta name="description" content="{desc}">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#ffffff">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2300b4c3'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23ffffff'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23385ea7'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23ffffff'/%3E%3C/svg%3E">
 <script>document.documentElement.classList.add('js');{intro}</script>
 <link rel="preload" href="assets/fonts/noto-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/karura-tokens.css">
@@ -303,7 +304,12 @@ def option_list():
               ('回線と下見', [('予備回線', '［金額］'), ('回線の持ち込み', '［金額］'), ('ロケハン（実地の下見）', '［金額］')]),
               ('納品と受付', [('録画データの納品', '［金額］'), ('文字起こし', '［金額］'), ('LINEで申し込む受付', '［金額］')]),
               ('交通と宿泊', [('交通費・前入りの宿泊費', '別途お見積り')])]
-    rows = lambda xs: '<ul class="opt-rows">' + ''.join(f'<li><span>{n}</span><span class="r">{v}</span></li>' for n, v in xs) + '</ul>'
+    def yen(v):
+        return v if v == '別途お見積り' else f'<span class="yen"><b>{v}</b><small>円</small><span class="tax">（税別）</span></span>'
+    def name(n):
+        main, _, note = n.partition('（')
+        return f'{main}<small>{note[:-1]}</small>' if note else main
+    rows = lambda xs: '<ul class="opt-rows">' + ''.join(f'<li><span class="n">{name(n)}</span><span class="r">{yen(v)}</span></li>' for n, v in xs) + '</ul>'
     fc = ''.join(f'''<li class="opt-card"><div class="zoom">{img(pid, f'（ダミー）{t}の写真')}</div><div class="stack s-16"><h3 class="t-h3">{t}</h3>{rows(xs)}{f'<p class="t-note t-sub">{n}</p>' if n else ''}</div></li>''' for pid, t, xs, n in feature)
     gc = ''.join(f'<li class="opt-group"><h3 class="sub">{g}</h3>{rows(xs)}</li>' for g, xs in groups)
     return f'<ul class="opt-cards">{fc}</ul><ul class="opt-groups">{gc}</ul>'
@@ -312,7 +318,7 @@ def tbl_plans():
     """プランの違いだけを並べる表。どのプランにも含まれるものは、表の下に1回だけ書く（COMMON）。スマホでは横にスクロール"""
     Y = '<span class="yes" role="img" aria-label="含む">○</span>'
     N = '<span class="no" role="img" aria-label="含まない">—</span>'
-    rows = [('料金（税別）', '<b class="cmp-price">25<small>万円</small></b>', '<b class="cmp-price">35<small>万円</small></b>', '<b class="cmp-price">ASK</b>'),
+    rows = [('料金（税別）', '<b class="cmp-price">250,000<small>円〜</small></b>', '<b class="cmp-price">350,000<small>円〜</small></b>', '<b class="cmp-price">ASK</b>'),
             ('向いている会', '登壇者2〜6人<br>会場50〜300人', '登壇者7人以上<br>会場300人を超える', '会場の外からの中継<br>複数の会場・複数日'),
             ('スタッフ', '3人', '4人', '内容に合わせて'),
             ('カメラ', '3台', '5台', '内容に合わせて'),
@@ -381,7 +387,7 @@ MV = {
           'items': [('スタンダード 25万円：カメラ3台・スタッフ3人', '#price'), ('ワイド 35万円：カメラ5台・スタッフ4人', '#price'),
                     ('オプションの料金も、表で公開しています', '#option')]},
     'C': {'name': '案C：いまの見出し＋対象・体制・費用',
-          'h1': 'カメラ5台はいりません。<br>でも1台では、パネルディスカッションは撮れません。',
+          'h1': 'ここにメインコピーが入ります。<br>2行ほどのダミーテキストです。',
           'lead': '配信規模に合った体制で、会場の様子をそのままオンラインに届けます。',
           'kind': 'facts',
           'items': [('対象', '登壇者2〜6人、会場50〜300人のシンポジウム・講演会', '#works'), ('体制', 'カメラ3台、スタッフ3人、マイク5本まで', 'service.html#team'),
@@ -421,7 +427,12 @@ def index():
              ('mic', '講演会・セミナー', '会場に50〜300人。会場の質問も、オンラインの視聴者に届けます'),
              ('backup', '来賓や関係者、外部の方が見る会', 'やり直しのきかない配信。予備の録画機を用意し、予備回線も付けられます'),
              ('switch', '遠隔地の講師が登壇する会', '会場とオンラインの登壇者が、同じ画面で話せるようにします')]
-    kd = ''.join(f'<li class="reason">{ico(k)}<div class="stack s-16"><h3 class="t-ct">{t}</h3><p class="t-body">{b}</p></div></li>' for k, t, b in kinds)
+    shots = ['P02', 'P10', 'P03', 'P09']
+    items = lambda dup: ''.join(f'<li class="cs-item" data-i="{i}"{" aria-hidden=\"true\"" if dup else ""}>{img(shots[i], "" if dup else f"（ダミー）{t}の写真")}</li>' for i, (k, t, b) in enumerate(kinds))
+    caps = ''.join(f'<div class="cs-cap" data-i="{i}"{"" if i == 0 else " hidden"}>{ico(k)}<div class="stack s-16"><h4 class="t-ct">{t}</h4><p class="t-body">{b}</p></div></div>' for i, (k, t, b) in enumerate(kinds))
+    kd = f'''<div class="cs" data-cs><ul class="cs-track" aria-label="ケーススタディの写真（自動で横に流れます）">{items(False)}{items(True)}</ul></div>
+<div class="cs-foot"><div class="cs-caps">{caps}</div><div class="cs-ctl"><p class="t-note cs-count"><span data-cs-now>1</span> / {len(kinds)}</p>
+<button class="cs-pause" type="button" aria-pressed="false" data-cs-pause>止める</button></div></div>'''
     factors = [('face', '当日の人数', 'スタッフの人数。ディレクター・配信管理、カメラ・音声、2台目のカメラの3人が基本です。オンライン登壇やマイク6本以上の会では1人増えます。'),
                ('switch', '機材', 'カメラとマイクの数、予備の機材。カメラの台数は、登壇者の人数と会場の広さで決まります。'),
                ('report', 'オプション', '録画データの納品、予備回線、ロケハン、記録写真など、当日の配信のほかに頼める仕事です。必要なものだけを足します。')]
@@ -431,7 +442,7 @@ def index():
             ('予備は、止まると取り返しがつかないものだけ', '録画機は2系統。予備回線はオプションで付けられます。'),
             ('見積書にすべて書きます', '人・機材・オプションの内訳を明記します。あとから増えるのは、オプションの一覧にあるものだけです。')]
     ln = ''.join(f'<li><span class="a">{a}</span><span class="b">{b}</span></li>' for a, b in lean)
-    cost = sec('cost', 'サービス内訳', '配信の費用は、<br>人と機材とオプションで決まります', f'''<div class="stack"><h3 class="sub">ケーススタディ</h3><ul class="reasons">{kd}</ul></div>
+    cost = sec('cost', 'サービス内訳', '配信の費用は、<br>人と機材とオプションで決まります', f'''<div class="stack"><h3 class="sub">ケーススタディ</h3>{kd}</div>
 <div class="stack"><h3 class="sub">費用を決める3つ</h3><ul class="reasons reasons--3">{fc}</ul></div>
 <div class="boxc stack s-48"><div class="stack s-16">{lab('コラム')}<h3 class="t-h2s">無駄のない配信とは</h3>
 <p class="t-body">引っ越しと同じです。単身の荷物に10トントラックはいりませんが、冷蔵庫を友人の軽トラックで運ぶのは不安です。配信も、会の大きさに合った人と機材を選ぶのがいちばん安く、いちばん確かです。</p></div><ul class="lean">{ln}</ul></div>''',
@@ -625,33 +636,12 @@ def public():
 
 # ------------------------------------------------------------------ メインビジュアルの比較（持ち主の確認用。メニューには出さない）
 def mvs():
-    blocks = ''.join(f'<div class="mv-cmp"><div class="wrap"><p class="t-lab" id="mv-{k}">{v["name"]}{"（いま使っている案）" if k == MV_USE else ""}</p></div>'
+    blocks = ''.join(f'<div class="mv-cmp"><div class="wrap"><p class="t-lab" id="mv-{k}"><span class="dot" aria-hidden="true"></span>{v["name"]}{"（いま使っている案）" if k == MV_USE else ""}</p></div>'
                      f'{mv(k, "mvs.html", "p", f"mv-{k}-h")}</div>' for k, v in MV.items())
     return (head(f'メインビジュアルの比較｜{NAME}', 'トップのリード文と箇条書きの案を並べて比べるページです。')
             + header('mvs.html') + '<main id="main">'
             + page_head('メインビジュアルの比較', 'リード文と箇条書きを比べる', f'トップの最初の画面に置く文の案です。src/build.py の MV_USE を変えると、トップの文が入れ替わります。いまは「{MV[MV_USE]["name"]}」を使っています。')
             + blocks + '</main>' + footer('mvs.html'))
-
-def labels():
-    """見出しのタグ（.t-lab）の候補を並べて比べるページ。選んだ案を site.css の .t-lab に移す"""
-    samples = [('料金プラン', 'Price', '02', 'シンプルな料金プラン'), ('よくあるお悩み', 'Worries', '03', 'こんなことで、<br>困っていませんか'), ('対応事例', 'Works', '06', 'これまでに配信した会')]
-    cands = [('a', 'A　いまの形', '短いティールの線と、ティールの文字。いちばん控えめで、本文の邪魔をしない。小さく細いので、見出しの前置きとしては弱く見える'),
-             ('b', 'B　英字を添える', '英字の小見出し（先頭だけ大文字）を大きめに置き、下に和文を小さく。章の区切りがはっきりし、ページに抑揚が出る。全部の節に英字の名前を決める必要がある'),
-             ('c', 'C　縦の帯', '左にティールの太い縦の帯と、濃い文字。資料や報告書でよく見る形で、硬めでまじめな印象。小見出し（下線）と役割が近く、見分けにくくなる'),
-             ('d', 'D　四角の印', 'ティールの小さな四角と、濃い文字。目印がはっきりして、どこが節の始まりか一目でわかる。アイコンの四角（.chipi）と形が近い'),
-             ('e', 'E　番号つき', '目次と同じ順番の番号を、英数字で頭に置く。長いページでいまどこかがわかる。順番の意味が薄い下層のページでは番号を付けない')]
-    def head_sample(k, jp, en, num, h2):
-        tag = {'b': f'<p class="t-lab t-lab--b"><span class="en">{en}</span>{jp}</p>',
-               'e': f'<p class="t-lab t-lab--e"><span class="num">{num}</span><span class="t">{jp}</span></p>'}.get(k, f'<p class="t-lab t-lab--{k}">{jp}</p>')
-        return f'<div class="sec-head stack">{tag}<p class="t-h2">{h2}</p></div>'
-    blocks = ''.join(f'''<section class="lab-cand stack s-48" id="lab-{k}" aria-labelledby="lab-{k}-t"><div class="stack s-16"><h2 class="t-h3" id="lab-{k}-t">{name}</h2><p class="t-body">{note}</p></div>
-<div class="lab-demo">{head_sample(k, *samples[0])}</div>
-<div class="lab-demo lab-demo--band">{head_sample(k, *samples[1])}</div>
-<div class="lab-row">{''.join(head_sample(k, *x).replace('<p class="t-h2">', '<p class="t-ct">') for x in samples)}</div></section>''' for k, name, note in cands)
-    return (head(f'見出しのタグの比較｜{NAME}', '各節の頭に置く見出しのタグの候補を並べて比べるページです。')
-            + header('labels.html') + '<main id="main">'
-            + page_head('見出しのタグの比較', '節の頭に置く、<br>タグの候補', '各節の見出しの上に置いている小さなタグ（いまは A）の候補です。白い地と帯の上、3つ並べたときの見え方を比べてください。選んだ案を、サイト全体の見出しのタグにします。')
-            + f'<div class="wrap stack s-64">{blocks}</div>' + '</main>' + footer('labels.html'))
 
 def contact():
     sub = contact.sub = [('top', '見積を依頼する'), ('flow', '送信後の流れ'), ('sample', '見積書の見本'), ('consult', '見積の前に相談する'), ('tel', '電話で問い合わせる')]
@@ -711,11 +701,10 @@ def rules():
                  for a, r, c, sp, pc, l, w in type_rows)
 
     kcss = TOKENS.read_text(encoding='utf-8')
-    names = {'bg': ('地', 'ページの背景'), 'paper': ('紙', '箱、カード、フォーム'), 'cream': ('クリーム', '帯、囲み'), 'wash': ('淡いティール', '帯、淡い面のボタン'),
-             'ink': ('文字', '見出し・本文'), 'ink-strong': ('濃い文字', '強調、キーボードの枠'), 'sub': ('補足', '注釈、文字リンクの矢印'),
-             'line': ('罫線', '一覧と表の区切り、箱の線'), 'teal': ('ティール（主色）', 'タグ、アイコン、標準のボタン、現在地'),
-             'coral': ('珊瑚', '申し込み・依頼のボタン'), 'yellow': ('黄', 'いちばん押してほしいボタン、バッジ'), 'marker': ('マーカー', '要点の下線'),
-             'deep': ('青', '白い文字を載せる面')}
+    names = {'bg': ('地', 'ページの背景（オフホワイト）'), 'paper': ('紙', '箱、カード、フォーム'), 'cream': ('帯', '帯、囲み'), 'wash': ('淡い青', '帯、淡い面のボタン'),
+             'ink': ('墨', '見出し・本文、塗りの面'), 'ink-strong': ('濃い墨', '強調、キーボードの枠'), 'sub': ('補足', '注釈、文字リンクの矢印'),
+             'line': ('罫線', '表の区切り、箱の線'), 'line-strong': ('網点のグレー', '点線、ヒーローの網点の地'), 'main': ('青（主色）', 'タグ、アイコン、標準のボタン、白い文字を載せる面'),
+             'red': ('赤', '申し込み・依頼のボタン、エラー、必須'), 'yellow': ('黄', 'いちばん押してほしいボタン、バッジ'), 'marker': ('マーカー', '要点の下線')}
     tokens = [(k, v) for k, v in re.findall(r'--k-([a-z-]+): (#[0-9a-f]{6});', kcss) if k in names]
     assert len(tokens) == len(names), '色見本のトークンが足りません'
     sw = ''.join(f'<li class="swatch"><span style="background:{v}"></span><p class="t-note"><b>{names[k][0]}</b>　{v.upper()}<br><span class="t-sub">{names[k][1]}</span></p></li>' for k, v in tokens)
@@ -732,20 +721,21 @@ def rules():
         return sec(sid, tag, title, f'<ul class="parts">{"".join(items)}</ul>', lead)
 
     # ボタン：種類 × 大きさ
-    kinds = [('塗り・黄', 'plan', 'いちばん押してほしい行動。1画面に1つ'), ('塗り・珊瑚', 'quote', '申し込み・依頼の行動'), ('塗り・ティール', '', 'そのほかの行動'),
-             ('線', 'line', '資料など、補助の行動'), ('淡い面', 'soft', 'カードの中など、並べて置く行動')]
+    kinds = [('塗り・黄', 'plan', 'いちばん押してほしい行動。1画面に1つ'), ('塗り・赤', 'quote', '申し込み・依頼の行動'), ('塗り・青', '', 'そのほかの行動'),
+             ('線', 'line', '資料など、補助の行動'), ('淡い面', 'soft', 'カードの中など、並べて置く行動'), ('白いピル＋丸', 'dot', '色の地の上や、軽く誘う行動。丸の色は .dot-red ／ .dot-yellow ／ .dot-ink')]
     bt = ''.join(f'<tr><th scope="row">{n}<br><code>.btn{("." + c) if c else ""}</code><br><span class="t-note t-sub">{u}</span></th>'
                  f'<td data-l="大">{btn("ボタン", "#buttons", (c + " lg").strip())}</td><td data-l="標準">{btn("ボタン", "#buttons", c)}</td><td data-l="小">{btn("ボタン", "#buttons", (c + " s").strip())}</td></tr>' for n, c, u in kinds)
     buttons = sec('buttons', 'ボタン', '種類と大きさ', f'''<table class="tbl tbl--btns"><thead><tr><th scope="col">種類</th><th scope="col">大 <code>.lg</code></th><th scope="col">標準</th><th scope="col">小 <code>.s</code></th></tr></thead><tbody>{bt}</tbody></table>
 <ul class="parts">{part('文字リンク', '.tlink ＋ .go', f'<a class="tlink" href="#buttons">一覧を見る{go()}</a>', '別の節やページへ移る。下線は引かず、右に背景なしのグレーの矢印')}
+{part('白いピル＋丸', '.btn.dot', '<div class="part-dots">' + btn('デモを見る', '#buttons', 'dot dot-red') + btn('制作について相談する', '#buttons', 'dot dot-ink') + '</div>', '角を丸く切った白い面の頭に、色の丸。矢印は付けない。地が白いときは使わず、帯やグレーの地の上に置く')}
 {part('アイコンつき', '.btn ＋ .bico', f'<a class="btn plan" href="#buttons">{bico("diag")}アイコンつき</a>', 'ボタンの頭に線のアイコン。左に寄せ、矢印は右端')}</ul>
 <ul class="rows"><li>押せるものだけを、ボタンの形にする。タグや札には枠や面を付けない</li><li>ボタンに影は付けない。右端に小さな矢印。スマホでは横いっぱい</li><li>同じ意味の行動は、どこでも同じ色・同じ名前</li></ul>''')
 
     heads = group('heads', '見出しまわり', 'タグ、小見出し、札', [
-        part('タグ', '.t-lab', lab('よくあるお悩み'), '節の頭。枠も面も付けず、頭にティールの短い線。形は見直し中で、候補は<a class="tlink" href="labels.html">見出しのタグの比較' + go() + '</a>'),
+        part('タグ', '.t-lab', lab('よくあるお悩み'), '節の頭。細く大きなカッコの中に、青い丸と濃い文字。枠や面は付けない'),
         part('節の頭', 'sec()', '<div class="sec-head stack">' + lab('タグ') + '<p class="t-h2s">見出しは2行まで</p><p class="t-note">リードは1〜2文</p></div>', 'タグ → 見出し → リード の順に縦に積む。左に見出しだけの列は作らない'),
-        part('小見出し', '.sub', '<p class="sub" style="inline-size:100%">ケーススタディ</p>', '節の中の区切り。ティールの小さな丸と濃い文字、右へ細い線を伸ばす'),
-        part('札', '.pill', '<span class="pill">シンポジウム</span><span class="pill">講演会</span>', '分類。線だけで、押せるものには使わない'),
+        part('小見出し', '.sub', '<p class="sub" style="inline-size:100%">ケーススタディ</p>', '節の中の区切り。青い小さな丸と濃い文字、右へ点線を伸ばす'),
+        part('札', '.pill', '<span class="pill">シンポジウム</span><span class="pill">講演会</span>', '分類。点線の丸い枠。押せるものには使わない'),
     ])
     boxes = group('boxes', '入れ物', 'カード、吹き出し、囲み', [
         part('アイコンと文', '.reason', f'<ul class="reasons"><li class="reason">{ico("doc")}<div class="stack s-16"><h3 class="t-ct">カードの題</h3><p class="t-body">アイコンと題を横に並べ、本文はアイコンの下まで広げる</p></div></li></ul>',
@@ -756,18 +746,19 @@ def rules():
              '青のベタに白い文字。しっぽは人のアイコンを指す。並べたときは高さをそろえる'),
         part('白い箱・帯・暗い囲み', '.boxw ／ .boxg ／ .boxd', '<div class="boxw" style="padding:1rem">白い箱</div><div class="boxg" style="padding:1rem">クリーム</div><div class="boxd" style="padding:1rem;box-shadow:none">暗い囲み</div>',
              '白い箱は細い線で、クリームは面だけで区切る。暗い囲みはページの終わりの行動に'),
-        part('コラム', '.boxc', '<div class="boxc stack s-16" style="inline-size:100%">' + lab('コラム') + '<p class="t-ct">本筋から少し外れた読みもの</p></div>', 'ティールの太めの線と、大きな角丸で囲む。頭に「コラム」のタグ'),
+        part('コラム', '.boxc', '<div class="boxc stack s-16" style="inline-size:100%">' + lab('コラム') + '<p class="t-ct">本筋から少し外れた読みもの</p></div>', '青の点線と、大きな角丸で囲む。頭に「コラム」のタグ'),
         part('バッジ', '.badge', '<a class="badge" href="#diag" data-open-diag aria-haspopup="dialog" style="--badge:9rem"><span class="badge-bg" aria-hidden="true"></span>'
              f'<span class="badge-t">{bico("diag")}バッジ</span></a>', '黄の細かいギザギザ。縁だけがゆっくり回り、文字は回さない。ヒーローの縁に半分かけて置く'),
-        part('バナー', '.banner', '<a class="banner" href="#boxes"><span class="banner-t">バナーの題</span><span class="banner-s">ひとこと</span>' + go() + '</a>', '特設ページへの入口。淡いティールの面に、左の帯と矢印'),
+        part('バナー', '.banner', '<a class="banner" href="#boxes"><span class="banner-t">バナーの題</span><span class="banner-s">ひとこと</span>' + go() + '</a>', '特設ページへの入口。淡い青の面に、左の帯と矢印'),
     ])
     lists = group('lists', '一覧と表', '並べ方', [
-        part('行の一覧', '.rows', '<ul class="rows" style="inline-size:100%"><li>1行に1つ</li><li>罫線で区切る</li></ul>', '決まりや条件。番号は付けない'),
-        part('手順', '.steps', '<ol class="steps" style="inline-size:100%"><li><span class="n">01</span><span class="a">相談</span><span class="b">順番に意味があるときだけ番号を付ける</span></li></ol>', '番号はティールの英数字'),
+        part('行の一覧', '.rows', '<ul class="rows" style="inline-size:100%"><li>1行に1つ</li><li>罫線で区切る</li></ul>', '決まりや条件。点線で区切り、番号は付けない'),
+        part('手順', '.steps', '<ol class="steps" style="inline-size:100%"><li><span class="n">01</span><span class="a">相談</span><span class="b">順番に意味があるときだけ番号を付ける</span></li></ol>', '番号は青の英数字'),
         part('チェックの一覧', '.incl', f'<ul class="incl" style="inline-size:100%"><li>{ico("check", "s")}<span>含まれるもの</span></li><li>{ico("check", "s")}<span>確かめること</span></li></ul>', '題と説明があるときは、題を太字にして改行'),
-        part('名前と料金の行', '.opt-rows', '<ul class="opt-rows" style="inline-size:100%"><li><span>項目の名前</span><span class="r">［金額］</span></li><li><span>項目の名前</span><span class="r">［金額］</span></li></ul>', '左に名前、右に金額。説明は付けず、意味ごとに小見出しでまとめる'),
+        part('名前と料金の行', '.opt-rows ＋ .yen', '<ul class="opt-rows" style="inline-size:100%"><li><span class="n">項目の名前<small>ひとこと</small></span><span class="r"><span class="yen"><b>38,500</b><small>円</small><span class="tax">（税別）</span></span></span></li></ul>', '左に名前（下に小さくひとこと）、右に大きな英数字の金額と小さな「円」「（税別）」。行は細い線で区切り、意味ごとに小見出しでまとめる'),
         part('表', '.tbl ／ .cmp', '<table class="tbl" style="inline-size:100%"><tbody><tr><th scope="row">スタッフ</th><td class="r">3人</td></tr><tr><th scope="row">カメラ</th><td class="r">3台</td></tr></tbody></table>', '同じ意味の値は、同じ行・同じ縦位置にそろえる。スマホでは1行ずつ縦に積む（比較表は横スクロール）'),
-        part('スライダー', '.cases ＋ .cases-count', '<p class="t-note"><span style="font-size:1.25rem">1</span> / 4</p>', '横にスクロール。右上に「1 / 4」で今の位置'),
+        part('スライダー', '.cases ＋ .cases-count', '<p class="t-note"><span style="font-size:1.25rem">1</span> / 4</p>', '手で横にスクロールする。右上に「1 / 4」で今の位置'),
+        part('流れる写真のスライダー', '.cs', '<p class="t-note"><span style="font-size:1.25rem">2</span> / 4　<button class="cs-pause" type="button">止める</button></p>', '画面の端まで突き抜け、写真は流れ続ける。下の文は左端（主役）の写真の説明で、主役以外の写真は薄くする。止めるボタンを付け、触っている間と「視差効果を減らす」では止める'),
     ])
     aids = group('aids', '補助', 'アイコン、マーカー、穴埋め', [
         part('アイコン', '.chipi ／ .bico', ico('mic') + ico('check', 's') + f'<span style="color:var(--ink)">{bico("diag")}</span>', '四角に入れたもの（.chipi）は内容の目印、線だけのもの（.bico）はボタンの頭。飾りなので読み上げない'),
@@ -781,8 +772,8 @@ def rules():
 <ul class="rows"><li>和文は Noto Sans JP（Regular 400／Medium 500）。英字と数字は Helvetica Neue（Windows では Arial）</li>
 <li>スマホは幅375px、PC は幅1440px 以上での大きさ。その間は画面の幅に合わせて変わる。囲みの中の見出しは <code>.t-h2s</code>（18 → 28px）</li>
 <li>見出しは文節で改行。入力欄の文字はスマホでも16px</li></ul>''')
-            + sec('color', '色', '白の地に、主色のティール', f'''<ul class="swatches">{sw}</ul>
-<ul class="rows"><li>色は意味で決める。同じ意味のものは同じ色</li><li>大きな面は白・クリーム・淡いティール・青だけ。差し色は小さな面に</li>
+            + sec('color', '色', 'オフホワイトの地に、青・赤・黄・墨', f'''<ul class="swatches">{sw}</ul>
+<ul class="rows"><li>色は意味で決める。同じ意味のものは同じ色</li><li>大きな面は地・帯・淡い青・青だけ。赤と黄は行動とバッジに、網点のグレーはヒーローの地（写真が届くまで）に</li>
 <li>青の上の文字は白。値の元は design/karura-tokens.css（ツールと共通）</li></ul>''')
             + sec('shape', '余白・角丸・影', '余白は幅に合わせて伸びる', f'''<table class="tbl"><thead><tr><th scope="col">場所</th><th scope="col">トークン</th><th scope="col">値（スマホ → PC）</th></tr></thead><tbody>{sh}</tbody></table>
 <ul class="rows"><li>ヒーロー（MV）のすぐ後の節は、上の余白を小（<code>--sec-3</code>）にする</li>
@@ -799,7 +790,7 @@ def rules():
 
 
 PAGES = {'index.html': index, 'service.html': service, 'reception.html': reception, 'coaching.html': coaching, 'public.html': public,
-         'contact.html': contact, 'thanks.html': thanks, 'rules.html': rules, 'mvs.html': mvs, 'labels.html': labels}
+         'contact.html': contact, 'thanks.html': thanks, 'rules.html': rules, 'mvs.html': mvs}
 def subset_font(text):
     """ページで使っている文字だけの書体ファイルを、太さごとに作る（元は約2.4MB、切り出すと数百KB）"""
     from fontTools import subset

@@ -16,28 +16,35 @@
    ===================================================================== */
 :root {
   /* 面 */
-  --k-bg: #ffffff;          /* 地は白 */
-  --k-paper: #fafafa;       /* 白い地に置く箱 */
-  --k-cream: #f8f6f3;       /* クリームの面 */
-  --k-wash: #f2fbfc;        /* ティールの淡い面 */
+  --k-bg: #f0efea;          /* 地（オフホワイト） */
+  --k-paper: #fbfaf7;       /* 地に置く箱・カード（地より少し明るい） */
+  --k-cream: #e7e5de;       /* 帯の面（地より少し暗い） */
+  --k-wash: #e3e8f2;        /* 青の淡い面 */
 
   /* 文字と線 */
-  --k-ink: #333333;         /* 文字・見出し */
-  --k-ink-strong: #1f1f1f;  /* 強めの文字、キーボードの枠 */
-  --k-sub: #666666;         /* 補足の文字 */
-  --k-line: #e6e6e6;        /* 罫線 */
-  --k-line-strong: #b3b3b3; /* 強めの罫線 */
+  --k-ink: #2f2f32;         /* 文字・見出し（墨） */
+  --k-ink-strong: #1c1c1e;  /* 強めの文字、キーボードの枠 */
+  --k-sub: #66655f;         /* 補足の文字 */
+  --k-line: #d9d7d0;        /* 罫線 */
+  --k-line-strong: #a5a4a2; /* 強めの罫線、網点のグレー */
 
-  /* 差し色 */
-  --k-teal: #00b4c3;
-  --k-teal-hover: #00a2b0;
-  --k-coral: #ff555f;
-  --k-coral-tint: #fff0f1;
-  --k-yellow: #faca00;
-  --k-marker: #ffeb78;
-  --k-deep: #0a6fa8;        /* 青：白い文字を載せる面（フッター、吹き出し） */
-  --k-on-accent: #ffffff;   /* ティール・珊瑚の上の文字 */
-  --k-on-yellow: #4d4d4d;   /* 黄の上の文字 */
+  /* 差し色：青・赤・墨の3つ */
+  --k-main: #385ea7;        /* 青（主色）：タグ、アイコン、標準のボタン、白い文字を載せる面 */
+  --k-main-hover: #2f5193;
+  --k-red: #ca4860;         /* 赤：申し込み・依頼の行動、エラー、必須 */
+  --k-yellow: #f3c042;      /* 黄：いちばん押してほしい行動、バッジ（上の文字は墨） */
+  --k-red-tint: #f8e4e8;
+  --k-marker: #d3ddef;      /* 要点の下線（淡い青） */
+  --k-dots: radial-gradient(circle, #2f2f32 30%, transparent 34%) 0 0 / 3px 3px, #a5a4a2;  /* 網点 */
+  --k-on-accent: #ffffff;   /* 青・赤・墨の上の文字 */
+
+  /* 旧名（ツールが読む名前。中身は新しい色） */
+  --k-teal: var(--k-main);
+  --k-teal-hover: var(--k-main-hover);
+  --k-coral: var(--k-red);
+  --k-coral-tint: var(--k-red-tint);
+  --k-deep: var(--k-main);
+  --k-on-yellow: #2f2f32;
 
   /* 影：2段だけ */
   --k-shadow-1: 0 0 30px rgb(0 0 0 / .08);   /* 置いてあるもの */

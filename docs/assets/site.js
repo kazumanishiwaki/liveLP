@@ -305,6 +305,49 @@ $$('.cases').forEach((list) => {
   update();
 });
 
+/* ------------------------------------------------ 4c. ケーススタディ：写真は横に流れ続ける。左端（主役）の写真の説明を下に出す */
+$$('[data-cs]').forEach((box) => {
+  const track = $('.cs-track', box);
+  const items = $$('.cs-item', track);
+  const n = items.length / 2;                       // 写真は2組並べて、つなぎ目なく回す
+  const caps = $$('.cs-cap', box.parentElement);
+  const now = $('[data-cs-now]', box.parentElement);
+  const pauseBtn = $('[data-cs-pause]', box.parentElement);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let pos = 0, paused = reduce, hold = false, last = 0, cur = -1;
+  if (reduce && pauseBtn) { pauseBtn.setAttribute('aria-pressed', 'true'); pauseBtn.textContent = '流す'; }
+  const pick = () => {
+    const left = box.getBoundingClientRect().left + parseFloat(getComputedStyle(track).paddingInlineStart);
+    let best = Infinity, idx = 0;
+    items.forEach((el, k) => { const d = Math.abs(el.getBoundingClientRect().left - left); if (d < best) { best = d; idx = k; } });
+    items.forEach((el, k) => el.classList.toggle('is-main', k === idx));
+    const i = idx % n;
+    if (i !== cur) { cur = i; caps.forEach((c, k) => { c.hidden = k !== i; }); if (now) now.textContent = i + 1; }
+  };
+  const step = (t) => {
+    const dt = last ? Math.min(t - last, 64) : 0; last = t;
+    const r = box.getBoundingClientRect();
+    const seen = r.bottom > 0 && r.top < innerHeight;   // 画面に見えているときだけ流す
+    if (!paused && !hold && seen) {
+      const loop = track.scrollWidth / 2;
+      if (Math.abs(box.scrollLeft - pos) > 2) pos = box.scrollLeft;   // 手で動かしたら、そこから続ける
+      pos = (pos + dt * 0.04) % loop;                 // 1秒に40px（小数は手元で持つ）
+      box.scrollLeft = pos;
+    }
+    pick();
+    requestAnimationFrame(step);
+  };
+  // 触っている間・フォーカスがある間は止める。手で動かしてもよい
+  ['pointerenter', 'focusin', 'touchstart'].forEach((e) => box.addEventListener(e, () => { hold = true; }, { passive: true }));
+  ['pointerleave', 'focusout', 'touchend'].forEach((e) => box.addEventListener(e, () => { hold = false; }, { passive: true }));
+  pauseBtn?.addEventListener('click', () => {
+    paused = !paused;
+    pauseBtn.setAttribute('aria-pressed', String(paused));
+    pauseBtn.textContent = paused ? '流す' : '止める';
+  });
+  requestAnimationFrame(step);
+});
+
 /* ------------------------------------------------ 4b. 要点のマーカー：画面に入ったら引く（CSS の transition。動きを減らす設定では最初から引いた状態） */
 {
   const marks = $$('mark.mk');
