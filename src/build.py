@@ -699,112 +699,141 @@ def thanks():
 </main>''' + footer('thanks.html'))
 
 def rules():
-    """デザインルール＝アセットの一覧（文字・色・余白・ボタン・パーツ・動き）。案件ごとの決まりは書かない（AGENTS.md へ）。
-    見本は build.py の部品関数で描くので、部品を直せばここも変わる"""
-    rules.sub = [('type', '文字'), ('color', '色'), ('shape', '余白・角丸・影'), ('buttons', 'ボタン'),
-                 ('heads', '見出しまわり'), ('boxes', '入れ物'), ('lists', '一覧と表'), ('aids', '補助'), ('motion', '動き')]
+    """デザインルール＝アセットの見本帳。説明の文は書かず、見本・名前・クラスだけで見せる。
+    案件ごとの決まりは書かない（AGENTS.md へ）。見本は build.py の部品関数で描くので、部品を直せばここも変わる。
+    必要なのにまだない部品は、斜線の枠（spec--todo）で置いておく"""
+    rules.sub = [('type', '文字'), ('color', '色'), ('space', '余白'), ('shape', '角丸・線・影'), ('buttons', 'ボタン'), ('form', 'フォーム'),
+                 ('heads', '見出し'), ('boxes', '入れ物'), ('lists', '一覧・表'), ('aids', '補助'), ('motion', '動き'), ('todo', '未作成')]
 
-    type_rows = [('H1', 'ページの見出し', '.t-h1', 26, 50, '1.45', 500),
-                 ('H2', '節の見出し', '.t-h2', 26, 44, '1.45', 500),
-                 ('H3', '節の中の見出し', '.t-h3', 18, 26, '1.6', 500),
-                 ('H4', 'カードの題、質問', '.t-ct', 16, 20, '1.5', 500),
-                 ('リード', '見出しの下の1〜2文', '.t-lead', 14, 18, '1.8', 400),
-                 ('本文', '説明の文', '.t-body', 14, 16, '1.8', 400),
-                 ('注釈', '補足、表の注', '.t-note', 12, 14, '1.7', 400)]
-    ty = ''.join(f'<tr><th scope="row"><b>{a}</b><br><span class="t-note t-sub">{r}</span></th><td data-l="クラス"><code>{c}</code></td><td data-l="スマホ" class="r">{sp}px</td><td data-l="PC" class="r">{pc}px</td>'
-                 f'<td data-l="行送り" class="r">{l}</td><td data-l="太さ" class="r">{w}</td><td data-l="見本"><span class="{c[1:]} type-sample">配信の費用</span></td></tr>'
-                 for a, r, c, sp, pc, l, w in type_rows)
+    def spec(name, code, demo, cls=''):
+        return (f'<li class="spec{" " + cls if cls else ""}"><div class="spec-demo">{demo}</div>'
+                f'<p class="spec-cap"><b>{name}</b><code>{code}</code></p></li>')
+    def specs(items, wide=False):
+        return f'<ul class="specs{" specs--wide" if wide else ""}">{"".join(items)}</ul>'
+    def todo(name, size):
+        return spec(name, '—', f'<span class="todo-mk">未作成</span><span class="todo-sz">{size}</span>', 'spec--todo')
 
+    # 文字
+    type_rows = [('H1', '.t-h1', 26, 50, '1.45', 500), ('H2', '.t-h2', 26, 44, '1.45', 500), ('H3', '.t-h3', 18, 26, '1.6', 500),
+                 ('H4', '.t-ct', 16, 20, '1.5', 500), ('Lead', '.t-lead', 14, 18, '1.8', 400), ('Body', '.t-body', 14, 16, '1.8', 400), ('Note', '.t-note', 12, 14, '1.7', 400)]
+    ty = ''.join(f'<li><p class="type-meta"><b>{a}</b><code>{c}</code><code>{sp} → {pc}px / {l} / {w}</code></p><p class="{c[1:]} type-sample">配信の費用を、読めるものに</p></li>'
+                 for a, c, sp, pc, l, w in type_rows)
+    fonts = specs([spec('Noto Sans JP', '400 / 500', '<p class="font-sample"><span style="font-weight:400">あア亜</span><span style="font-weight:500">あア亜</span></p>'),
+                   spec('Helvetica Neue', '400', '<p class="font-sample" style="font-family:var(--font-en)">Aa 0123</p>')])
+
+    # 色
     kcss = TOKENS.read_text(encoding='utf-8')
-    names = {'bg': ('地', 'ページの背景（真っ白）'), 'paper': ('紙', '箱、カード、フォーム'), 'cream': ('帯', '帯、囲み（無彩色のグレー）'), 'wash': ('淡い青', '帯、淡い面のボタン'),
-             'ink': ('墨', '見出し・本文、塗りの面'), 'ink-strong': ('濃い墨', '強調、キーボードの枠'), 'sub': ('補足', '注釈、文字リンクの矢印'),
-             'line': ('罫線', '表の区切り、箱の線'), 'line-strong': ('網点のグレー', '点線、ヒーローの網点の地'), 'main': ('青（主色）', 'タグ、アイコン、標準のボタン、白い文字を載せる面'),
-             'red': ('赤', '申し込み・依頼のボタン、エラー、必須'), 'yellow': ('黄', 'いちばん押してほしいボタン、バッジ'), 'marker': ('マーカー', '要点の下線')}
+    names = {'bg': '地', 'paper': '紙', 'cream': '帯', 'wash': '淡い青', 'ink': '墨', 'ink-strong': '濃い墨', 'sub': '補足', 'line': '罫線',
+             'line-strong': '網点', 'main': '青', 'red': '赤', 'yellow': '黄', 'marker': 'マーカー'}
     tokens = [(k, v) for k, v in re.findall(r'--k-([a-z-]+): (#[0-9a-f]{6});', kcss) if k in names]
     assert len(tokens) == len(names), '色見本のトークンが足りません'
-    sw = ''.join(f'<li class="swatch"><span style="background:{v}"></span><p class="t-note"><b>{names[k][0]}</b>　{v.upper()}<br><span class="t-sub">{names[k][1]}</span></p></li>' for k, v in tokens)
+    sw = ''.join(f'<li class="swatch"><span style="background:{v}"></span><p class="spec-cap"><b>{names[k]}</b><code>{v.upper()}</code><code>--k-{k}</code></p></li>' for k, v in tokens)
 
-    shape_rows = [('ページの左右', '--pad', '16 → 80px'), ('節と節の間、帯の上下の内側', '--sec', '64 → 96px（ヒーローの後もふくめ、どこも同じ）'),
-                  ('見出しと中身の間', '--gap-56', '28 → 56px'), ('ブロックの間', '--gap-48 / --gap-64', '16 → 48px ／ 40 → 64px'),
-                  ('ボタンの高さ', '--btn-h', '48 → 60px（小は 44px）')]
-    sh = ''.join(f'<tr><th scope="row">{a}</th><td data-l="トークン"><code>{b}</code></td><td data-l="値（スマホ → PC）">{c}</td></tr>' for a, b, c in shape_rows)
+    # 余白（左の棒＝スマホ、右の棒＝PC）
+    space_rows = [('--pad', 16, 80), ('--sec', 64, 96), ('--gap-56', 28, 56), ('--gap-48', 16, 48), ('--gap-64', 40, 64), ('--btn-h', 48, 60)]
+    sp = ''.join(f'<li><code>{t}</code><span class="space-bars"><span style="inline-size:{a}px"></span><span style="inline-size:{b}px"></span></span><span class="space-v">{a} → {b}</span></li>' for t, a, b in space_rows)
 
-    def part(name, cls, demo, rule):
-        return (f'<li class="part"><div class="part-demo">{demo}</div><div class="stack s-16"><h4 class="t-ct">{name}　<code>{cls}</code></h4>'
-                f'<p class="t-body">{rule}</p></div></li>')
-    def group(sid, tag, title, items, lead=''):
-        return sec(sid, tag, title, f'<ul class="parts">{"".join(items)}</ul>', lead)
+    # 角丸・線・影
+    shape = specs([spec('6px', '--radius', '<span class="edge" style="border-radius:6px"></span>'),
+                   spec('10px', '--radius-card', '<span class="edge" style="border-radius:10px"></span>'),
+                   spec('28px', '.boxc', '<span class="edge" style="border-radius:28px"></span>'),
+                   spec('丸', '999px', '<span class="edge" style="border-radius:999px;block-size:2.5rem"></span>'),
+                   spec('実線', '1px --line', '<span class="edge" style="box-shadow:inset 0 0 0 1px var(--line)"></span>'),
+                   spec('点線', '3px dotted --main', '<span class="edge" style="border:3px dotted var(--main);border-radius:28px"></span>'),
+                   spec('影 1', '--sh-1', '<span class="edge" style="box-shadow:var(--sh-1)"></span>'),
+                   spec('影 3', '--sh-3', '<span class="edge" style="box-shadow:var(--sh-3)"></span>'),
+                   spec('ドロップ', 'drop-shadow', '<span class="edge" style="filter:drop-shadow(0 3px 8px rgb(0 0 0 / .14))"></span>')])
 
-    # ボタン：種類 × 大きさ
-    kinds = [('塗り・黄', 'plan', 'いちばん押してほしい行動。1画面に1つ'), ('塗り・赤', 'quote', '申し込み・依頼の行動'), ('塗り・青', '', 'そのほかの行動'),
-             ('線', 'line', '資料など、補助の行動'), ('淡い面', 'soft', 'カードの中など、並べて置く行動'), ('白いピル＋丸', 'dot', '色の地の上や、軽く誘う行動。丸の色は .dot-red ／ .dot-yellow ／ .dot-ink')]
-    bt = ''.join(f'<tr><th scope="row">{n}<br><code>.btn{("." + c) if c else ""}</code><br><span class="t-note t-sub">{u}</span></th>'
-                 f'<td data-l="大">{btn("ボタン", "#buttons", (c + " lg").strip())}</td><td data-l="標準">{btn("ボタン", "#buttons", c)}</td><td data-l="小">{btn("ボタン", "#buttons", (c + " s").strip())}</td></tr>' for n, c, u in kinds)
-    buttons = sec('buttons', 'ボタン', '種類と大きさ', f'''<table class="tbl tbl--btns"><thead><tr><th scope="col">種類</th><th scope="col">大 <code>.lg</code></th><th scope="col">標準</th><th scope="col">小 <code>.s</code></th></tr></thead><tbody>{bt}</tbody></table>
-<ul class="parts">{part('文字リンク', '.tlink ＋ .go', f'<a class="tlink" href="#buttons">一覧を見る{go()}</a>', '別の節やページへ移る。下線は引かず、右に背景なしのグレーの矢印')}
-{part('白いピル＋丸', '.btn.dot', '<div class="part-dots">' + btn('デモを見る', '#buttons', 'dot dot-red') + btn('制作について相談する', '#buttons', 'dot dot-ink') + '</div>', '角を丸く切った白い面の頭に、色の丸。矢印は付けない。地が白いときは使わず、帯やグレーの地の上に置く')}
-{part('アイコンつき', '.btn ＋ .bico', f'<a class="btn plan" href="#buttons">{bico("diag")}アイコンつき</a>', 'ボタンの頭に線のアイコン。左に寄せ、矢印は右端')}</ul>
-<ul class="rows"><li>押せるものだけを、ボタンの形にする。タグや札には枠や面を付けない</li><li>ボタンに影は付けない。右端に小さな矢印。スマホでは横いっぱい</li><li>同じ意味の行動は、どこでも同じ色・同じ名前</li></ul>''')
+    # ボタン
+    kinds = [('黄', 'plan'), ('赤', 'quote'), ('青', ''), ('線', 'line'), ('淡い面', 'soft'), ('白いピル', 'dot')]
+    bt = ''.join(f'<tr><th scope="row">{n}<br><code>.btn{("." + c) if c else ""}</code></th>'
+                 f'<td data-l="lg">{btn("ボタン", "#buttons", (c + " lg").strip())}</td><td data-l="標準">{btn("ボタン", "#buttons", c)}</td><td data-l="s">{btn("ボタン", "#buttons", (c + " s").strip())}</td></tr>' for n, c in kinds)
+    buttons = sec('buttons', 'ボタン', 'Button', f'''<table class="tbl tbl--btns"><thead><tr><th scope="col"></th><th scope="col"><code>.lg</code></th><th scope="col"><code>—</code></th><th scope="col"><code>.s</code></th></tr></thead><tbody>{bt}</tbody></table>
+{specs([spec('アイコンつき', '.btn ＋ .bico', f'<a class="btn plan" href="#buttons">{bico("diag")}ボタン</a>'),
+        spec('丸の色', '.dot-red / .dot-ink / .dot-yellow', '<div class="part-dots">' + btn('ボタン', '#buttons', 'dot dot-red') + btn('ボタン', '#buttons', 'dot dot-ink') + btn('ボタン', '#buttons', 'dot dot-yellow') + '</div>'),
+        spec('文字リンク', '.tlink ＋ .go', f'<a class="tlink" href="#buttons">一覧を見る{go()}</a>'),
+        spec('フォーカス', ':focus-visible', '<a class="btn" href="#buttons" style="outline:3px solid var(--focus);outline-offset:3px">ボタン</a>'),
+        spec('送信中', ':disabled', '<button class="btn quote" type="button" disabled>送信しています</button>'),
+        spec('横いっぱい', '.btn.full', '<a class="btn full quote" href="#buttons">ボタン</a>')])}''')
 
-    heads = group('heads', '見出しまわり', 'タグ、小見出し、札', [
-        part('タグ', '.t-lab', lab('よくあるお悩み'), '節の頭。細く大きなカッコの中に、青い丸と濃い文字。枠や面は付けない'),
-        part('節の頭', 'sec()', '<div class="sec-head stack">' + lab('タグ') + '<p class="t-h2s">見出しは2行まで</p><p class="t-note">リードは1〜2文</p></div>', 'タグ → 見出し → リード の順に縦に積む。左に見出しだけの列は作らない'),
-        part('小見出し', '.sub', '<p class="sub" style="inline-size:100%">ケーススタディ</p>', '節の中の区切り。青い小さな丸と濃い文字、右へ点線を伸ばす'),
-        part('札', '.pill', '<span class="pill">シンポジウム</span><span class="pill">講演会</span>', '分類。点線の丸い枠。押せるものには使わない'),
-    ])
-    boxes = group('boxes', '入れ物', 'カード、吹き出し、囲み', [
-        part('アイコンと文', '.reason', f'<ul class="reasons"><li class="reason">{ico("doc")}<div class="stack s-16"><h3 class="t-ct">カードの題</h3><p class="t-body">アイコンと題を横に並べ、本文はアイコンの下まで広げる</p></div></li></ul>',
-             '3つ並べるときは PC で3列。カードの題は1行に収まる字数（3列なら全角10字まで）'),
-        part('写真つきのカード', '.reasons--card', f'<ul class="reasons reasons--card"><li class="reason"><div class="reason-ph zoom">{img("P05", "（ダミー）写真")}</div>{ico("doc")}<div class="stack s-16"><h3 class="t-ct">カードの題</h3><p class="t-body">本文</p>{btn("詳しく見る", "#boxes", "soft s")}</div></li></ul>',
-             '写真 → アイコンと題 → 本文 → 小さい淡い面のボタン。並べたときはボタンを下端にそろえる'),
-        part('吹き出し', '.voice', f'<ul class="voices"><li class="voice"><blockquote class="voice-q"><p>お客さまの声は、吹き出しに入れます。</p></blockquote><p class="voice-who t-note t-sub"><span class="avatar">{bico("person")}</span>話している人の肩書き</p></li></ul>',
-             '青のベタに白い文字。しっぽは人のアイコンを指す。並べたときは高さをそろえる'),
-        part('線のカード', '.opt-card', '<ul class="opt-cards" style="inline-size:100%;grid-template-columns:1fr"><li class="opt-card"><div class="stack s-16"><p class="t-ct">カードの題</p><p class="t-note">影を付けず、細い実線で囲む</p></div></li></ul>',
-             '写真と料金の行を入れるカード。白い地の上でも帯の上でも、影でなく1pxの実線（--line）で囲む'),
-        part('白い箱・帯・暗い囲み', '.boxw ／ .boxg ／ .boxd', '<div class="boxw" style="padding:1rem">白い箱</div><div class="boxg" style="padding:1rem">グレーの面</div><div class="boxd" style="padding:1rem;box-shadow:none">暗い囲み</div>',
-             '白い箱は細い線で、グレーの面は面だけで区切る。暗い囲みはページの終わりの行動に。フッターの見積フォームは白い箱'),
-        part('コラム', '.boxc', '<div class="boxc stack s-16" style="inline-size:100%">' + lab('コラム') + '<p class="t-ct">本筋から少し外れた読みもの</p></div>', '青の点線と、大きな角丸で囲む。頭に「コラム」のタグ'),
-        part('バッジ', '.badge', '<a class="badge" href="#diag" data-open-diag aria-haspopup="dialog" style="--badge:9rem"><span class="badge-sh" aria-hidden="true"><span class="badge-bg"></span></span>'
-             '<span class="badge-t"><span class="badge-emoji" aria-hidden="true">📋</span>バッジ</span></a>', '黄の細かいギザギザに、薄いドロップシャドウ。頭は線のアイコンでなく絵文字。縁だけがゆっくり回り、文字は回さない。ヒーローの縁に半分かけて置く'),
-        part('バナー', '.banner', '<a class="banner" href="#boxes"><span class="banner-t">バナーの題</span><span class="banner-s">ひとこと</span>' + go() + '</a>', '特設ページへの入口。淡い青の面に、左の帯と矢印'),
-    ])
-    lists = group('lists', '一覧と表', '並べ方', [
-        part('行の一覧', '.rows', '<ul class="rows" style="inline-size:100%"><li>1行に1つ</li><li>罫線で区切る</li></ul>', '決まりや条件。点線で区切り、番号は付けない'),
-        part('手順', '.steps', '<ol class="steps" style="inline-size:100%"><li><span class="n">01</span><span class="a">相談</span><span class="b">順番に意味があるときだけ番号を付ける</span></li></ol>', '番号は青の英数字'),
-        part('チェックの一覧', '.incl', f'<ul class="incl" style="inline-size:100%"><li>{ico("check", "s")}<span>含まれるもの</span></li><li>{ico("check", "s")}<span>確かめること</span></li></ul>', '題と説明があるときは、題を太字にして改行'),
-        part('名前と料金の行', '.opt-rows ＋ .yen', '<ul class="opt-rows" style="inline-size:100%"><li><span class="n">項目の名前<small>ひとこと</small></span><span class="r"><span class="yen"><b>38,500</b><small>円</small><span class="tax">（税別）</span></span></span></li></ul>', '左に名前（下に小さくひとこと）、右に大きな英数字の金額と小さな「円」「（税別）」。行は細い線で区切り、意味ごとに小見出しでまとめる'),
-        part('表', '.tbl ／ .cmp', '<table class="tbl" style="inline-size:100%"><tbody><tr><th scope="row">スタッフ</th><td class="r">3人</td></tr><tr><th scope="row">カメラ</th><td class="r">3台</td></tr></tbody></table>', '同じ意味の値は、同じ行・同じ縦位置にそろえる。スマホでは1行ずつ縦に積む（比較表は横スクロール）'),
-        part('スライダー', '.cases ＋ .cases-count', '<p class="t-note"><span style="font-size:1.25rem">1</span> / 4</p>', '手で横にスクロールする。右上に「1 / 4」で今の位置'),
-        part('流れる写真のスライダー', '.cs', '<p class="t-note"><span style="font-size:1.25rem">2</span> / 4　<button class="cs-pause" type="button">止める</button></p>', '画面の端まで突き抜け、写真は流れ続ける。下の文は左端（主役）の写真の説明で、主役以外の写真は薄くする。止めるボタンを付け、触っている間と「視差効果を減らす」では止める'),
-    ])
-    aids = group('aids', '補助', 'アイコン、マーカー、穴埋め', [
-        part('アイコン', '.chipi ／ .bico', ico('mic') + ico('check', 's') + f'<span style="color:var(--ink)">{bico("diag")}</span>', '四角に入れたもの（.chipi）は内容の目印、線だけのもの（.bico）はボタンの頭。飾りなので読み上げない'),
-        part('要点のマーカー', '.mk', f'<p class="t-body">{mk("いちばん伝えたい一文")}にだけ引く</p>', '1つの節に1か所まで'),
-        part('補足の「?」', '.tip', '<p class="t-body">マイク5本まで' + tip('tip-rules', 'マイク5本の理由', '補足の文が、ここに出ます。') + '</p>', '読まなくても困らない補足。使えないブラウザでは本文の下に注記として出す'),
-        part('穴埋め', '.ana', '<p class="t-body">［金額］</p>', 'まだ決まっていない値。［ ］で囲むと自動で灰色の斜線になる'),
-        part('画像の仮置き', 'img()', f'<div style="inline-size:8rem">{img("P04", "（ダミー）画像の仮置き")}</div>', '写真・図は、本物が届くまで無地のグレー'),
-    ])
+    # フォーム
+    form = sec('form', 'フォーム', 'Form', specs([
+        spec('入力欄', '.fld', '<div class="fld"><label for="r-f1">会場<span class="req">必須</span></label><input id="r-f1" type="text" placeholder="例：〇〇会館 △△ホール"></div>'),
+        spec('エラー', '.fld:has(:user-invalid)', '<div class="fld is-err"><label for="r-f2">メールアドレス<span class="req">必須</span></label><input id="r-f2" type="text" value="name@"><p class="err">メールアドレスの形で入力してください</p></div>'),
+        spec('複数行', '.fld textarea', '<div class="fld"><label for="r-f3">気になっていること</label><textarea id="r-f3"></textarea></div>'),
+        spec('チェック', '.checks', '<div class="checks"><label><input type="checkbox" checked>スタンダード</label><label><input type="checkbox">ワイド</label></div>'),
+        spec('選択肢', '.dg-opt', '<div class="dg-opts" style="inline-size:100%"><label class="dg-opt"><input type="radio" name="r-o" checked>選んだもの</label><label class="dg-opt"><input type="radio" name="r-o">選んでいないもの</label></div>'),
+        spec('知らせ', '.form-msg', '<p class="form-msg">送信しました。1営業日以内にお送りします。</p>'),
+    ]))
 
-    body = (sec('type', '文字', 'H1〜H4、本文、注釈', f'''<table class="tbl tbl--type"><thead><tr><th scope="col">見出し・本文</th><th scope="col">クラス</th><th scope="col" class="r">スマホ</th><th scope="col" class="r">PC</th><th scope="col" class="r">行送り</th><th scope="col" class="r">太さ</th><th scope="col">見本</th></tr></thead><tbody>{ty}</tbody></table>
-<ul class="rows"><li>和文は Noto Sans JP（Regular 400／Medium 500）。英字と数字は Helvetica Neue（Windows では Arial）</li>
-<li>スマホは幅375px、PC は幅1440px 以上での大きさ。その間は画面の幅に合わせて変わる。囲みの中の見出しは <code>.t-h2s</code>（18 → 28px）</li>
-<li>見出しは文節で改行。入力欄の文字はスマホでも16px</li></ul>''')
-            + sec('color', '色', '白の地に、青・赤・黄・墨', f'''<ul class="swatches">{sw}</ul>
-<ul class="rows"><li>色は意味で決める。同じ意味のものは同じ色</li><li>大きな面は地・帯・淡い青・青だけ。赤と黄は行動とバッジに、網点のグレーはヒーローの地（写真が届くまで）に</li>
-<li>青の上の文字は白。値の元は design/karura-tokens.css（ツールと共通）</li></ul>''')
-            + sec('shape', '余白・角丸・影', '余白は幅に合わせて伸びる', f'''<table class="tbl"><thead><tr><th scope="col">場所</th><th scope="col">トークン</th><th scope="col">値（スマホ → PC）</th></tr></thead><tbody>{sh}</tbody></table>
-<ul class="rows"><li>節と節の間は1つの値（<code>--sec</code>）にそろえる。ヒーロー（MV）の後も同じ。帯は外も内側も同じ値</li>
-<li>角丸：ボタン・入力欄 6px、カード・アイコンの四角 10px、コラム 28px、タグや札は丸</li>
-<li>囲みは3種類。カードや箱は細い実線（<code>--line</code>、1px）、区切りと強調の囲み（小見出し・一覧の行・コラム）は点線、影は大事なものだけ</li><li>影は大事なところだけ：比較表とプラン診断（0 0 30px 黒8%）、書類の見本と暗い囲み（0 5px 40px 黒20%）、バッジ（薄いドロップシャドウ）。オプションのカードやよくある質問には付けない</li></ul>''')
-            + buttons + heads + boxes + lists + aids
-            + sec('motion', '動き', '動きは、減らせる', '''<ul class="rows"><li>押せるものの反応は 0.3秒、cubic-bezier(0.4, 0.4, 0, 1)。幕や出現は cubic-bezier(0.19, 1, 0.22, 1)</li>
-<li>ずっと動くのは、バッジの縁（24秒で1周）と、写真の自動切り替え（止めるボタンつき）だけ</li>
-<li>「視差効果を減らす」を選んでいる人には、自動の動きをすべて止める</li></ul>'''))
-    return (head(f'デザインルール｜{NAME}', 'サイトで使う文字・色・余白・ボタン・パーツの一覧です。')
+    heads = sec('heads', '見出し', 'Heading', specs([
+        spec('タグ', '.t-lab', lab('タグ')),
+        spec('節の頭', 'sec()', '<div class="sec-head stack">' + lab('タグ') + '<p class="t-h2s">見出し</p><p class="t-note">リード</p></div>'),
+        spec('小見出し', '.sub', '<p class="sub" style="inline-size:100%">小見出し</p>'),
+        spec('札', '.pill', '<span class="pill">シンポジウム</span><span class="pill">講演会</span>'),
+        spec('パンくず', '.crumb', '<ol class="crumb"><li><a href="index.html">トップ</a></li><li aria-current="page">デザインルール</li></ol>'),
+        spec('ロゴ', '.logo', f'<span class="logo">{logo_html()}</span>'),
+    ]))
+
+    boxes = sec('boxes', '入れ物', 'Container', specs([
+        spec('アイコンと文', '.reason', f'<ul class="reasons"><li class="reason">{ico("doc")}<div class="stack s-16"><h3 class="t-ct">カードの題</h3><p class="t-body">本文</p></div></li></ul>'),
+        spec('写真つきカード', '.reasons--card', f'<ul class="reasons reasons--card"><li class="reason"><div class="reason-ph zoom">{img("P05", "（ダミー）写真")}</div>{ico("doc")}<div class="stack s-16"><h3 class="t-ct">カードの題</h3><p class="t-body">本文</p>{btn("詳しく見る", "#boxes", "soft s")}</div></li></ul>'),
+        spec('線のカード', '.opt-card', '<ul class="opt-cards" style="inline-size:100%;grid-template-columns:1fr"><li class="opt-card"><div class="stack s-16"><p class="t-ct">カードの題</p><p class="t-note">本文</p></div></li></ul>'),
+        spec('吹き出し', '.voice', f'<ul class="voices"><li class="voice"><blockquote class="voice-q"><p>お客さまの声</p></blockquote><p class="voice-who t-note t-sub"><span class="avatar">{bico("person")}</span>肩書き</p></li></ul>'),
+        spec('白い箱', '.boxw', '<div class="boxw" style="padding:1.25rem;inline-size:100%">白い箱</div>'),
+        spec('グレーの面', '.boxg', '<div class="boxg" style="padding:1.25rem;inline-size:100%">グレーの面</div>', 'spec--white'),
+        spec('暗い囲み', '.boxd', '<div class="boxd" style="padding:1.25rem;inline-size:100%;box-shadow:none">暗い囲み</div>'),
+        spec('コラム', '.boxc', '<div class="boxc stack s-16" style="inline-size:100%">' + lab('コラム') + '<p class="t-ct">コラムの題</p></div>'),
+        spec('質問と答え', '.faq details', '<div class="faq" style="inline-size:100%"><details open><summary><span class="qa-mk qa-mk--q" aria-hidden="true">Q</span>質問</summary><div class="ans"><span class="qa-mk qa-mk--a" aria-hidden="true">A</span><p class="t-body">答え</p></div></details></div>'),
+        spec('バッジ', '.badge', '<a class="badge" href="#diag" data-open-diag aria-haspopup="dialog" style="--badge:9rem"><span class="badge-sh" aria-hidden="true"><span class="badge-bg"></span></span>'
+             '<span class="badge-t"><span class="badge-emoji" aria-hidden="true">📋</span>バッジ</span></a>'),
+        spec('バナー', '.banner', '<a class="banner" href="#boxes"><span class="banner-t">バナーの題</span><span class="banner-s">ひとこと</span>' + go() + '</a>'),
+    ], wide=True))
+
+    lists = sec('lists', '一覧・表', 'List & Table', specs([
+        spec('行', '.rows', '<ul class="rows" style="inline-size:100%"><li>1行に1つ</li><li>1行に1つ</li></ul>'),
+        spec('手順', '.steps', '<ol class="steps" style="inline-size:100%"><li><span class="n">01</span><span class="a">相談</span><span class="b">本文</span></li><li><span class="n">02</span><span class="a">見積</span><span class="b">本文</span></li></ol>'),
+        spec('チェック', '.incl', f'<ul class="incl" style="inline-size:100%"><li>{ico("check", "s")}<span>含まれるもの</span></li><li>{ico("check", "s")}<span>含まれるもの</span></li></ul>'),
+        spec('名前と料金', '.opt-rows ＋ .yen', '<ul class="opt-rows" style="inline-size:100%"><li><span class="n">項目<small>ひとこと</small></span><span class="r"><span class="yen"><b>38,500</b><small>円</small><span class="tax">（税別）</span></span></span></li></ul>'),
+        spec('表', '.tbl', '<table class="tbl" style="inline-size:100%"><tbody><tr><th scope="row">スタッフ</th><td class="r">3人</td></tr><tr><th scope="row">カメラ</th><td class="r">3台</td></tr></tbody></table>'),
+        spec('位置', '.cases-count', '<p class="t-note"><span style="font-size:1.25rem">1</span> / 4</p>'),
+        spec('流れる写真', '.cs', '<p class="t-note"><span style="font-size:1.25rem">2</span> / 4　<button class="cs-pause" type="button">止める</button></p>'),
+    ], wide=True))
+
+    aids = sec('aids', '補助', 'Aid', specs([
+        spec('四角のアイコン', '.chipi', ''.join(ico(k) for k in ICON)),
+        spec('線のアイコン', '.bico', '<span class="bico-row">' + ''.join(bico(k) for k in BICON) + '</span>'),
+        spec('マーカー', '.mk', f'<p class="t-body">{mk("いちばん伝えたい一文")}</p>'),
+        spec('補足', '.tip', '<p class="t-body">マイク5本' + tip('tip-rules', '補足', '補足の文') + '</p>'),
+        spec('穴埋め', '.ana', '<p class="t-body">［金額］</p>'),
+        spec('画像の仮置き', 'img()', f'<div style="inline-size:10rem">{img("P04", "（ダミー）画像の仮置き")}</div>'),
+    ]))
+
+    motion = sec('motion', '動き', 'Motion', specs([
+        spec('押したとき', '0.3s cubic-bezier(.4,.4,0,1)', btn('ボタン', '#motion')),
+        spec('幕・出現', 'cubic-bezier(.19,1,.22,1)', '<span class="edge motion-in"></span>'),
+        spec('ずっと回る', '24s linear', '<a class="badge" href="#diag" data-open-diag aria-haspopup="dialog" style="--badge:6rem"><span class="badge-sh" aria-hidden="true"><span class="badge-bg"></span></span><span class="badge-t" style="font-size:.875rem">24s</span></a>'),
+        spec('動きを減らす', 'prefers-reduced-motion', '<span class="rm-mk">止める</span>'),
+    ]))
+
+    todos = sec('todo', '未作成', 'To do', specs([
+        todo('アイコン一式', '24 × 24 / 線 1.8'),
+        todo('写真', '仮置きと同じ比率'),
+        todo('体制図', '16 : 9'),
+        todo('動画プレーヤー', '16 : 9'),
+        todo('SNS共有画像', '1200 × 630'),
+        todo('404ページ', '—'),
+    ]))
+
+    body = (sec('type', '文字', 'Typography', f'<ul class="type-specs">{ty}</ul>{fonts}')
+            + sec('color', '色', 'Color', f'<ul class="swatches">{sw}</ul>')
+            + sec('space', '余白', 'Spacing', f'<ul class="spaces">{sp}</ul><p class="space-key"><span></span>SP 375<span></span>PC 1440</p>')
+            + sec('shape', '角丸・線・影', 'Shape', shape)
+            + buttons + form + heads + boxes + lists + aids + motion + todos)
+    return (head(f'デザインルール｜{NAME}', 'サイトで使う文字・色・余白・ボタン・パーツの見本帳です。')
             + header('rules.html') + '<main id="main">'
-            + page_head('デザインルール', 'サイトで使う<br>アセットの一覧', '文字、色、余白、ボタン、パーツの見本と使い方です。見本は、サイトで使っている部品そのものを置いています。')
+            + page_head('デザインルール', 'Assets', '見本は、サイトで使っている部品そのもの。')
             + body + '</main>' + footer('rules.html'))
-
 
 PAGES = {'index.html': index, 'service.html': service, 'reception.html': reception, 'coaching.html': coaching, 'public.html': public,
          'contact.html': contact, 'thanks.html': thanks, 'rules.html': rules, 'mvs.html': mvs}
