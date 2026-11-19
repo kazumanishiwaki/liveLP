@@ -154,7 +154,7 @@ function renderResult(box, r) {
   if (r.cta === 'quote') btns.append(el('a', { class: 'btn quote', href: 'contact.html' }, mailIcon(), el('span', {}, 'この内容で見積書を受け取る')), el('a', { class: 'btn line', href: 'index.html#price' }, '料金プランを見る'));
   else if (r.cta === 'self') btns.append(el('a', { class: 'btn', href: 'contact.html#consult' }, '念のため相談する'));
   else btns.append(el('a', { class: 'btn', href: 'contact.html#consult' }, '15分のオンライン相談で確かめる'));
-  parts.push(btns, el('button', { type: 'button', class: 'dg-again' }, '最初から診断しなおす'));
+  parts.push(btns, el('button', { type: 'button', class: 'btn sq s dg-again' }, '最初から診断しなおす'));
   box.replaceChildren(...parts);
 }
 

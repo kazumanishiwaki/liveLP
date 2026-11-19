@@ -255,10 +255,12 @@
     margin-block-start: 1rem; padding: .5rem 1.25rem .5rem .5rem; border-radius: calc(var(--ph) / 2 + .5rem) var(--radius-card) var(--radius-card) calc(var(--ph) / 2 + .5rem); background: var(--wash); color: var(--main); text-decoration: none;
     & .pick-ph { inline-size: var(--ph); aspect-ratio: 1; border-radius: 50%; overflow: hidden; & img { inline-size: 100%; block-size: 100%; object-fit: cover; } }
     & .pick-name { font-family: var(--font-en); font-weight: 500; font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem); line-height: 1.1; letter-spacing: .02em; }
-    & .pick-meta { margin-inline-start: .75em; font-size: var(--fs-note); letter-spacing: .06em; }
+    & .pick-meta { display: block; margin-block-start: .375rem; font-size: var(--fs-note); letter-spacing: .06em; }
     & .go { align-self: end; margin-block-end: .5rem; color: var(--main); }
     & > .bubble { position: absolute; inset-block-start: -1rem; inset-inline-start: calc(var(--ph) * .85); }
     &:hover { color: var(--main); & .go { translate: .25rem 0; } } }
+  .picks { display: grid; gap: 2.5rem 1.5rem; }
+  @media (width >= 64rem) { .picks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   /* 吹き出しのタグ：塗りの小さな札に、下向きのしっぽ */
   .bubble { position: relative; display: inline-block; padding: .25rem .75rem; border-radius: var(--radius); background: var(--main); color: #fff;
     font-family: var(--font-en); font-weight: 500; font-size: .8125rem; line-height: 1.5; letter-spacing: .08em;
@@ -404,7 +406,6 @@
     inline-size: 100%; max-inline-size: 100%; block-size: 100dvh; max-block-size: 100dvh;
     margin: 0; padding: 0; border: 0; background: var(--bg); color: var(--ink);
     & .menu-head { display: flex; align-items: center; justify-content: space-between; block-size: var(--head); padding-inline: var(--pad); }
-    & .menu-close { min-block-size: 2.75rem; padding: 0 .25rem; border: 0; background: none; font-size: .875rem; letter-spacing: .1em; white-space: nowrap; text-decoration: underline; text-underline-offset: .3em; }
     & nav { padding: 1rem var(--pad) 2rem; }
     & li a { display: flex; justify-content: space-between; padding-block: 1rem; border-block-end: 1px solid var(--sand); text-decoration: none; font-size: 1rem; letter-spacing: .1em; }
     & .menu-acts { margin-block-start: 1.5rem; }
@@ -416,7 +417,6 @@
   .js .diag-host { display: contents; }
   .dg-modal { display: block; position: static; inline-size: auto; max-inline-size: 48rem; block-size: auto; max-block-size: none; margin: 0; padding: 0; border: 0; background: none; color: inherit; overflow: visible; }
   .dg-modal-head { display: none; }
-  .dg-modal-head .menu-close { min-block-size: 2.75rem; padding: 0 .25rem; border: 0; background: none; font-size: .875rem; letter-spacing: .1em; white-space: nowrap; text-decoration: underline; text-underline-offset: .3em; }
   .js .dg-modal:not([open], .is-inline) { display: none; }
   .js .dg-modal[open] {
     position: fixed; inset: 0; inline-size: 100%; max-inline-size: none; block-size: 100dvh; overflow: auto; overscroll-behavior: contain;
@@ -548,7 +548,7 @@
   .dg-why li { position: relative; padding-inline-start: 1.25rem; font-size: var(--fs-note); line-height: 1.8;
     & + li { margin-block-start: .375rem; }
     &::before { content: ""; position: absolute; inset-inline-start: 0; inset-block-start: .8em; inline-size: 6px; block-size: 6px; border-radius: 2px; background: var(--red); } }
-  .dg-again { justify-self: start; border: 0; background: none; padding: .25rem 0; font-size: .8125rem; letter-spacing: .08em; text-decoration: underline; text-underline-offset: .25em; }
+  .dg-again { justify-self: start; }
 
   /* ---------- カメラの切り替え（ラジオと :has で動く。JS は自動送りだけ） ---------- */
   .cams { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; border: 0; }
@@ -762,8 +762,10 @@
   .fld textarea { padding-block: 1rem; line-height: 1.8; min-block-size: 8rem; resize: vertical; }
   .fld :is(input, textarea):focus-visible { outline: 3px solid var(--focus); outline-offset: 0; }
   /* 下線だけの入力欄 */
+  .panel .fld :is(input[type="text"], input[type="email"]),
   .fld.fld--line :is(input[type="text"], input[type="email"], textarea) { border: 0; border-block-end: 1px solid var(--ink); border-radius: 0; background: transparent; padding-inline: 0; }
-  .fld.fld--line :is(input, textarea):focus-visible { outline: 0; border-block-end: 2px solid var(--main); }
+  :is(.panel, .fld--line) .fld :is(input, textarea):focus-visible, .fld.fld--line :is(input, textarea):focus-visible { outline: 0; border-block-end: 2px solid var(--main); }
+  :is(.panel .fld, .fld.fld--line) input:user-invalid, .panel .fld.is-err input { border-block-end-color: var(--red); background: var(--red-tint); }
   .fld :is(input, textarea):user-invalid { border-color: var(--red); background: var(--red-tint); }
   .fld .err { display: none; font-size: .75rem; color: var(--red); }
   .fld:has(:user-invalid) .err { display: block; }

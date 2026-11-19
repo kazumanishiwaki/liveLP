@@ -189,7 +189,7 @@ def header(page):
 </div>
 </header>
 <dialog id="menu" class="menu" aria-label="メニュー">
-<div class="menu-head"><span class="logo">{logo_html()}</span><form method="dialog"><button class="menu-close">閉じる</button></form></div>
+<div class="menu-head"><span class="logo">{logo_html()}</span><form method="dialog"><button class="x-close" aria-label="閉じる"></button></form></div>
 <nav aria-label="メニュー"><ul>{items}<li><a href="index.html#faq">よくある質問<span aria-hidden="true">›</span></a></li><li><a href="contact.html">お問い合わせ・お見積<span aria-hidden="true">›</span></a></li></ul>
 {banner(page)}
 <div class="stack s-16 menu-acts">{diag_btn("8問でプランを診断する", "full")}{quote_btn("見積を依頼する", "full")}</div></nav>
@@ -210,7 +210,7 @@ def footer(page, form=False):
     links = MENU + [PUBLIC_BANNER[:2], ('index.html#option', 'オプション'), ('index.html#faq', 'よくある質問'), ('contact.html', 'お問い合わせ・お見積'), ('rules.html', 'デザインルール')]
     nav = ''.join(f'<li><a href="{menu_href(h, page)}">{t}</a></li>' for h, t in links)
     return f'''<div class="diag-host"><dialog id="diag" class="dg-modal" aria-labelledby="diag-title">
-<div class="dg-modal-head"><p class="t-ct" id="diag-title">8問でプラン診断</p><form method="dialog"><button class="menu-close">閉じる</button></form></div>
+<div class="dg-modal-head"><p class="t-ct" id="diag-title">8問でプラン診断</p><form method="dialog"><button class="x-close" aria-label="閉じる"></button></form></div>
 {diag()}
 </dialog></div>
 <footer class="foot">
@@ -249,7 +249,7 @@ def quote_form(p, prefill=False, full=False, fid=''):
     note = '<p class="form-msg prefill" role="status" hidden></p>' if prefill else ''
     head_ = '<h3 class="t-ct">必須（4項目）</h3>' if full else '<h3 class="t-ct">見積書を受け取る</h3>'
     idattr = f' id="{fid}"' if fid else ''
-    return f'''<form{idattr} class="boxw stack" data-form="quote" data-endpoint=""{pf} aria-label="見積の依頼">
+    return f'''<form{idattr} class="panel stack" data-form="quote" data-endpoint=""{pf} aria-label="見積の依頼">
 {note}{head_}
 <div class="f2">{req}</div>
 {opt}
@@ -625,10 +625,16 @@ def coaching():
 <div class="btns"><a class="btn" href="contact.html#consult">内製化について相談する</a></div>
 <p class="t-note">配信の前に確かめることをまとめた<a class="tlink" href="service.html#checklist">事前チェックリスト（無料）{go()}</a></p>''',
                lead=f'教えて終わりにはしません。最初は私たちが操作し、次は横で見守り、最後はオンラインで待機する。4つの段階で少しずつ手を離します。{mk("手順書とチェックリストが残る")}ので、担当者が替わっても引き継げます。', tone='band')
+    # 内製化した例（人物カード）。名前と所属は、掲載の許可をいただいてから入れる
+    pk = [('［A.K］', '［大学 広報課］', '［学内の公開講座を、2年目から自分たちで配信］', 'P11', True),
+          ('［M.T］', '［公益財団 事業部］', '［小さな講演会は自分たちで、年1回のシンポジウムだけ私たちに］', 'P12', False)]
+    pc = ''.join(f'''<a class="pick" href="index.html#works">{'<span class="bubble">PICK UP</span>' if b else ''}<span class="pick-ph">{img(i, f'（ダミー）{w}の写真')}</span>'''
+                 f'''<span class="stack s-16"><span><span class="pick-name">{n}</span><span class="pick-meta">{w}</span></span><span class="t-note">{d}</span></span>{go()}</a>''' for n, w, d, i, b in pk)
+    picks = sec('picks', '内製化した例', '自分たちで<br>配信できるようになった会', f'<div class="picks">{pc}</div>')
     return (head(f'内製化支援｜{NAME}', '来年度から配信を内製化したい方へ。内製化の基準を一緒に決め、相談・同行・並走・卒業の4段階で独り立ちまで並走します。')
             + header('coaching.html') + '<main id="main">'
             + page_head('内製化支援', '来年度からは、<br>内製化したい', '小さな会なら、お手持ちの機材で配信できます。どの会を自分たちで回すか、その基準づくりから一緒に始めます。')
-            + criteria + body + cta_box('まだ何も決まっていない方へ', '15分のオンライン相談で、iPhoneで足りるかどうかから一緒にお話しします。決まっているのが日程だけでもかまいません。') + '</main>' + footer('coaching.html'))
+            + criteria + body + picks + cta_box('まだ何も決まっていない方へ', '15分のオンライン相談で、iPhoneで足りるかどうかから一緒にお話しします。決まっているのが日程だけでもかまいません。') + '</main>' + footer('coaching.html'))
 
 # ------------------------------------------------------------------ 大学・公共機関の方へ
 def public():
@@ -694,7 +700,7 @@ def thanks():
 <ol class="flow">{fl}</ol></div>
 <section class="bandg sec-2" aria-labelledby="dl-title"><div class="wrap pad-band stack s-48"><h2 class="t-h2" id="dl-title">お待ちいただく間に、<br>稟議の準備にお使いください</h2>
 <p class="t-lead">上司への説明や相見積にそのまま使える書類です。どれも登録なしでダウンロードできます。</p>
-<ul class="stack s-16"><li>{btn('仕様書のひな形（Word）［ファイル準備中］', 'thanks.html', 'line')}</li><li>{btn('料金表と見積書見本（PDF）［ファイル準備中］', 'thanks.html', 'line')}</li><li>{btn('当日のチェックリスト（PDF）［ファイル準備中］', 'thanks.html', 'line')}</li></ul></div></section>
+<ul class="stack s-16" style="max-inline-size:36rem"><li>{btn('仕様書のひな形（Word）［ファイル準備中］', 'thanks.html', 'box full')}</li><li>{btn('料金表と見積書見本（PDF）［ファイル準備中］', 'thanks.html', 'box full')}</li><li>{btn('当日のチェックリスト（PDF）［ファイル準備中］', 'thanks.html', 'box full')}</li></ul></div></section>
 <div class="wrap sec-3"><a class="tlink" href="index.html">トップページへ戻る{go()}</a></div>
 </main>''' + footer('thanks.html'))
 
