@@ -229,6 +229,40 @@
     &.lg { min-block-size: clamp(3.25rem, 2.9rem + 1.4vw, 4.25rem); min-inline-size: min(19rem, 100%); font-size: clamp(.875rem, .8rem + .3vw, 1.0625rem); }
   }
   .btn:disabled { opacity: .5; cursor: progress; }
+  /* 墨の箱：角を立て、右端に白い四角の矢印 */
+  .btn.box { border-radius: 0; border-color: var(--ink); background: var(--ink); color: #fff; padding-inline: 1.25rem .5rem; gap: 2rem;
+    &::after { inline-size: 1.75rem; block-size: 1.75rem; border: 0; rotate: none;
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f2f32' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h13M13 6l6 6-6 6'/%3E%3C/svg%3E") center / 1rem no-repeat; }
+    &:hover { opacity: 1; background: var(--main); border-color: var(--main); }
+    &.s { padding-inline: 1rem .375rem; &::after { inline-size: 1.5rem; block-size: 1.5rem; background-size: .875rem; } } }
+  /* 四角つきの文字ボタン：面も線もなく、頭に小さな四角 */
+  .btn.sq { justify-content: flex-start; gap: .875rem; min-inline-size: 0; padding-inline: 0; border-color: transparent; background: none; color: var(--ink); letter-spacing: .12em;
+    &::after { display: none; }
+    &::before { content: ""; flex: none; inline-size: .75rem; block-size: .75rem; background: var(--sq, var(--ink)); }
+    &:hover { opacity: 1; color: var(--main); --sq: var(--main); } }
+  /* 閉じる：細い2本の線を浅く交差させる */
+  .x-close { position: relative; flex: none; inline-size: 3rem; block-size: 3rem; padding: 0; border: 0; background: none; color: var(--ink); cursor: pointer;
+    &::before, &::after { content: ""; position: absolute; inset-inline: .25rem; inset-block-start: 50%; border-block-start: 1.5px solid; rotate: 22deg; }
+    &::after { rotate: -22deg; }
+    &:hover { color: var(--main); } }
+  /* パネル：グレーの面。右下の角だけ大きく丸める */
+  .panel { position: relative; display: grid; gap: clamp(1.25rem, 1rem + 1vw, 2rem); padding: clamp(1.75rem, 1.25rem + 2vw, 3rem);
+    border-radius: 4px 4px clamp(1.5rem, 1rem + 2vw, 2.5rem) 4px; background: var(--cream); color: var(--ink);
+    & > .x-close { position: absolute; inset-block-start: .75rem; inset-inline-end: .75rem; }
+    & > .btn.sq { justify-self: end; } }
+  /* 人物カード：丸い写真を左に重ね、上に吹き出しのタグ、右下に矢印 */
+  .pick { --ph: clamp(5.5rem, 4.5rem + 4vw, 8rem); position: relative; display: grid; grid-template-columns: var(--ph) minmax(0, 1fr) auto; align-items: center; gap: 1rem clamp(1rem, .5rem + 2vw, 2rem);
+    margin-block-start: 1rem; padding: .5rem 1.25rem .5rem .5rem; border-radius: calc(var(--ph) / 2 + .5rem) var(--radius-card) var(--radius-card) calc(var(--ph) / 2 + .5rem); background: var(--wash); color: var(--main); text-decoration: none;
+    & .pick-ph { inline-size: var(--ph); aspect-ratio: 1; border-radius: 50%; overflow: hidden; & img { inline-size: 100%; block-size: 100%; object-fit: cover; } }
+    & .pick-name { font-family: var(--font-en); font-weight: 500; font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem); line-height: 1.1; letter-spacing: .02em; }
+    & .pick-meta { margin-inline-start: .75em; font-size: var(--fs-note); letter-spacing: .06em; }
+    & .go { align-self: end; margin-block-end: .5rem; color: var(--main); }
+    & > .bubble { position: absolute; inset-block-start: -1rem; inset-inline-start: calc(var(--ph) * .85); }
+    &:hover { color: var(--main); & .go { translate: .25rem 0; } } }
+  /* 吹き出しのタグ：塗りの小さな札に、下向きのしっぽ */
+  .bubble { position: relative; display: inline-block; padding: .25rem .75rem; border-radius: var(--radius); background: var(--main); color: #fff;
+    font-family: var(--font-en); font-weight: 500; font-size: .8125rem; line-height: 1.5; letter-spacing: .08em;
+    &::after { content: ""; position: absolute; inset-block-start: 100%; inset-inline-start: 1.5rem; border: .375rem solid transparent; border-block-start-color: var(--main); border-block-end: 0; } }
   /* ボタンの色は意味で決める：黄＝プラン診断をはじめる／珊瑚＝見積を依頼する／ティール＝そのほかの行動／線＝資料・補助 */
   .btn.plan, .tile--plan, .spbar a:first-child { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
   .btn.quote, .tile--quote, .spbar a:last-child { background: var(--red); border-color: var(--red); color: #fff; }
@@ -727,6 +761,9 @@
   }
   .fld textarea { padding-block: 1rem; line-height: 1.8; min-block-size: 8rem; resize: vertical; }
   .fld :is(input, textarea):focus-visible { outline: 3px solid var(--focus); outline-offset: 0; }
+  /* 下線だけの入力欄 */
+  .fld.fld--line :is(input[type="text"], input[type="email"], textarea) { border: 0; border-block-end: 1px solid var(--ink); border-radius: 0; background: transparent; padding-inline: 0; }
+  .fld.fld--line :is(input, textarea):focus-visible { outline: 0; border-block-end: 2px solid var(--main); }
   .fld :is(input, textarea):user-invalid { border-color: var(--red); background: var(--red-tint); }
   .fld .err { display: none; font-size: .75rem; color: var(--red); }
   .fld:has(:user-invalid) .err { display: block; }

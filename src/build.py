@@ -745,7 +745,7 @@ def rules():
                    spec('ドロップ', 'drop-shadow', '<span class="edge" style="filter:drop-shadow(0 3px 8px rgb(0 0 0 / .14))"></span>')])
 
     # ボタン
-    kinds = [('黄', 'plan'), ('赤', 'quote'), ('青', ''), ('線', 'line'), ('淡い面', 'soft'), ('白いピル', 'dot')]
+    kinds = [('黄', 'plan'), ('赤', 'quote'), ('青', ''), ('線', 'line'), ('淡い面', 'soft'), ('白いピル', 'dot'), ('墨の箱', 'box'), ('四角', 'sq')]
     bt = ''.join(f'<tr><th scope="row">{n}<br><code>.btn{("." + c) if c else ""}</code></th>'
                  f'<td data-l="lg">{btn("ボタン", "#buttons", (c + " lg").strip())}</td><td data-l="標準">{btn("ボタン", "#buttons", c)}</td><td data-l="s">{btn("ボタン", "#buttons", (c + " s").strip())}</td></tr>' for n, c in kinds)
     buttons = sec('buttons', 'ボタン', 'Button', f'''<table class="tbl tbl--btns"><thead><tr><th scope="col"></th><th scope="col"><code>.lg</code></th><th scope="col"><code>—</code></th><th scope="col"><code>.s</code></th></tr></thead><tbody>{bt}</tbody></table>
@@ -763,6 +763,7 @@ def rules():
         spec('複数行', '.fld textarea', '<div class="fld"><label for="r-f3">気になっていること</label><textarea id="r-f3"></textarea></div>'),
         spec('チェック', '.checks', '<div class="checks"><label><input type="checkbox" checked>スタンダード</label><label><input type="checkbox">ワイド</label></div>'),
         spec('選択肢', '.dg-opt', '<div class="dg-opts" style="inline-size:100%"><label class="dg-opt"><input type="radio" name="r-o" checked>選んだもの</label><label class="dg-opt"><input type="radio" name="r-o">選んでいないもの</label></div>'),
+        spec('下線の入力欄', '.fld--line', '<div class="fld fld--line"><label for="r-f4">メールアドレス</label><input id="r-f4" type="email" placeholder="name@example.ac.jp"></div>'),
         spec('知らせ', '.form-msg', '<p class="form-msg">送信しました。1営業日以内にお送りします。</p>'),
     ]))
 
@@ -787,6 +788,13 @@ def rules():
         spec('質問と答え', '.faq details', '<div class="faq" style="inline-size:100%"><details open><summary><span class="qa-mk qa-mk--q" aria-hidden="true">Q</span>質問</summary><div class="ans"><span class="qa-mk qa-mk--a" aria-hidden="true">A</span><p class="t-body">答え</p></div></details></div>'),
         spec('バッジ', '.badge', '<a class="badge" href="#diag" data-open-diag aria-haspopup="dialog" style="--badge:9rem"><span class="badge-sh" aria-hidden="true"><span class="badge-bg"></span></span>'
              '<span class="badge-t"><span class="badge-emoji" aria-hidden="true">📋</span>バッジ</span></a>'),
+        spec('パネル', '.panel ＋ .x-close', '<div class="panel" style="inline-size:100%"><button class="x-close" type="button" aria-label="閉じる"></button>'
+             '<p class="t-ct">パネルの題</p><p class="t-body">本文</p><div class="fld fld--line"><label for="r-f5">メールアドレス</label><input id="r-f5" type="email" placeholder="name@example.ac.jp"></div>'
+             '<a class="btn sq" href="#boxes">送信する</a></div>', 'spec--white'),
+        spec('人物カード', '.pick ＋ .bubble', f'<a class="pick" href="#boxes" style="inline-size:100%"><span class="bubble">PICK UP</span><span class="pick-ph">{img("P11", "（ダミー）人物の写真")}</span>'
+             '<span><span class="pick-name">A.K</span><span class="pick-meta">広報担当</span></span>' + go() + '</a>', 'spec--white'),
+        spec('吹き出しタグ', '.bubble', '<span class="bubble">PICK UP</span>'),
+        spec('閉じる', '.x-close', '<button class="x-close" type="button" aria-label="閉じる"></button>'),
         spec('バナー', '.banner', '<a class="banner" href="#boxes"><span class="banner-t">バナーの題</span><span class="banner-s">ひとこと</span>' + go() + '</a>'),
     ], wide=True))
 
