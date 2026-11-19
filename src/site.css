@@ -36,6 +36,8 @@
     --sand: var(--k-line);     /* 罫線 = 黒10%を白に重ねた色 */
     --line: var(--k-line);     /* 箱・カードの細い線（未定義で線が消えていたのを直す） */
     --line-strong: var(--k-line-strong);   /* 濃い罫線、未作成の枠 */
+    --arw-w: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h13M13 6l6 6-6 6'/%3E%3C/svg%3E");   /* 白い矢印（色の面の上） */
+    --arw-k: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f2f32' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h13M13 6l6 6-6 6'/%3E%3C/svg%3E");   /* 墨の矢印（白・黄の面の上） */
     --sub: var(--k-sub);      /* 補足の文字 = rgba(0,0,0,.5) を白に重ねた色 */
     --line-d: #666666;
     --focus: var(--k-ink-strong);    /* キーボードの枠は濃い文字色。黄色は使わない */
@@ -229,6 +231,34 @@
     &.lg { min-block-size: clamp(3.25rem, 2.9rem + 1.4vw, 4.25rem); min-inline-size: min(19rem, 100%); font-size: clamp(.875rem, .8rem + .3vw, 1.0625rem); }
   }
   .btn:disabled { opacity: .5; cursor: progress; }
+  /* 形と色の追加：丸い両端（.round）、中央寄せ（矢印なし）、墨、クリーム */
+  .btn.round { border-radius: 999px; }
+  .btn.center { justify-content: center; gap: .625rem; &::after { display: none; } }
+  .btn.ink { background: var(--ink); border-color: var(--ink); color: #fff; &:hover { opacity: 1; background: var(--main); border-color: var(--main); } }
+  .btn.cream { background: var(--cream); border-color: var(--cream); color: var(--ink); &:hover { opacity: 1; background: var(--wash); border-color: var(--wash); color: var(--ink); } }
+  /* 矢印のカプセル：白いピルの右端に、色のカプセルと矢印 */
+  .btn.cap { gap: 1.5rem; padding-inline: 1.75rem .625rem; border-radius: 999px; border-color: var(--paper); background: var(--paper); color: var(--main); font-weight: 500;
+    &::after { inline-size: 2.75rem; block-size: 1.875rem; border: 0; rotate: none; border-radius: 999px; background: var(--cap, var(--main)) var(--cap-arw, var(--arw-w)) center / 1rem no-repeat; transition: translate .3s var(--ease); }
+    &:hover { opacity: 1; &::after { translate: .25rem 0; } }
+    &.s::after { inline-size: 2.25rem; block-size: 1.5rem; background-size: .875rem; }
+    &.lg::after { inline-size: 3.25rem; block-size: 2.25rem; } }
+  .btn.cap-yellow { --cap: var(--yellow); --cap-arw: var(--arw-k); color: var(--ink); }
+  .btn.cap-ink { --cap: var(--paper); --cap-arw: var(--arw-k); background: var(--ink); border-color: var(--ink); color: #fff;
+    &::after { inline-size: 2.25rem; block-size: 2.25rem; } &.s::after { inline-size: 1.75rem; block-size: 1.75rem; } }
+  /* 薄い色：淡い面のピルに、同じ色の文字と3本線 */
+  .btn.tint { justify-content: center; gap: .75rem; min-inline-size: 0; padding-inline: 1.5rem 1.75rem; border-radius: 999px; border-color: var(--red-tint); background: var(--red-tint); color: var(--red);
+    font-family: var(--font-en); font-weight: 500; letter-spacing: .1em;
+    &::after { display: none; }
+    &::before { content: ""; flex: none; inline-size: .625rem; block-size: .75rem;
+      background: linear-gradient(currentColor 0 0) 0 0 / 100% 2px no-repeat, linear-gradient(currentColor 0 0) 0 50% / 100% 2px no-repeat, linear-gradient(currentColor 0 0) 0 100% / 100% 2px no-repeat; }
+    &:hover { opacity: 1; color: var(--ink); } }
+  .btn.tint-blue { border-color: var(--wash); background: var(--wash); color: var(--main); }
+  /* 丸い矢印：線の丸（.cgo）と、塗りの丸（.cgo.fill） */
+  .cgo { display: inline-grid; place-items: center; flex: none; inline-size: 2.75rem; block-size: 2.75rem; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ink); color: var(--ink); transition: translate .3s var(--ease);
+    &::before { content: ""; inline-size: 7px; block-size: 7px; margin-inline-start: -3px; border-block-start: 1.5px solid; border-inline-end: 1.5px solid; rotate: 45deg; }
+    &.fill { box-shadow: none; background: var(--main); color: #fff; inline-size: 2.25rem; block-size: 2.25rem; }
+    &.red { background: var(--red); } }
+  a:hover .cgo { translate: .25rem 0; }
   /* 墨の箱：角を立て、右端に白い四角の矢印 */
   .btn.box { border-radius: 0; border-color: var(--ink); background: var(--ink); color: #fff; padding-inline: 1.25rem .5rem; gap: 2rem;
     &::after { inline-size: 1.75rem; block-size: 1.75rem; border: 0; rotate: none;
@@ -259,6 +289,42 @@
     & .go { align-self: end; margin-block-end: .5rem; color: var(--main); }
     & > .bubble { position: absolute; inset-block-start: -1rem; inset-inline-start: calc(var(--ph) * .85); }
     &:hover { color: var(--main); & .go { translate: .25rem 0; } } }
+  /* リンクカード：写真の下に題と丸い矢印。細い線で囲む */
+  .lcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 1.5rem; }
+  .lcard { display: grid; grid-template-rows: auto 1fr; overflow: hidden; border-radius: var(--radius-card); box-shadow: inset 0 0 0 1px var(--line); background: var(--cream); color: var(--ink); text-decoration: none;
+    & .lcard-ph { display: block; overflow: hidden; & img { display: block; inline-size: 100%; aspect-ratio: 16 / 9; object-fit: cover; } }
+    & .lcard-b { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.25rem 1.25rem 1.25rem 1.5rem; }
+    &:hover { color: var(--ink); } }
+  /* 3色の枠のカード：黄・赤・青の線で囲み、右に絵 */
+  .tri { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .8fr); align-items: end; gap: 1rem; overflow: hidden; border: 2px solid transparent; border-radius: 1rem;
+    background: linear-gradient(var(--paper), var(--paper)) padding-box, conic-gradient(from 200deg, var(--yellow), var(--red) 30%, var(--main) 65%, var(--yellow)) border-box; color: var(--ink); text-decoration: none;
+    & .tri-b { padding: clamp(1.25rem, 1rem + 1.5vw, 2.5rem); align-self: center; & .cgo { margin-block-start: .5rem; inline-size: 3.25rem; block-size: 3.25rem; } }
+    & .tri-ph img { display: block; inline-size: 100%; } &:hover { color: var(--ink); } }
+  /* お知らせカード：左上に NEW の丸、左端に縦の英字、題は波線、右は点線で区切った丸い矢印 */
+  .feature { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem 1.75rem; margin: 1.25rem 0 0 1.25rem; padding: 1.5rem 1.5rem 1.5rem 2.75rem; border-radius: var(--radius-card); background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); text-decoration: none;
+    & .feature-ph { flex: 1 1 9rem; & img { display: block; inline-size: 100%; aspect-ratio: 4 / 3; object-fit: cover; } }
+    & .feature-b { flex: 3 1 14rem; }
+    & .feature-go { display: grid; place-items: center; align-self: stretch; padding-inline-start: 1.75rem; border-inline-start: 2px dotted var(--line-strong); }
+    &:hover { color: var(--ink); } }
+  .new-mk { position: absolute; inset: -1.25rem auto auto -1.25rem; display: grid; place-items: center; inline-size: 3.75rem; block-size: 3.75rem; border-radius: 50%; background: var(--yellow); color: var(--ink);
+    font-family: var(--font-en); font-weight: 500; font-size: .8125rem; letter-spacing: .08em; }
+  .vlabel { position: absolute; inset-inline-start: .875rem; inset-block-start: 3.25rem; writing-mode: vertical-rl; rotate: 180deg; font-family: var(--font-en); font-weight: 500; font-size: .75rem; letter-spacing: .14em; color: var(--main); }
+  .wavy { justify-self: start; color: var(--main); font-size: var(--fs-ct, 1.125rem); text-decoration: underline wavy; text-decoration-thickness: 1.5px; text-underline-offset: .35em; }
+  /* 暗いリンク：墨の面に、英字の添え書きと大きな題、白い丸のアイコン */
+  .dlink { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: clamp(1.75rem, 1.25rem + 2vw, 3.5rem); border-radius: 1.25rem; background: var(--ink); color: #fff; text-decoration: none;
+    & .dlink-en { font-family: var(--font-en); font-size: .875rem; letter-spacing: .04em; opacity: .85; }
+    & .dlink-t { font-size: clamp(1.25rem, 1rem + 1vw, 1.875rem); line-height: 1.4; letter-spacing: .06em; }
+    & .dlink-ic { display: grid; place-items: center; flex: none; inline-size: 3.75rem; block-size: 3.75rem; border-radius: 50%; background: var(--paper); color: var(--ink); & .bico { inline-size: 1.25rem; block-size: 1.25rem; } }
+    &:hover { color: #fff; & .dlink-ic { background: var(--yellow); } } }
+  /* 番号つきのタグ：順番に意味がある節だけ */
+  .t-num { display: flex; align-items: center; gap: .875rem; font-family: var(--font-en);
+    & b { font-weight: 500; font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); line-height: 1; color: var(--main); }
+    & span { padding-inline-start: .875rem; border-inline-start: 2px dotted var(--line-strong); font-size: .875rem; letter-spacing: .04em; color: var(--sub); } }
+  /* 現在地の点：今いる項目は青い文字、下に小さな丸 */
+  .navdot { display: flex; flex-wrap: wrap; gap: .5rem 1.75rem;
+    & a { position: relative; display: block; padding-block: .25rem .75rem; color: var(--ink); text-decoration: none; letter-spacing: .06em; }
+    & a[aria-current] { color: var(--main); font-weight: 500; &::after { content: ""; position: absolute; inset-inline-start: 50%; inset-block-end: 0; inline-size: 6px; block-size: 6px; margin-inline-start: -3px; border-radius: 50%; background: var(--main); } } }
   .picks { display: grid; gap: 2.5rem 1.5rem; }
   @media (width >= 64rem) { .picks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   /* 吹き出しのタグ：塗りの小さな札に、下向きのしっぽ */
@@ -356,11 +422,13 @@
   .rail-foot, .railnav { display: none; }
   /* メニュー：JS が動くときはボタン（dialog を開く）、動かないときはフッターのメニューへのリンク */
   .menu-btn {
-    display: none; place-content: center; gap: 7px; inline-size: 2.75rem; block-size: 2.75rem; margin-inline-start: auto;
-    border: 0; background: transparent; padding: 0;
-    & i { display: block; inline-size: 1.75rem; block-size: 1px; background: currentColor; }
+    display: none; align-items: center; gap: .625rem; block-size: 2.5rem; margin-inline-start: auto; padding-inline: 1rem 1.125rem;
+    border: 0; border-radius: 999px; background: var(--wash); color: var(--main); cursor: pointer;
+    font-family: var(--font-en); font-weight: 500; font-size: .75rem; letter-spacing: .14em;
+    & .bars { display: grid; gap: 3px; & i { display: block; inline-size: .625rem; block-size: 2px; background: currentColor; } }
+    &:hover { color: var(--ink); }
   }
-  .js .menu-btn { display: grid; }
+  .js .menu-btn { display: inline-flex; }
   .menu-fallback { margin-inline-start: auto; padding: .75rem 0; }
   .js .menu-fallback { display: none; }
   @media (width >= 64rem) {
@@ -446,8 +514,9 @@
     & ol { display: flex; gap: .25rem; align-items: center; block-size: 100%; overflow-x: auto; scrollbar-width: none; padding-inline: .75rem; scroll-padding-inline: 3rem; overscroll-behavior-x: contain;
       &::-webkit-scrollbar { display: none; } }
     & li { flex: none; }
-    & a { display: block; padding: .3125rem .875rem; border-radius: 30px; font-size: .8125rem; line-height: 1.4; letter-spacing: .04em; text-decoration: none; color: var(--sub); white-space: nowrap; }
-    & a[aria-current] { background: var(--main); color: #fff; }
+    & a { position: relative; display: block; padding: .3125rem .75rem .625rem; font-size: .8125rem; line-height: 1.4; letter-spacing: .04em; text-decoration: none; color: var(--sub); white-space: nowrap; }
+    & a[aria-current] { color: var(--main); font-weight: 500; }
+    & a[aria-current]::after { content: ""; position: absolute; inset-inline-start: 50%; inset-block-end: .125rem; inline-size: 5px; block-size: 5px; margin-inline-start: -2.5px; border-radius: 50%; background: var(--main); }
   }
   @media (width >= 64rem) {
     .subnav, .railnav {
@@ -458,6 +527,8 @@
       & a:hover { background: var(--wash); }
       & a[aria-current] { background: var(--wash); color: var(--ink); }
       & a[aria-current]::before { background: var(--main); inline-size: 6px; block-size: 6px; margin-block-start: -3px; inset-inline-start: .4375rem; }
+      & a[aria-current]::after { display: none; }
+      & a[aria-current] { font-weight: 400; }
     }
   }
 

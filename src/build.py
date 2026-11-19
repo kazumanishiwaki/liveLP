@@ -113,6 +113,9 @@ BICON = {
     'mail': '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/>',
     'arrow': '<path d="M5 12h13M13 6.5 18.5 12 13 17.5"/>',
     'person': '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-4 3.8-6 7-6s6.2 2 7 6"/>',
+    'send': '<path d="M21 3 10 14M21 3l-7 18-4-7-7-4z"/>',
+    'ext': '<rect x="8" y="4" width="12" height="11" rx="1.5"/><path d="M16 19H5.5A1.5 1.5 0 0 1 4 17.5V9"/>',
+    'cal': '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
 }
 def bico(name):
     """ボタンの頭に付ける線画アイコン（飾りなので読み上げない）"""
@@ -141,6 +144,18 @@ def page_head(crumb, title, lead):
     """下層ページの頭：パンくず・見出し・リード"""
     return (f'<div class="wrap ph-head stack s-48" id="top"><nav aria-label="パンくず"><ol class="crumb"><li><a href="index.html">トップ</a></li>'
             f'<li aria-current="page">{crumb}</li></ol></nav><h1 class="t-h1">{title}</h1><p class="t-lead">{lead}</p></div>')
+
+def lcard(h, t, code):
+    """写真つきのリンクカード：写真の下に題と、塗りの丸い矢印"""
+    return (f'<a class="lcard" href="{h}"><span class="lcard-ph zoom">{img(code, f"（ダミー）{t}の写真")}</span>'
+            f'<span class="lcard-b"><span class="t-ct">{t}</span><span class="cgo fill" aria-hidden="true"></span></span></a>')
+
+def related(page):
+    """下層ページの終わりに置く、ほかのページへの入口"""
+    pages = [('service.html', '当日の体制と流れ', 'P02'), ('reception.html', '配信支援ツール', 'P11'),
+             ('coaching.html', '内製化支援', 'P12'), ('public.html', '大学・公共機関の方へ', 'P10')]
+    cards = ''.join(lcard(h, t, c) for h, t, c in pages if h != page)
+    return sec('related', 'ほかのページ', 'あわせて、ご覧ください', f'<div class="lcards">{cards}</div>')
 
 def cta_box(title='日程と会場だけで、見積書をお送りします', note='1営業日以内に、スタッフの役割と機材の内訳が入った見積書PDFをメールでお送りします。'):
     return (f'<section class="sec-3 cta-end" aria-label="見積の依頼"><div class="wrap"><div class="boxd cta-in"><div class="stack"><p class="t-h2s">{title}</p>'
@@ -177,7 +192,7 @@ def header(page):
 <header class="hdr">
 <div class="hdr-bar">
 <a class="logo" href="index.html" aria-label="{NAME} トップページ">{logo_html()}</a>
-<button type="button" class="menu-btn" data-open-menu aria-haspopup="dialog" aria-controls="menu"><span class="vh">メニューを開く</span><i></i><i></i></button>
+<button type="button" class="menu-btn" data-open-menu aria-haspopup="dialog" aria-controls="menu"><span class="vh">メニューを開く</span><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span aria-hidden="true">MENU</span></button>
 <a class="menu-fallback t-note" href="#fnav">メニュー</a>
 </div>
 <nav class="subnav" aria-label="メニュー"><ol>{menu_items(page)}</ol></nav>
@@ -581,7 +596,7 @@ def service():
     return (head(f'当日の体制と流れ｜{NAME}', 'スタッフ3人の持ち場、持ち込む機材、当日の流れと、止まったときの戻し方です。')
             + header('service.html') + '<main id="main">'
             + page_head('当日の体制と流れ', '当日の体制と流れ', '誰が来て、何を持ち込み、当日どう動くか。見積書にも同じ内容を書きます。')
-            + team + timeline + switching + day + trouble_sec + cta_box() + '</main>' + footer('service.html'))
+            + team + timeline + switching + day + trouble_sec + related('service.html') + cta_box() + '</main>' + footer('service.html'))
 
 # ------------------------------------------------------------------ 受付と現場の道具
 def reception():
@@ -607,7 +622,7 @@ def reception():
     return (head(f'配信支援ツール｜{NAME}', '受付用のデジタルチケットと、当日使う質疑応答・進行管理・会場診断のツールです。')
             + header('reception.html') + '<main id="main">'
             + page_head('配信支援ツール', '配信支援ツール', '受付の名簿と、当日の質疑応答・進行も、配信と一緒に引き受けます。')
-            + ticket + demo + cta_box() + '</main>' + footer('reception.html'))
+            + ticket + demo + related('reception.html') + cta_box() + '</main>' + footer('reception.html'))
 
 # ------------------------------------------------------------------ 内製化支援
 def coaching():
@@ -634,7 +649,7 @@ def coaching():
     return (head(f'内製化支援｜{NAME}', '来年度から配信を内製化したい方へ。内製化の基準を一緒に決め、相談・同行・並走・卒業の4段階で独り立ちまで並走します。')
             + header('coaching.html') + '<main id="main">'
             + page_head('内製化支援', '来年度からは、<br>内製化したい', '小さな会なら、お手持ちの機材で配信できます。どの会を自分たちで回すか、その基準づくりから一緒に始めます。')
-            + criteria + body + picks + cta_box('まだ何も決まっていない方へ', '15分のオンライン相談で、iPhoneで足りるかどうかから一緒にお話しします。決まっているのが日程だけでもかまいません。') + '</main>' + footer('coaching.html'))
+            + criteria + body + picks + related('coaching.html') + cta_box('まだ何も決まっていない方へ', '15分のオンライン相談で、iPhoneで足りるかどうかから一緒にお話しします。決まっているのが日程だけでもかまいません。') + '</main>' + footer('coaching.html'))
 
 # ------------------------------------------------------------------ 大学・公共機関の方へ
 def public():
@@ -653,7 +668,7 @@ def public():
     return (head(f'大学・公共機関の方へ｜{NAME}', '見積書・納品書・請求書の3点を発行し、請求書払いに対応します。仕様書のひな形もお送りします。')
             + header('public.html') + '<main id="main">'
             + page_head('大学・公共機関の方へ', '大学・公共機関の方へ', '稟議、相見積、請求書払い。発注の手続きに合わせて書類をご用意します。')
-            + body + cta_box() + '</main>' + footer('public.html'))
+            + body + related('public.html') + cta_box() + '</main>' + footer('public.html'))
 
 # ------------------------------------------------------------------ メインビジュアルの比較（持ち主の確認用。メニューには出さない）
 def mvs():
@@ -751,12 +766,17 @@ def rules():
                    spec('ドロップ', 'drop-shadow', '<span class="edge" style="filter:drop-shadow(0 3px 8px rgb(0 0 0 / .14))"></span>')])
 
     # ボタン
-    kinds = [('黄', 'plan'), ('赤', 'quote'), ('青', ''), ('線', 'line'), ('淡い面', 'soft'), ('白いピル', 'dot'), ('墨の箱', 'box'), ('四角', 'sq')]
+    kinds = [('黄', 'plan'), ('赤', 'quote'), ('青', ''), ('線', 'line'), ('淡い面', 'soft'), ('墨', 'ink'), ('丸い両端', 'round'), ('白いピル', 'dot'), ('矢印のカプセル', 'cap'), ('薄い色', 'tint'), ('墨の箱', 'box'), ('四角', 'sq')]
     bt = ''.join(f'<tr><th scope="row">{n}<br><code>.btn{("." + c) if c else ""}</code></th>'
                  f'<td data-l="lg">{btn("ボタン", "#buttons", (c + " lg").strip())}</td><td data-l="標準">{btn("ボタン", "#buttons", c)}</td><td data-l="s">{btn("ボタン", "#buttons", (c + " s").strip())}</td></tr>' for n, c in kinds)
     buttons = sec('buttons', 'ボタン', 'Button', f'''<table class="tbl tbl--btns"><thead><tr><th scope="col"></th><th scope="col"><code>.lg</code></th><th scope="col"><code>—</code></th><th scope="col"><code>.s</code></th></tr></thead><tbody>{bt}</tbody></table>
 {specs([spec('アイコンつき', '.btn ＋ .bico', f'<a class="btn plan" href="#buttons">{bico("diag")}ボタン</a>'),
         spec('丸の色', '.dot-red / .dot-ink / .dot-yellow', '<div class="part-dots">' + btn('ボタン', '#buttons', 'dot dot-red') + btn('ボタン', '#buttons', 'dot dot-ink') + btn('ボタン', '#buttons', 'dot dot-yellow') + '</div>'),
+        spec('中央寄せ', '.center', '<a class="btn line center" href="#buttons">カジュアルに相談</a>'),
+        spec('アイコンのピル', '.round.center ＋ .bico', f'<div class="part-dots"><a class="btn cream round center" href="#buttons">{bico("person")}初めての方へ</a><a class="btn plan round center" href="#buttons">{bico("cal")}日程を相談</a><a class="btn ink round center" href="#buttons">{bico("send")}お問い合わせ</a></div>', 'spec--white'),
+        spec('カプセルの色', '.cap-yellow / .cap-ink', '<div class="part-dots" style="background:var(--main);border-radius:var(--radius-card);padding:1rem">' + btn('ボタン', '#buttons', 'cap') + btn('ボタン', '#buttons', 'cap cap-yellow') + btn('ボタン', '#buttons', 'cap cap-ink') + '</div>'),
+        spec('薄い色', '.tint / .tint-blue', '<div class="part-dots">' + btn('OPEN', '#buttons', 'tint') + btn('MENU', '#buttons', 'tint tint-blue') + '</div>'),
+        spec('丸い矢印', '.cgo / .cgo.fill', '<span class="cgo" aria-hidden="true"></span><span class="cgo fill" aria-hidden="true"></span>'),
         spec('文字リンク', '.tlink ＋ .go', f'<a class="tlink" href="#buttons">一覧を見る{go()}</a>'),
         spec('フォーカス', ':focus-visible', '<a class="btn" href="#buttons" style="outline:3px solid var(--focus);outline-offset:3px">ボタン</a>'),
         spec('送信中', ':disabled', '<button class="btn quote" type="button" disabled>送信しています</button>'),
@@ -779,6 +799,8 @@ def rules():
         spec('小見出し', '.sub', '<p class="sub" style="inline-size:100%">小見出し</p>'),
         spec('札', '.pill', '<span class="pill">シンポジウム</span><span class="pill">講演会</span>'),
         spec('パンくず', '.crumb', '<ol class="crumb"><li><a href="index.html">トップ</a></li><li aria-current="page">デザインルール</li></ol>'),
+        spec('番号つきのタグ', '.t-num', '<p class="t-num"><b>01</b><span>Achievements</span></p>'),
+        spec('現在地の点', '.navdot', '<ul class="navdot"><li><a href="#heads" aria-current="true">料金プラン</a></li><li><a href="#heads">対応事例</a></li><li><a href="#heads">FAQ</a></li></ul>'),
         spec('ロゴ', '.logo', f'<span class="logo">{logo_html()}</span>'),
     ]))
 
@@ -799,6 +821,10 @@ def rules():
              '<a class="btn sq" href="#boxes">送信する</a></div>', 'spec--white'),
         spec('人物カード', '.pick ＋ .bubble', f'<a class="pick" href="#boxes" style="inline-size:100%"><span class="bubble">PICK UP</span><span class="pick-ph">{img("P11", "（ダミー）人物の写真")}</span>'
              '<span><span class="pick-name">A.K</span><span class="pick-meta">広報担当</span></span>' + go() + '</a>', 'spec--white'),
+        spec('リンクカード', '.lcard', '<div style="inline-size:100%">' + lcard('#boxes', 'カードの題', 'P02') + '</div>', 'spec--white'),
+        spec('3色の枠のカード', '.tri', f'<a class="tri" href="#boxes" style="inline-size:100%"><span class="tri-b stack s-16"><span class="t-h3">カードの題</span><span class="t-note t-sub">項目／項目／項目</span><span class="cgo fill red" aria-hidden="true"></span></span><span class="tri-ph">{img("P05", "（ダミー）イラスト")}</span></a>', 'spec--white'),
+        spec('お知らせカード', '.feature ＋ .new-mk ＋ .vlabel ＋ .wavy', f'<a class="feature" href="#boxes" style="inline-size:100%"><span class="new-mk">NEW</span><span class="vlabel">CASE #2</span><span class="feature-ph">{img("P03", "（ダミー）写真")}</span><span class="feature-b stack s-16"><span class="wavy">見出し</span><span class="t-body">本文が2行ほど入ります。</span></span><span class="feature-go"><span class="cgo" aria-hidden="true"></span></span></a>', 'spec--white'),
+        spec('暗いリンク', '.dlink', f'<a class="dlink" href="#boxes" style="inline-size:100%"><span class="stack s-16"><span class="dlink-en">Apply for Estimate</span><span class="dlink-t">見積の依頼はこちら</span></span><span class="dlink-ic">{bico("ext")}</span></a>'),
         spec('吹き出しタグ', '.bubble', '<span class="bubble">PICK UP</span>'),
         spec('閉じる', '.x-close', '<button class="x-close" type="button" aria-label="閉じる"></button>'),
         spec('バナー', '.banner', '<a class="banner" href="#boxes"><span class="banner-t">バナーの題</span><span class="banner-s">ひとこと</span>' + go() + '</a>'),
